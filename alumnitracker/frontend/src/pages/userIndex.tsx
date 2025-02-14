@@ -11,7 +11,7 @@ const userIndex: React.FC = () => {
       /> */}
 
       {/* nav */}
-      <nav className="absolute top-5 right-10 flex gap-3">
+      <nav className="absolute top-5 right-10 flex gap-3 z-20">
         {[
           { name: "Home", path: "/" },
           { name: "Index", path: "/userIndex" },
