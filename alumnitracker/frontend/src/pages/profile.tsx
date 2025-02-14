@@ -29,8 +29,10 @@ const Profile: React.FC = () => {
         ))}
       </nav>
 
-      <div className="relative z-10 w-[60%] h-[80%] flex flex-col items-center">
-        <h1 className="text-center text-7xl font-bold text-white">profile</h1>
+      <div className="w-screen h-screen px-[5%] flex flex-col justify-start items-center gap-[48px] p-10">
+        <div className="mt-5">
+          <h1 className="text-center text-7xl font-bold text-white">profile</h1>
+        </div>
       </div>
     </div>
   );
