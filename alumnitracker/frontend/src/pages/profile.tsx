@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
-const IndexPage: React.FC = () => {
+const Profile: React.FC = () => {
   return (
     <div className="relative w-screen h-screen flex justify-center items-center">
       {/* background img */}
@@ -26,12 +26,10 @@ const IndexPage: React.FC = () => {
       </nav>
 
       <div className="relative z-10 w-[60%] h-[80%] flex flex-col justify-center items-center">
-        <h1 className="text-center text-7xl font-bold text-white">
-          Alumni Tracker
-        </h1>
+        <h1 className="text-center text-7xl font-bold text-white">profile</h1>
       </div>
     </div>
   );
 };
 
-export default IndexPage;
+export default Profile;
