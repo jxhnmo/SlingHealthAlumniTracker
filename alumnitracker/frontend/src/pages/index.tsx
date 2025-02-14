@@ -10,19 +10,23 @@ const IndexPage: React.FC = () => {
         style={{ backgroundImage: "url('/background.jpg')" }}
       /> */}
 
-      <nav className="absolute top-5 right-10 bg-white/30 backdrop-blur-lg rounded-lg px-6 py-3 flex gap-6 text-white font-medium shadow-lg">
-        <Link href="/" className="hover:text-gray-300 transition">
-          Home
-        </Link>
-        <Link href="/userIndex" className="hover:text-gray-300 transition">
-          Index
-        </Link>
-        <Link href="/profile" className="hover:text-gray-300 transition">
-          Profile
-        </Link>
-        <Link href="/login" className="hover:text-gray-300 transition">
-          Login
-        </Link>
+      {/* nav */}
+      <nav className="absolute top-5 right-10 flex gap-3">
+        {[
+          { name: "Home", path: "/" },
+          { name: "Index", path: "/userIndex" },
+          { name: "Profile", path: "/profile" },
+          { name: "Login", path: "/login" },
+        ].map((item) => (
+          <Link
+            key={item.name}
+            href={item.path}
+            className="px-4 py-2 text-[--popcol] bg-[--dark2] rounded-md shadow-lg transition 
+                       hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
+          >
+            {item.name}
+          </Link>
+        ))}
       </nav>
 
       <div className="relative z-10 w-[60%] h-[80%] flex flex-col justify-center items-center">
