@@ -29,10 +29,22 @@ const IndexPage: React.FC = () => {
         ))}
       </nav>
 
-      <div className="relative z-10 w-[60%] h-[80%] flex flex-col justify-center items-center">
-        <h1 className="text-center text-7xl font-bold text-white">
+      <div className="relative z-10 flex flex-col items-center">
+        {/* Alumni Tracker Header */}
+        <h1 className="text-center text-7xl font-bold text-white mb-8">
           Alumni Tracker
         </h1>
+
+        {/* Separate Div for Login Button */}
+        <div className="mt-20">
+          <Link
+            href="/login"
+            className="inline-block px-10 py-5 text-xl font-bold text-[--popcol] bg-[--dark2] rounded-2xl shadow-xl transition-transform 
+               hover:bg-[--popcol] hover:text-[--dark2] hover:scale-110"
+          >
+            Login
+          </Link>
+        </div>
       </div>
     </div>
   );
