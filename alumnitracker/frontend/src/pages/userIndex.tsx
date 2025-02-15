@@ -19,6 +19,41 @@ const userIndex: React.FC = () => {
       name: "Tate McRae",
       year: "2024",
     },
+    {
+      user_profile_url: "/profilePix/sabrinacarpenter.jpg",
+      name: "Sabrina Carpet",
+      year: "2024",
+    },
+    {
+      user_profile_url: "/profilePix/tatemcrae.jpg",
+      name: "Tate McRae",
+      year: "2024",
+    },
+    {
+      user_profile_url: "/profilePix/sabrinacarpenter.jpg",
+      name: "Sabrina Carpet",
+      year: "2024",
+    },
+    {
+      user_profile_url: "/profilePix/tatemcrae.jpg",
+      name: "Tate McRae",
+      year: "2024",
+    },
+    {
+      user_profile_url: "/profilePix/sabrinacarpenter.jpg",
+      name: "Sabrina Carpet",
+      year: "2024",
+    },
+    {
+      user_profile_url: "/profilePix/tatemcrae.jpg",
+      name: "Tate McRae",
+      year: "2024",
+    },
+    {
+      user_profile_url: "/profilePix/tatemcrae.jpg",
+      name: "Tate McRae",
+      year: "2024",
+    },
   ];
 
   return (
@@ -55,18 +90,18 @@ const userIndex: React.FC = () => {
           </h1>
         </div>
         <div className="w-[80%] h-[80%] bg-[--dark2] rounded-2xl shadow-xl p-[2%]">
-          <div className="pb-[12px] gap-[12px] h-[100%] flex flex-col">
+          <div className="gap-[12px] h-[100%] flex flex-col overflow-y-scroll overflow-x-hidden relative">
             {users.map((user: Users, i) => {
               return (
                 <div
-                  className="w-[full] min-h-[10%] border-4 border-[--grey1] rounded-[15px] cursor-pointer hover:scale-[1.02] hover:border-[--popcol] hover:text-[--popcol] flex"
+                  className="relative w-[full] h-[20%] mr-[4px] border-4 border-[--grey1] rounded-[15px] cursor-pointer hover:border-[--popcol] hover:text-[--popcol] flex"
                   key={i}
                 >
-                  <div className="w-[10%] min-w-[64px] h-full flex flex-col">
+                  <div className="w-[auto] min-w-[64px] h-full flex flex-col">
                     <img
                       src={user.user_profile_url}
                       alt={user.name}
-                      className="w-full h-full rounded-l-[10px] object-cover aspect-square"
+                      className="w-auto h-full rounded-l-[10px] object-cover aspect-square"
                     />
                   </div>
                   <div className="w-[auto] h-full flex flex-col pl-[24px] gap-[12px] justify-center">
