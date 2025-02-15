@@ -35,7 +35,7 @@ const IndexPage: React.FC = () => {
       </nav>
 
       <div className="relative w-screen h-screen px-[5%] flex flex-col justify-center items-center gap-[48px] p-10 z-10">
-        <h1 className="text-center text-9xl font-bold text-white mb-8">
+        <h1 className="text-center text-9xl font-bold text-[--white] mb-8">
           Alumni Tracker
         </h1>
 
