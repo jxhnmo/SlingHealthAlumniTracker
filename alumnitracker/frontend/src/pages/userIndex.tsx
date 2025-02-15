@@ -59,7 +59,7 @@ const userIndex: React.FC = () => {
             {users.map((user: Users, i) => {
               return (
                 <div
-                  className="w-[full] min-h-[10%] border-4 border-[--grey1] rounded-[15px] cursor-pointer hover:scale-[1.02] flex"
+                  className="w-[full] min-h-[10%] border-4 border-[--grey1] rounded-[15px] cursor-pointer hover:scale-[1.02] hover:border-[--popcol] hover:text-[--popcol] flex"
                   key={i}
                 >
                   <div className="w-[10%] min-w-[64px] h-full flex flex-col">
