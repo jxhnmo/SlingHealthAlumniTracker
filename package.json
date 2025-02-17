@@ -7,7 +7,7 @@
     "yarn": "1.22.x"
   },
   "scripts": {
-    "build": "cd frontend && yarn build",
+    "build": "cd frontend && yarn install && npx next build && npx next export -o ../public",
     "start": "cd frontend && yarn start"
   },
   "dependencies": {
