@@ -1,60 +1,45 @@
 import React from "react";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+
 
 interface Users {
-  user_profile_url: string;
   name: string;
-  year: string;
+  email: string;
+  major: string;
+  graduation_year: number;
+  user_profile_url: string; 
 }
 
 const userIndex: React.FC = () => {
-  const users: Users[] = [
-    {
-      user_profile_url: "/profilePix/sabrinacarpenter.jpg",
-      name: "Sabrina Carpet",
-      year: "2024",
-    },
-    {
-      user_profile_url: "/profilePix/tatemcrae.jpg",
-      name: "Tate McRae",
-      year: "2024",
-    },
-    {
-      user_profile_url: "/profilePix/sabrinacarpenter.jpg",
-      name: "Sabrina Carpet",
-      year: "2024",
-    },
-    {
-      user_profile_url: "/profilePix/tatemcrae.jpg",
-      name: "Tate McRae",
-      year: "2024",
-    },
-    {
-      user_profile_url: "/profilePix/sabrinacarpenter.jpg",
-      name: "Sabrina Carpet",
-      year: "2024",
-    },
-    {
-      user_profile_url: "/profilePix/tatemcrae.jpg",
-      name: "Tate McRae",
-      year: "2024",
-    },
-    {
-      user_profile_url: "/profilePix/sabrinacarpenter.jpg",
-      name: "Sabrina Carpet",
-      year: "2024",
-    },
-    {
-      user_profile_url: "/profilePix/tatemcrae.jpg",
-      name: "Tate McRae",
-      year: "2024",
-    },
-    {
-      user_profile_url: "/profilePix/tatemcrae.jpg",
-      name: "Tate McRae",
-      year: "2024",
-    },
-  ];
+  const [users, setUsers] = useState<Users[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
+
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/users"); 
+        const data = await response.json();
+        setUsers(data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to load users:", err);
+        setError("Failed to load users");
+        setLoading(false);
+      }
+    };
+
+    loadUsers();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="relative w-screen h-screen flex justify-center items-center">
@@ -106,7 +91,7 @@ const userIndex: React.FC = () => {
                   </div>
                   <div className="w-[auto] h-full flex flex-col pl-[24px] gap-[12px] justify-center">
                     <h2 className="text-2xl">{user.name}</h2>
-                    <h3 className="text-lg">{user.year}</h3>
+                    <h3 className="text-lg">{user.graduation_year}</h3>
                   </div>
                 </div>
               );
