@@ -71,6 +71,7 @@ export default function ProfileEdit() {
                     }
                 }></input>
             <button>Save Changes</button>
+            <button>Cancel</button>
         </div>
     );
 };
