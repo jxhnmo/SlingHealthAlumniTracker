@@ -15,7 +15,7 @@ export default function ProfileEdit() {
                 <tbody>
                     <tr>
                         <th>First Name</th>
-                        <td>whee</td>
+                        <td>does this show</td>
                     </tr>
                     <tr>
                         <th>Last Name</th>
