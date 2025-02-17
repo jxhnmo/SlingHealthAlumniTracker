@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* --background: #ffffff;
+  --grey2: #171717; */
+  --background: #121212;
+    --dark2: #212121;
+    --grey1: #535353;
+    --grey2: #b3b3b3;
+    --popcol: #c9a0ff;
+    --white: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #121212;
+    --dark2: #212121;
+    --grey1: #535353;
+    --grey2: #b3b3b3;
+    --popcol: #c9a0ff;
+    --white: #ffffff;
+  }
+}
+
+body {
+  color: var(--grey2);
+  background: var(--background);
+}
+
+body {
+  font-family: "Inter", sans-serif;
+}
+
+/* Style for Webkit Browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 4px;
+  /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: white;
+  /* Color of the scrollbar thumb */
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  /* Transparent track */
+}
