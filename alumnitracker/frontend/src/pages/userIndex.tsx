@@ -4,11 +4,12 @@ import { useState, useEffect } from "react";
 
 
 interface Users {
+  id: number;
   name: string;
   email: string;
   major: string;
   graduation_year: number;
-  user_profile_url: string; 
+  user_profile_url: string;
 }
 
 const userIndex: React.FC = () => {
@@ -19,7 +20,7 @@ const userIndex: React.FC = () => {
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const response = await fetch("http://localhost:4000/users"); 
+        const response = await fetch("http://localhost:4000/users");
         const data = await response.json();
         setUsers(data);
         setLoading(false);
@@ -79,20 +80,24 @@ const userIndex: React.FC = () => {
             {users.map((user: Users, i) => {
               return (
                 <div
-                  className="relative w-[full] h-[20%] mr-[4px] border-4 border-[--grey1] rounded-[15px] cursor-pointer hover:border-[--popcol] hover:text-[--popcol] flex"
                   key={i}
+                  className="relative w-full h-[20%] mr-[4px] border-4 border-[--grey1] rounded-[15px] cursor-pointer hover:border-[--popcol] hover:text-[--popcol] flex"
                 >
-                  <div className="w-[auto] min-w-[64px] h-full flex flex-col">
-                    <img
-                      src={user.user_profile_url}
-                      alt={user.name}
-                      className="w-auto h-full rounded-l-[10px] object-cover aspect-square"
-                    />
-                  </div>
-                  <div className="w-[auto] h-full flex flex-col pl-[24px] gap-[12px] justify-center">
-                    <h2 className="text-2xl">{user.name}</h2>
-                    <h3 className="text-lg">{user.graduation_year}</h3>
-                  </div>
+                  <Link href={`/profiles/${user.id}`} passHref>
+                    <div className="w-full h-full flex">
+                      <div className="w-[auto] min-w-[64px] h-full flex flex-col">
+                        <img
+                          src={user.user_profile_url}
+                          alt={user.name}
+                          className="w-auto h-full rounded-l-[10px] object-cover aspect-square"
+                        />
+                      </div>
+                      <div className="w-[auto] h-full flex flex-col pl-[24px] gap-[12px] justify-center">
+                        <h2 className="text-2xl">{user.name}</h2>
+                        <h3 className="text-lg">{user.graduation_year}</h3>
+                      </div>
+                    </div>
+                  </Link>
                 </div>
               );
             })}
