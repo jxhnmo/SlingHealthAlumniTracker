@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:static": "serve ../public",
-    "build": "cd $PWD/frontend && yarn install && yarn build && next export -o ../public",
+    "build": "next build && next export -o ../public",
     "start": "next start",
     "lint": "next lint"
   },
