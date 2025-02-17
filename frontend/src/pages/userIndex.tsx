@@ -19,7 +19,7 @@ const UserIndex: React.FC = () => {
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const response = await fetch("http://localhost:4000/users");
+        const response = await fetch("postgres://u2bicd1e37n1ai:p9bc740d50c40b412d172b7d16b39f4446f734f8c721c1e6259a765991de9434a@ceqbglof0h8enj.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d9b8q7ftl0kb3f");
         const data = await response.json();
         setUsers(data);
         setLoading(false);
