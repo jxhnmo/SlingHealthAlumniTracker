@@ -2,7 +2,6 @@ import React from "react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
-
 interface Users {
   id: number;
   name: string;
@@ -12,7 +11,7 @@ interface Users {
   user_profile_url: string;
 }
 
-const userIndex: React.FC = () => {
+const UserIndex: React.FC = () => {
   const [users, setUsers] = useState<Users[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
@@ -108,4 +107,4 @@ const userIndex: React.FC = () => {
   );
 };
 
-export default userIndex;
+export default UserIndex;
