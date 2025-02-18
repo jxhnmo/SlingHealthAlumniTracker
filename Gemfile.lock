@@ -176,6 +176,7 @@ DEPENDENCIES
   puma (~> 5.0)
   rack-cors
   rails (~> 7.0.6)
+  rake (~> 13.0)
   tzinfo-data
   yaml_db
 
@@ -183,4 +184,4 @@ RUBY VERSION
    ruby 3.1.2p20
 
 BUNDLED WITH
-   2.4.10
+   2.3.7
