@@ -21,6 +21,7 @@ const UserIndex: React.FC = () => {
     const loadUsers = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/users`);
+        const data = await response.json();
         setUsers(data);
         setLoading(false);
       } catch (err) {
