@@ -17,7 +17,7 @@ const UserIndex: React.FC = () => {
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumnitrackertest-958bb6be1026.herokuapp.com";
     const loadUsers = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/users`);
