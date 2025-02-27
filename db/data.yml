@@ -1,5 +1,68 @@
 
 ---
+ar_internal_metadata:
+  columns:
+  - key
+  - value
+  - created_at
+  - updated_at
+  records: 
+  - - environment
+    - development
+    - 2025-02-25 22:21:49.859864000 Z
+    - 2025-02-25 22:21:49.859864000 Z
+  - - schema_sha1
+    - fc1f1d4415aee5a0a3ba619b58d78d99dc99613c
+    - 2025-02-25 22:25:04.089822000 Z
+    - 2025-02-25 22:25:04.089822000 Z
+
+---
+users:
+  columns:
+  - id
+  - name
+  - major
+  - graduation_year
+  - user_profile_url
+  - biography
+  - contact_info
+  - email
+  - created_at
+  - updated_at
+  records: 
+  - - 1
+    - Diana Salha
+    - no major
+    - 2000
+    - ''
+    - ''
+    - ''
+    - dianasalha123@tamu.edu
+    - 2025-02-25 22:45:32.578606000 Z
+    - 2025-02-25 22:45:32.578606000 Z
+  - - 2
+    - Anish Easerwan
+    - no major
+    - 2000
+    - ''
+    - ''
+    - ''
+    - anish.easwaran@tamu.edu
+    - 2025-02-25 22:45:32.640314000 Z
+    - 2025-02-25 22:45:32.640314000 Z
+  - - 3
+    - Fouzul Kansul
+    - no major
+    - 2000
+    - ''
+    - ''
+    - ''
+    - fouzul.k@tamu.edu
+    - 2025-02-25 22:45:32.705395000 Z
+    - 2025-02-25 22:45:32.705395000 Z
+
+
+---
 achievements:
   columns:
   - id
@@ -65,23 +128,6 @@ achievements:
     - 2025-02-25 22:45:53.527685000 Z
 
 ---
-ar_internal_metadata:
-  columns:
-  - key
-  - value
-  - created_at
-  - updated_at
-  records: 
-  - - environment
-    - development
-    - 2025-02-25 22:21:49.859864000 Z
-    - 2025-02-25 22:21:49.859864000 Z
-  - - schema_sha1
-    - fc1f1d4415aee5a0a3ba619b58d78d99dc99613c
-    - 2025-02-25 22:25:04.089822000 Z
-    - 2025-02-25 22:25:04.089822000 Z
-
----
 contact_methods:
   columns:
   - id
@@ -115,48 +161,3 @@ contact_methods:
     - 1
     - 2025-02-25 22:55:18.798453000 Z
     - 2025-02-25 22:55:18.798453000 Z
-
----
-users:
-  columns:
-  - id
-  - name
-  - major
-  - graduation_year
-  - user_profile_url
-  - biography
-  - contact_info
-  - email
-  - created_at
-  - updated_at
-  records: 
-  - - 1
-    - Diana Salha
-    - no major
-    - 2000
-    - ''
-    - ''
-    - ''
-    - dianasalha123@tamu.edu
-    - 2025-02-25 22:45:32.578606000 Z
-    - 2025-02-25 22:45:32.578606000 Z
-  - - 2
-    - Anish Easerwan
-    - no major
-    - 2000
-    - ''
-    - ''
-    - ''
-    - anish.easwaran@tamu.edu
-    - 2025-02-25 22:45:32.640314000 Z
-    - 2025-02-25 22:45:32.640314000 Z
-  - - 3
-    - Fouzul Kansul
-    - no major
-    - 2000
-    - ''
-    - ''
-    - ''
-    - fouzul.k@tamu.edu
-    - 2025-02-25 22:45:32.705395000 Z
-    - 2025-02-25 22:45:32.705395000 Z
