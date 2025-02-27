@@ -10,7 +10,6 @@ interface User {
   graduation_year: number;
   user_profile_url: string;
   bio?: string;
-  contact?: string;
 }
 
 interface Achievement {
@@ -20,11 +19,19 @@ interface Achievement {
   user_id: number;
 }
 
+interface ContactMethod {
+  id: number;
+  contact_type: string;
+  info: string;
+  user_id: number;
+}
+
 const Profile: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
   const [user, setUser] = useState<User | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [contactMethods, setContactMethods] = useState<ContactMethod[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
@@ -32,23 +39,25 @@ const Profile: React.FC = () => {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumnitrackertest-958bb6be1026.herokuapp.com";
     if (!id) return;
 
-    const fetchUserAndAchievements = async () => {
+    const fetchData = async () => {
       try {
-        const [userResponse, achievementsResponse] = await Promise.all([
+        const [userResponse, achievementsResponse, contactMethodsResponse] = await Promise.all([
           fetch(`${API_BASE_URL}/users/${id}`),
-          fetch(`${API_BASE_URL}/achievements`)
+          fetch(`${API_BASE_URL}/achievements`),
+          fetch(`${API_BASE_URL}/contact_methods`)
         ]);
 
         if (!userResponse.ok) throw new Error("User not found");
         if (!achievementsResponse.ok) throw new Error("Failed to fetch achievements");
+        if (!contactMethodsResponse.ok) throw new Error("Failed to fetch contact methods");
 
         const userData = await userResponse.json();
         const achievementsData: Achievement[] = await achievementsResponse.json();
-
-        const userAchievements = achievementsData.filter(ach => ach.user_id === Number(id));
+        const contactMethodsData: ContactMethod[] = await contactMethodsResponse.json();
 
         setUser(userData);
-        setAchievements(userAchievements);
+        setAchievements(achievementsData.filter(ach => ach.user_id === Number(id)));
+        setContactMethods(contactMethodsData.filter(contact => contact.user_id === Number(id)));
         setLoading(false);
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -57,7 +66,7 @@ const Profile: React.FC = () => {
       }
     };
 
-    fetchUserAndAchievements();
+    fetchData();
   }, [id]);
 
   if (loading) return <div>Loading...</div>;
@@ -124,7 +133,17 @@ const Profile: React.FC = () => {
               {/* Contact Section */}
               <div className="w-1/3 bg-[--grey1] rounded-xl p-5 text-white">
                 <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">Contact</h3>
-                <p>{user.contact || "No contact information provided."}</p>
+                {contactMethods.length > 0 ? (
+                  <ul>
+                    {contactMethods.map((contact) => (
+                      <li key={contact.id}>
+                        <strong>{contact.contact_type}:</strong> {contact.info}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No contact information provided.</p>
+                )}
               </div>
             </div>
           </div>
