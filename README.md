@@ -1,36 +1,36 @@
-# README
 ## Sling Health Alumni Tracker
 Alumni Tracker for TAMU Sling Health
+
 
 ## Table of Contents
 An interactive list of sections for easy navigation, especially for longer
 READMEs
 
+
 ## Requirements
 This code has been run and tested using the following internal and external
 components
 Environment
-• Ubuntu v?
+• WSL Ubuntu
 • Docker Engine v?
 • Docker container v?
 • Heroku v?
 • Nodejs v?
-• Yarn v?
-• Others
 Program
-• Ruby v?
-• Rails v?
+• Ruby 3.1.2p20
+• Rails 7.0.6
 • Rspec-rails v?
 • PostgreSQL v?
 • Other Ruby gems & versions
 Tools
 • Git Hub - main branch with LINK to repo
-• RuboCop v?
-• Simplecov v?
-• Brakeman v?
+• RuboCop
+• Simplecov
+• Brakeman
 • Jira
-• Atom IDE v?
+• VSCode IDE
 • Others
+
 
 ## External Dependencies
 - Docker - Download latest version at https://www.docker.com/products/docker-
@@ -41,19 +41,20 @@ https://devcenter.heroku.com/articles/heroku-cli
 Started-Installing-Git
 - GitHub Desktop (Not needed, but HELPFUL) at https://desktop.github.com/
 
+
 ## Environmental Variables/Files
-We have environment variables setup for Authentication. The tutorial can be
-found here: https://medium.com/craft-academy/encrypted- credentials-
-in-ruby-on-rails-9db1f36d8570
-The tutorial above will help you understand now we encrypted the admin page's
-username and password!
+We have environment variables set up for the database
+NEXT_PUBLIC_API_BASE_URL=https://alumnitrackertest-958bb6be1026.herokuapp.com
+LANG=en_US.UTF-8
+RACK_ENV=production
+RAILS_ENV=production
+RAILS_LOG_TO_STDOUT=enabled
+RAILS_SERVE_STATIC_FILES=enabled
 ## Installation and Setup
 Download this code repository by using git:
-`git clone https://github.com/FA21-CSCE431/project-sprint-3-zlp-
-interviewer.git`
+`git clone https://github.com/jxhnmo/SlingHealthAlumniTracker.git’
 or
-`git clone https://github.com/FA21-CSCE431/project-final-code-zlp-
-interviewer/`
+‘git clone git@github.com:jxhnmo/SlingHealthAlumniTracker.git’
 Run the following code in Powershell if using windows or the terminal using
 Linux/Mac
 `cd project-sprint-3-zlp-interviewer`
@@ -66,7 +67,10 @@ db:migrate`
 Run the app
 `rails server --binding:0.0.0.0`
 The application can be seen using a browser and navigating to
-http://localhost:3000/## Deployment
+http://localhost:3000/
+
+
+## Deployment
 1. Work with your github repository environment_test that you created
 previously.
 It should contain the test_app that we built in lab 1 and 2.
@@ -111,10 +115,12 @@ Click the New button in the top right of your app list and select Create
 new pipeline:
 <insert remaining instructions for set-up in the cloud or locally>
 
+
 ## Usage
 Clear instructions on how to use the project
 Code examples demonstrating basic functionality
 Screenshots or GIFs to illustrate the project in action
+
 
 ## Features
 List of key features and capabilities
@@ -128,17 +134,13 @@ Troubleshooting tips or FAQs
 ## Credits and Acknowledgments
 List of contributors and maintainers
 Acknowledgment of third-party resources or libraries used
-- [John Doe](https://github.com/johndoe) for the implementation of the
-sorting algorithm
+- 
 - OpenAI's GPT-3.5 for generating parts of the documentation
-- [CoolLibrary](https://github.com/coollibrary/coollibrary) for providing the
-base functionality
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE)
 file for details.
-Parts of this code were adapted from [ProjectX](https://github.com/projectx)
-by [Jane Smith](https://github.com/janesmith), used under the MIT License.
+
 ## Third-Party Libraries
 This project uses the following third-party libraries:
 - Library1 (MIT License)
@@ -146,6 +148,7 @@ This project uses the following third-party libraries:
 
 ## Contact Information
 Any questions, contact information is below.
+
 
 * John Mo johnmo@tamu.edu
 * Ryan Kha ryankha@tamu.edu
