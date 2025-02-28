@@ -32,9 +32,9 @@ Document.create(
 )
 
 User.create!([
-  { id: 1, name: "Diana Salha", major: "no major", graduation_year: 2000, user_profile_url: "", biography: "", contact_info: "", email: "dianasalha123@tamu.edu" },
-  { id: 2, name: "Anish Easerwan", major: "no major", graduation_year: 2000, user_profile_url: "", biography: "", contact_info: "", email: "anish.easwaran@tamu.edu" },
-  { id: 3, name: "Fouzul Kansul", major: "no major", graduation_year: 2000, user_profile_url: "", biography: "", contact_info: "", email: "fouzul.k@tamu.edu" }
+  { id: 1, name: "Diana Salha", major: "no major", graduation_year: 2000, user_profile_url: "", biography: "", email: "dianasalha123@tamu.edu" },
+  { id: 2, name: "Anish Easerwan", major: "no major", graduation_year: 2000, user_profile_url: "", biography: "", email: "anish.easwaran@tamu.edu" },
+  { id: 3, name: "Fouzul Kansul", major: "no major", graduation_year: 2000, user_profile_url: "", biography: "", email: "fouzul.k@tamu.edu" }
 ])
 
 Achievement.create!([

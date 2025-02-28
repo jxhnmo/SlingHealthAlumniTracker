@@ -6,10 +6,7 @@ class CreateUsers < ActiveRecord::Migration[7.0]
       t.integer :graduation_year, null: false
       t.string :user_profile_url
       t.string :biography
-      t.string :contact_info
       t.string :email, null: false
-      #Array for achievements
-      #Array for external links
 
       t.timestamps
     end

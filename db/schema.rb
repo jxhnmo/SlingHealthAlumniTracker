@@ -46,7 +46,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_25_221509) do
     t.integer "graduation_year", null: false
     t.string "user_profile_url"
     t.string "biography"
-    t.string "contact_info"
     t.string "email", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
