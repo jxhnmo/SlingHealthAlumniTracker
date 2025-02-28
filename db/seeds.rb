@@ -30,3 +30,28 @@ Document.create(
     }
   ]
 )
+
+User.create!([
+  { id: 1, name: "Diana Salha", major: "no major", graduation_year: 2000, user_profile_url: "", biography: "", email: "dianasalha123@tamu.edu" },
+  { id: 2, name: "Anish Easerwan", major: "no major", graduation_year: 2000, user_profile_url: "", biography: "", email: "anish.easwaran@tamu.edu" },
+  { id: 3, name: "Fouzul Kansul", major: "no major", graduation_year: 2000, user_profile_url: "", biography: "", email: "fouzul.k@tamu.edu" }
+])
+
+Achievement.create!([
+  { id: 1, name: "Aggie Pitch", description: "2nd place 2023", user_id: 1 },
+  { id: 2, name: "Ideas Challenge", description: "6th place 2023", user_id: 1 },
+  { id: 3, name: "Problems Worth Solving", description: "1st place 2024", user_id: 1 },
+  { id: 4, name: "Meloy Grants", description: "Innovator $2500", user_id: 1 },
+  { id: 5, name: "(at A&M 3k)", description: "NSF I-Corps Site x2", user_id: 1 },
+  { id: 6, name: "(at A&M 3k)", description: "NSF I-Corps Site", user_id: 2 },
+  { id: 7, name: "Meloy Grants", description: "Fellow $10k", user_id: 2 },
+  { id: 8, name: "Ideas Challenge", description: "3rd place 2023", user_id: 2 },
+  { id: 9, name: "Aggie Pitch", description: "1st place 2024", user_id: 2 }
+])
+
+ContactMethod.create!([
+  { id: 1, contact_type: "Email", info: "dianasalha123@tamu.edu", user_id: 1 },
+  { id: 2, contact_type: "Email", info: "anish.easwaran@tamu.edu", user_id: 2 },
+  { id: 3, contact_type: "Email", info: "fouzul.k@tamu.edu", user_id: 3 },
+  { id: 4, contact_type: "LinkedIn", info: "https://www.linkedin.com/", user_id: 1 }
+])
