@@ -128,17 +128,13 @@ Troubleshooting tips or FAQs
 ## Credits and Acknowledgments
 List of contributors and maintainers
 Acknowledgment of third-party resources or libraries used
-- [John Doe](https://github.com/johndoe) for the implementation of the
-sorting algorithm
+- 
 - OpenAI's GPT-3.5 for generating parts of the documentation
-- [CoolLibrary](https://github.com/coollibrary/coollibrary) for providing the
-base functionality
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE)
 file for details.
-Parts of this code were adapted from [ProjectX](https://github.com/projectx)
-by [Jane Smith](https://github.com/janesmith), used under the MIT License.
+
 ## Third-Party Libraries
 This project uses the following third-party libraries:
 - Library1 (MIT License)
