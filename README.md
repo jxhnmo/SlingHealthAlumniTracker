@@ -125,6 +125,26 @@ Screenshots or GIFs to illustrate the project in action
 ## Features
 List of key features and capabilities
 
+## Documentation
+Links to more comprehensive documentation
+API references for libraries or frameworks
+Troubleshooting tips or FAQs
+- https://www.w3schools.com/howto/howto_js_filter_table.asp
+
+## Credits and Acknowledgments
+List of contributors and maintainers
+Acknowledgment of third-party resources or libraries used
+- 
+- OpenAI's GPT-3.5 for generating parts of the documentation
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE)
+file for details.
+
+## Third-Party Libraries
+This project uses the following third-party libraries:
+- Library1 (MIT License)
+- Library2 (Apache 2.0 License)
 
 ## Contact Information
 Any questions, contact information is below.
