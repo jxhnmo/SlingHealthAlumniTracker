@@ -54,6 +54,7 @@ export default function ProfileEdit() {
             <input ref={photoInputRef}
                 type="file"
                 className="absolute right-[9999px]"
+                accept="image/png, image/jpeg"
                 disabled={isUploading}
                 onChange={
                     async (e) => {
