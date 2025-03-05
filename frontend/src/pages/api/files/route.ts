@@ -14,6 +14,7 @@ export const config = {
 export async function POST(request: NextRequest) {
     const multer = require("multer");
     try {
+        console.log("await form data");
         const data = await request.formData();
         const file: File | null = data.get("file") as unknown as File;
         console.log("file" + file);

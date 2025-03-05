@@ -61,12 +61,15 @@ export default function ProfileEdit() {
                         const file = e.target.files?.[0] as File;
                         console.log(file);
                         setIsUploading(true);
+                        console.log("FormData");
                         const data = new FormData();
                         data.set("file", file);
-                        const response = await fetch("/api/files", {
+                        console.log('Current directory: ' + process.cwd());
+                        const response = await fetch("/api/files/route.ts", {
                             method: "POST", body: data
                         });
                         const signedURL = await response.json();
+                        console.log(signedURL);
                         setImageURLs((prev) => [...prev, signedURL]);
                         setIsUploading(false);
                     }
