@@ -7,7 +7,9 @@ import { useRef } from "react";
 export default function ProfileEdit() {
     const photoInputRef = useRef<HTMLInputElement | null>(null);
     const [isUploading, setIsUploading] = useState(false);
-    const [imageURLs, setImageURLs] = useState<string[]>([]);
+    const [imageURLs, setImageURLs] = useState<string>([]);
+    const [selectedImage, setSelectedImage] = useState(null);
+    let queuedImage = [];
     return(
         <div>
             <h1>Edit your Profile</h1>
@@ -45,37 +47,39 @@ export default function ProfileEdit() {
                                 photoInputRef.current?.click();
                             }}>{isUploading ? "Uploading..." : "Upload"}</button>
                         </td>
-                        <td>{imageURLs.map((url) => (
-                            <img src={url} alt="uploaded image"></img>
-                        ))}</td>
+                        <td>
+                            <img src={imageURLs}></img>
+                        </td>
                     </tr>
                 </tbody>
             </table>
             <input ref={photoInputRef}
                 type="file"
                 className="absolute right-[9999px]"
+                id="imageInput"
                 accept="image/png, image/jpeg"
                 disabled={isUploading}
-                onChange={
-                    async (e) => {
-                        const file = e.target.files?.[0] as File;
-                        console.log(file);
-                        setIsUploading(true);
-                        console.log("FormData");
-                        const data = new FormData();
-                        data.set("file", file);
-                        console.log('Current directory: ' + process.cwd());
-                        const response = await fetch("/api/files/route.ts", {
-                            method: "POST", body: data
-                        });
-                        const signedURL = await response.json();
-                        console.log(signedURL);
-                        setImageURLs((prev) => [...prev, signedURL]);
-                        setIsUploading(false);
-                    }
-                }></input>
+                onChange={ (e) => {
+                    console.log(e.target.files);
+                    setSelectedImage(e.target.files[0]); // its not null trust me bro
+                    queuedImage.pop(); // change queued image
+                    queuedImage.push(e.target.files[0]);
+                    console.log(queuedImage);
+                    setImageURLs(URL.createObjectURL(e.target.files[0]));
+                    console.log(imageURLs);
+                }}></input>
             <button>Save Changes</button>
             <button>Cancel</button>
+            {/* <script>
+                let queuedImage = [],
+                // savedForm = document.querySelector("#savedForm"),
+                // queuedForm = document.querySelector("queuedForm");
+
+                input = document.querySelector("#imageInput");
+
+
+                
+            </script> */}
         </div>
     );
 };
