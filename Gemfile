@@ -58,3 +58,5 @@ group :development do
 end
 
 gem "rake", "~> 13.0"
+
+gem "webpacker", "~> 5.4"
