@@ -15,10 +15,11 @@ const UserIndex: React.FC = () => {
   const [users, setUsers] = useState<Users[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumnitrackertest-958bb6be1026.herokuapp.com";
-    console.log(API_BASE_URL)
+    console.log(API_BASE_URL);
     const loadUsers = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/users`);
@@ -34,6 +35,13 @@ const UserIndex: React.FC = () => {
 
     loadUsers();
   }, []);
+
+  // Filter and sort users
+  const filteredUsers = users
+    .filter((user) =>
+      user.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   if (loading) {
     return <div>Loading...</div>;
@@ -72,36 +80,43 @@ const UserIndex: React.FC = () => {
 
       <div className="w-screen h-screen px-[5%] flex flex-col justify-start items-center gap-[48px] p-10">
         <div className="mt-5 pt-[12px]">
-          <h1 className="text-center text-5xl font-bold text-white">
-            User Index
-          </h1>
+          <h1 className="text-center text-5xl font-bold text-white">Directory</h1>
         </div>
+
+        {/* Search Bar */}
+        <div>
+          <input
+            type="text"
+            placeholder="Search by name..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+
         <div className="w-[80%] h-[80%] bg-[--dark2] rounded-2xl shadow-xl p-[2%]">
           <div className="gap-[12px] h-[100%] flex flex-col overflow-y-scroll overflow-x-hidden relative">
-            {users.map((user: Users, i) => {
-              return (
-                <div
-                  key={i}
-                  className="relative w-full h-[20%] mr-[4px] border-4 border-[--grey1] rounded-[15px] cursor-pointer hover:border-[--popcol] hover:text-[--popcol] flex"
-                >
-                  <Link href={`/profiles/${user.id}`} passHref>
-                    <div className="w-full h-full flex">
-                      <div className="w-[auto] min-w-[64px] h-full flex flex-col">
-                        <img
-                          src={user.user_profile_url}
-                          alt={user.name}
-                          className="w-auto h-full rounded-l-[10px] object-cover aspect-square"
-                        />
-                      </div>
-                      <div className="w-[auto] h-full flex flex-col pl-[24px] gap-[12px] justify-center">
-                        <h2 className="text-2xl">{user.name}</h2>
-                        <h3 className="text-lg">{user.graduation_year}</h3>
-                      </div>
+            {filteredUsers.map((user: Users, i) => (
+              <div
+                key={i}
+                className="relative w-full h-[20%] mr-[4px] border-4 border-[--grey1] rounded-[15px] cursor-pointer hover:border-[--popcol] hover:text-[--popcol] flex"
+              >
+                <Link href={`/profiles/${user.id}`} passHref>
+                  <div className="w-full h-full flex">
+                    <div className="w-[auto] min-w-[64px] h-full flex flex-col">
+                      <img
+                        src={user.user_profile_url}
+                        alt={user.name}
+                        className="w-auto h-full rounded-l-[10px] object-cover aspect-square"
+                      />
                     </div>
-                  </Link>
-                </div>
-              );
-            })}
+                    <div className="w-[auto] h-full flex flex-col pl-[24px] gap-[12px] justify-center">
+                      <h2 className="text-2xl">{user.name}</h2>
+                      <h3 className="text-lg">{user.graduation_year}</h3>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))}
           </div>
         </div>
       </div>

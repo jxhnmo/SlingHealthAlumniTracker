@@ -9,12 +9,8 @@ ar_internal_metadata:
   records: 
   - - environment
     - development
-    - 2025-02-25 22:21:49.859864000 Z
-    - 2025-02-25 22:21:49.859864000 Z
-  - - schema_sha1
-    - fc1f1d4415aee5a0a3ba619b58d78d99dc99613c
-    - 2025-02-25 22:25:04.089822000 Z
-    - 2025-02-25 22:25:04.089822000 Z
+    - 2025-02-27 23:55:25.059495000 Z
+    - 2025-02-27 23:55:25.059495000 Z
 
 ---
 users:
@@ -25,139 +21,34 @@ users:
   - graduation_year
   - user_profile_url
   - biography
-  - contact_info
   - email
   - created_at
   - updated_at
   records: 
   - - 1
     - Diana Salha
-    - no major
-    - 2000
-    - ''
-    - ''
-    - ''
+    - Major
+    - 2005
+    - "/profilePix/default.jpg"
+    - test
     - dianasalha123@tamu.edu
-    - 2025-02-25 22:45:32.578606000 Z
-    - 2025-02-25 22:45:32.578606000 Z
+    - 2025-02-27 23:55:51.920942000 Z
+    - 2025-03-08 17:42:01.948394000 Z
   - - 2
     - Anish Easerwan
     - no major
     - 2000
-    - ''
-    - ''
-    - ''
+    - "/profilePix/default.jpg"
+    - this is a bio
     - anish.easwaran@tamu.edu
-    - 2025-02-25 22:45:32.640314000 Z
-    - 2025-02-25 22:45:32.640314000 Z
+    - 2025-02-27 23:55:51.941371000 Z
+    - 2025-03-08 18:04:47.378620000 Z
   - - 3
     - Fouzul Kansul
     - no major
     - 2000
-    - ''
-    - ''
-    - ''
+    - "/profilePix/default.jpg"
+    - wef
     - fouzul.k@tamu.edu
-    - 2025-02-25 22:45:32.705395000 Z
-    - 2025-02-25 22:45:32.705395000 Z
-
-
----
-achievements:
-  columns:
-  - id
-  - name
-  - description
-  - user_id
-  - created_at
-  - updated_at
-  records: 
-  - - 1
-    - Aggie Pitch
-    - 2nd place 2023
-    - 1
-    - 2025-02-25 22:45:53.174409000 Z
-    - 2025-02-25 22:45:53.174409000 Z
-  - - 2
-    - Ideas Challenge
-    - 6th place 2023
-    - 1
-    - 2025-02-25 22:45:53.218556000 Z
-    - 2025-02-25 22:45:53.218556000 Z
-  - - 3
-    - Problems Worth Solving
-    - 1st place 2024
-    - 1
-    - 2025-02-25 22:45:53.259972000 Z
-    - 2025-02-25 22:45:53.259972000 Z
-  - - 4
-    - Meloy Grants
-    - Innovator $2500
-    - 1
-    - 2025-02-25 22:45:53.305159000 Z
-    - 2025-02-25 22:45:53.305159000 Z
-  - - 5
-    - "(at A&M 3k)"
-    - NSF I-Corps Site x2
-    - 1
-    - 2025-02-25 22:45:53.338899000 Z
-    - 2025-02-25 22:45:53.338899000 Z
-  - - 6
-    - "(at A&M 3k)"
-    - NSF I-Corps Site
-    - 2
-    - 2025-02-25 22:45:53.413804000 Z
-    - 2025-02-25 22:45:53.413804000 Z
-  - - 7
-    - Meloy Grants
-    - Fellow $10k
-    - 2
-    - 2025-02-25 22:45:53.471253000 Z
-    - 2025-02-25 22:45:53.471253000 Z
-  - - 8
-    - Ideas Challenge
-    - 3rd place 2023
-    - 2
-    - 2025-02-25 22:45:53.516334000 Z
-    - 2025-02-25 22:45:53.516334000 Z
-  - - 9
-    - Aggie Pitch
-    - 1st place 2024
-    - 2
-    - 2025-02-25 22:45:53.527685000 Z
-    - 2025-02-25 22:45:53.527685000 Z
-
----
-contact_methods:
-  columns:
-  - id
-  - contact_type
-  - info
-  - user_id
-  - created_at
-  - updated_at
-  records: 
-  - - 1
-    - Email
-    - dianasalha123@tamu.edu
-    - 1
-    - 2025-02-25 22:49:49.216729000 Z
-    - 2025-02-25 22:49:49.216729000 Z
-  - - 2
-    - Email
-    - anish.easwaran@tamu.edu
-    - 2
-    - 2025-02-25 22:50:07.441494000 Z
-    - 2025-02-25 22:50:07.441494000 Z
-  - - 3
-    - Email
-    - fouzul.k@tamu.edu
-    - 3
-    - 2025-02-25 22:50:23.867107000 Z
-    - 2025-02-25 22:50:23.867107000 Z
-  - - 4
-    - LinkedIn
-    - https://www.linkedin.com/
-    - 1
-    - 2025-02-25 22:55:18.798453000 Z
-    - 2025-02-25 22:55:18.798453000 Z
+    - 2025-02-27 23:55:51.951844000 Z
+    - 2025-03-08 18:05:56.049604000 Z
