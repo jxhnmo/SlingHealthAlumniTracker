@@ -49,3 +49,8 @@ group :development do
 end
 
 gem "rake", "~> 13.0"
+gem 'devise'
+gem 'omniauth'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-rails_csrf_protection'
+

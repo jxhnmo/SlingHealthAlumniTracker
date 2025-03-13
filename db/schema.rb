@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_02_25_221509) do
+ActiveRecord::Schema[7.0].define(version: 2025_03_13_170341) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,6 +21,19 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_25_221509) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_achievements_on_user_id"
+  end
+
+  create_table "admins", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "encrypted_password"
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.string "email"
+    t.string "uid"
+    t.string "full_name"
+    t.string "avatar_url"
   end
 
   create_table "contact_methods", force: :cascade do |t|
