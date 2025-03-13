@@ -12,6 +12,7 @@
 
 ActiveRecord::Schema[7.0].define(version: 2025_03_13_170341) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "achievements", force: :cascade do |t|
@@ -59,6 +60,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_13_170341) do
     t.integer "graduation_year", null: false
     t.string "user_profile_url"
     t.string "biography"
+    t.string "contact_info"
     t.string "email", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
