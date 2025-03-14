@@ -39,8 +39,8 @@ const EditProfile: React.FC = () => {
                 const contactMethodsData = await contactMethodsResponse.json();
 
                 setUser(userData);
-                setAchievements(achievementsData.filter(ach => ach.user_id === Number(id)));
-                setContactMethods(contactMethodsData.filter(contact => contact.user_id === Number(id)));
+                setAchievements(achievementsData.filter((ach: { user_id: number }) => ach.user_id === Number(id)));
+                setContactMethods(contactMethodsData.filter((contact: { user_id: number }) => contact.user_id === Number(id)));
                 setLoading(false);
             } catch (err) {
                 console.error("Error fetching data:", err);
