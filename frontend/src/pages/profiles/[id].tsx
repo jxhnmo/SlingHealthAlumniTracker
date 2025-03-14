@@ -9,7 +9,7 @@ interface User {
   major: string;
   graduation_year: number;
   user_profile_url: string;
-  bio?: string;
+  biography?: string;
 }
 
 interface Achievement {
@@ -98,6 +98,18 @@ const Profile: React.FC = () => {
         <h1 className="text-center text-5xl font-bold text-white">Profile</h1>
 
         <div className="w-[80%] h-[80%] bg-[--dark2] rounded-2xl shadow-xl p-[2%]">
+          <div className="w-full flex justify-end p-2">
+            {user && (
+              <Link
+                href={`/profiles/edit/${id}`}
+                className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
+                           hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
+              >
+                Edit Profile
+              </Link>
+            )}
+          </div>
+
           <div className="w-full h-full flex flex-col items-center gap-5">
             <img
               src={user.user_profile_url}
@@ -111,7 +123,7 @@ const Profile: React.FC = () => {
               {/* Bio Section */}
               <div className="w-1/3 bg-[--grey1] rounded-xl p-5 text-white">
                 <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">Bio</h3>
-                <p>{user.bio || "No bio available."}</p>
+                <p>{user.biography || "No bio available."}</p>
               </div>
 
               {/* Achievements Section */}
