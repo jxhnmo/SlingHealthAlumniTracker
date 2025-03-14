@@ -1,32 +1,21 @@
-development:
+default: &default
   adapter: postgresql
   encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: 5
   timeout: 5000
-  database: alumni_dev_development
-  username: postgres
-  password: password
-  host: postgres
-  port: 5432  # Change this from 5433 to 5432
+  host: <%= ENV['DB_HOST'] %> # Optional, if you're using a separate DB host value.
+
+development:
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %> # Use 'url' for the full DB connection string.
 
 test:
-  adapter: postgresql
-  encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  timeout: 5000
-  database: alumni_tracker_test
-  username: <%= ENV['POSTGRES_USER'] || 'postgres' %>
-  password: <%= ENV['POSTGRES_PASSWORD'] || 'password' %>
-  host: postgres
-  port: 5432
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %> # Use 'url' for the full DB connection string.
 
 production:
-  adapter: postgresql
-  encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %> # This will get the Heroku DB URL from ENV.
+  pool: 5
   timeout: 5000
-  database: alumni_tracker_production
-  username: <%= ENV['POSTGRES_USER'] || 'postgres' %>
-  password: <%= ENV['POSTGRES_PASSWORD'] || 'password' %>
-  host: <%= ENV['POSTGRES_HOST'] || 'localhost' %>
-  port: 5432
+  sslmode: require
