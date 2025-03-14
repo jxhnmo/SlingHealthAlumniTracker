@@ -3,19 +3,19 @@ default: &default
   encoding: unicode
   pool: 5
   timeout: 5000
-  host: <%= ENV['DB_HOST'] %> # Optional, if you're using a separate DB host value.
+  host: <%= ENV['DB_HOST'] %> 
 
 development:
   <<: *default
-  url: <%= ENV['DATABASE_URL'] %> # Use 'url' for the full DB connection string.
+  url: <%= ENV['DATABASE_URL'] %> 
 
 test:
   <<: *default
-  url: <%= ENV['DATABASE_URL'] %> # Use 'url' for the full DB connection string.
+  url: <%= ENV['DATABASE_URL'] %> 
 
 production:
   <<: *default
-  url: <%= ENV['DATABASE_URL'] %> # This will get the Heroku DB URL from ENV.
+  url: <%= ENV['DATABASE_URL'] %> 
   pool: 5
   timeout: 5000
   sslmode: require
