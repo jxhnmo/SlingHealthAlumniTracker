@@ -1,6 +1,4 @@
-/** @type {import('jest').Config} */
-
-const config = {
+module.exports = {
   collectCoverage: true,
   collectCoverageFrom: ["src/**/*.{js,jsx,tsx}"],
   coverageDirectory: "coverage",
@@ -10,5 +8,3 @@ const config = {
     "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
   },
 };
-
-module.exports = config;
