@@ -133,7 +133,8 @@ const Profile: React.FC = () => {
                     accept="image/png, image/jpeg"
                     disabled={isUploading}
                     onChange={ (e) => {
-                        console.log(e.target.files);
+                        // console.log(e.target.files);
+                        var file = e.target.files[0];
                         setSelectedImage(e.target.files[0]); // its not null trust me bro
                         queuedImage.pop(); // change queued image
                         queuedImage.push(e.target.files[0]);
