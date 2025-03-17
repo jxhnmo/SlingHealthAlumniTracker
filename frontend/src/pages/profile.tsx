@@ -29,6 +29,12 @@ const Profile: React.FC = () => {
   const [isEditing, setIsEditing] = React.useState(false);
   const [editedUser, setEditedUser] = React.useState<User>(user);
 
+  const [isUploading, setIsUploading] = React.useState(false); // user uploading image
+  const photoInputRef = React.useRef<HTMLInputElement | null>(null); // HTML element for the image input
+  const [imageURLs, setImageURLs] = React.useState<string>(user.user_profile_url); // user profile URL by default
+  const [selectedImage, setSelectedImage] = React.useState(null);
+  let queuedImage = []; // queue with only 1 element
+
   const handleEdit = () => {
     setIsEditing(true);
   };
@@ -43,7 +49,7 @@ const Profile: React.FC = () => {
   const handleSave = async () => {
     // u guys set this up
     setIsEditing(false);
-    try {
+    try { // TODO: save image
       const response = await fetch(`/api/profile/${user.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -73,7 +79,7 @@ const Profile: React.FC = () => {
           { name: "Index", path: "/userIndex" },
           { name: "Profile", path: "/profile" },
           { name: "Login", path: "/login" },
-          { name: "Edit", path: "/profileEdit" },
+          // { name: "Edit", path: "/profileEdit" },
         ].map((item) => (
           <Link
             key={item.name}
@@ -107,12 +113,44 @@ const Profile: React.FC = () => {
 
           <div className="w-full h-full flex flex-col items-center gap-5">
             <div className="h-[250px] w-[250px]">
-              {/* profile picture */}
-              <img
-                src={user.user_profile_url}
-                alt={user.name}
-                className="w-auto h-full rounded-[10px] object-cover aspect-square"
-              />
+              {isEditing ? ( // editing for pfp
+                <div>
+                  <img
+                    src={imageURLs}
+                    alt={user.name}
+                    className="w-auto h-full rounded-[10px] object-cover aspect-square"
+                  />
+                  <button
+                    disabled={isUploading}
+                    onClick={() => {
+                      photoInputRef.current?.click();
+                    }
+                  }>{isUploading ? "Uploading..." : "Upload"}</button>
+                  <input ref={photoInputRef}
+                    type="file"
+                    className="absolute right-[9999px]"
+                    id="imageInput"
+                    accept="image/png, image/jpeg"
+                    disabled={isUploading}
+                    onChange={ (e) => {
+                        console.log(e.target.files);
+                        setSelectedImage(e.target.files[0]); // its not null trust me bro
+                        queuedImage.pop(); // change queued image
+                        queuedImage.push(e.target.files[0]);
+                        console.log(queuedImage);
+                        setImageURLs(URL.createObjectURL(e.target.files[0]));
+                        console.log(imageURLs);
+                    }}>
+                  </input>
+                </div>
+              ) : ( // not editing for pfp
+                <img
+                  src={user.user_profile_url}
+                  alt={user.name}
+                  className="w-auto h-full rounded-[10px] object-cover aspect-square"
+                />
+              )}
+              
             </div>
             {/* name, major, year */}
             {isEditing ? (
