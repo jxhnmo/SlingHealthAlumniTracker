@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "engines": {
     "node": "18.x",
+    "npm": "10.x",
     "yarn": "1.22.x"
   },
   "scripts": {
@@ -17,6 +18,8 @@
     "turbolinks": "^5.2.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.10",
+    "@babel/preset-env": "^7.26.9",
     "@types/node": "^22.13.10",
     "@types/react": "^19.0.10"
   }
