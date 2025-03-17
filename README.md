@@ -1,5 +1,5 @@
 ## Sling Health Alumni Tracker
-Alumni Tracker for TAMU Sling Health
+Alumni Tracker for TAMU Sling Health.
 
 
 ## Table of Contents
