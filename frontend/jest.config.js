@@ -6,6 +6,9 @@ const config = {
   coverageDirectory: "coverage",
   testEnvironment: "jsdom",
   setupFilesAfterEnv: ["./jest.setup.js"],
+  transform: {
+    "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
+  },
 };
 
 module.exports = config;
