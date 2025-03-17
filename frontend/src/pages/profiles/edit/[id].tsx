@@ -12,6 +12,7 @@ const EditProfile: React.FC = () => {
         graduation_year: "",
         user_profile_url: "",
         biography: "",
+        contact_info: "",
     });
     const [achievements, setAchievements] = useState([]);
     const [contactMethods, setContactMethods] = useState([]);
@@ -58,7 +59,14 @@ const EditProfile: React.FC = () => {
     };
 
     const handleSave = async () => {
-        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumnitrackertest-958bb6be1026.herokuapp.com";
+        if (!user.name || !user.email || !user.major || !user.graduation_year) {
+            setError("Please fill in all required fields.");
+            return;
+        }
+
+        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
+        console.log("User data being sent:", JSON.stringify(user));
+        console.log("User data being sent:", JSON.stringify(user));
         try {
             const response = await fetch(`${API_BASE_URL}/users/${id}`, {
                 method: "PUT",
