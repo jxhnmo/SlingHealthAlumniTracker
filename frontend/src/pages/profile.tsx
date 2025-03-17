@@ -30,6 +30,7 @@ const Profile: React.FC = () => {
   const [editedUser, setEditedUser] = React.useState<User>(user);
 
   const [isUploading, setIsUploading] = React.useState(false); // user uploading image
+  const [tooLarge, setTooLarge] = React.useState(false); // if image is too large
   const photoInputRef = React.useRef<HTMLInputElement | null>(null); // HTML element for the image input
   const [imageURLs, setImageURLs] = React.useState<string>(user.user_profile_url); // user profile URL by default
   const [selectedImage, setSelectedImage] = React.useState(null);
@@ -38,6 +39,13 @@ const Profile: React.FC = () => {
   const handleEdit = () => {
     setIsEditing(true);
   };
+
+  // const checkImageDims = (file: File) => {
+  //   var reader = new FileReader();
+  //   reader.onload = function(e) {
+
+  //   }
+  // };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -125,6 +133,7 @@ const Profile: React.FC = () => {
                       photoInputRef.current?.click();
                     }
                   }>{isUploading ? "Uploading..." : "Upload"}</button>
+                  <p>{tooLarge ? "Image is too large! Must be under 5MB" : "Images must be under 5MB"}</p>
                   <input ref={photoInputRef}
                     type="file"
                     className="absolute right-[9999px]"
@@ -133,13 +142,25 @@ const Profile: React.FC = () => {
                     disabled={isUploading}
                     onChange={ (e) => {
                         // console.log(e.target.files);
-                        var file = e.target.files[0];
-                        setSelectedImage(e.target.files[0]); // its not null trust me bro
+                        var fileOld = e.target.files[0];
+                        if(fileOld == null) {
+                          return;
+                        }
+                        if(fileOld.size > 500000) {
+                          setTooLarge(true);
+                          return;
+                        }
+                        setTooLarge(false);
+                        var oldName = fileOld.name;
+                        var name = user.id + "." + oldName.substring(oldName.lastIndexOf('.')+1, oldName.length)/* || oldName*/; // CHANGE TO CORRECT TYPE
+                        const renamedFile = new File([fileOld], name);
+                        setSelectedImage(renamedFile); // its not null trust me bro
                         queuedImage.pop(); // change queued image
-                        queuedImage.push(e.target.files[0]);
+                        queuedImage.push(renamedFile);
                         console.log(queuedImage);
-                        setImageURLs(URL.createObjectURL(e.target.files[0]));
+                        setImageURLs(URL.createObjectURL(renamedFile));
                         console.log(imageURLs);
+                        console.log(renamedFile);
                     }}>
                   </input>
                 </div>
