@@ -56,7 +56,13 @@ group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 end
+gem 'dotenv-rails', groups: [:development, :test]
 
 gem "rake", "~> 13.0"
+gem 'devise'
+gem 'omniauth'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-rails_csrf_protection'
+
 
 gem "webpacker", "~> 5.4"
