@@ -64,14 +64,15 @@ const EditProfile: React.FC = () => {
             return;
         }
 
+        const updatedUser = { ...user, contact_info: "" };
+        
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
-        console.log("User data being sent:", JSON.stringify(user));
-        console.log("User data being sent:", JSON.stringify(user));
+        console.log("User data being sent:", JSON.stringify(updatedUser));
         try {
             const response = await fetch(`${API_BASE_URL}/users/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(user),
+                body: JSON.stringify(updatedUser),
             });
 
             if (!response.ok) throw new Error("Failed to update profile");
