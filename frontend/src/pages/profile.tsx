@@ -95,6 +95,7 @@ const Profile: React.FC = () => {
           <div className="w-full flex justify-end p-2">
             {loggedInId === user.id && (
               <button
+                data-testid="editButton"
                 onClick={isEditing ? handleSave : handleEdit}
                 className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
                            hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
@@ -119,6 +120,7 @@ const Profile: React.FC = () => {
                 <input
                   type="text"
                   name="name"
+                  data-testid="name"
                   value={editedUser.name}
                   onChange={handleChange}
                   placeholder="Name"
@@ -129,6 +131,7 @@ const Profile: React.FC = () => {
                   <input
                     type="text"
                     name="major"
+                    data-testid="major"
                     value={editedUser.major}
                     onChange={handleChange}
                     placeholder="Major"
@@ -137,6 +140,7 @@ const Profile: React.FC = () => {
                   <input
                     type="text"
                     name="year"
+                    data-testid="year"
                     value={editedUser.year}
                     onChange={handleChange}
                     placeholder="Year"
@@ -164,6 +168,7 @@ const Profile: React.FC = () => {
                 {isEditing ? (
                   <textarea
                     name="bio"
+                    data-testid="bio"
                     value={editedUser.bio}
                     onChange={handleChange}
                     placeholder="Bio"
@@ -181,6 +186,7 @@ const Profile: React.FC = () => {
                 {isEditing ? (
                   <textarea
                     name="achievements"
+                    data-testid="achievements"
                     value={editedUser.achievements}
                     onChange={handleChange}
                     placeholder="Achievements"
@@ -198,6 +204,7 @@ const Profile: React.FC = () => {
                 {isEditing ? (
                   <textarea
                     name="contact"
+                    data-testid="contact"
                     value={editedUser.contact}
                     onChange={handleChange}
                     placeholder="Contact Information"
