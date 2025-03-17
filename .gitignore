@@ -45,4 +45,4 @@ public/*
 #packagelock
 package-lock.json
 
-node_modulesnode_modules/
+node_modules/
