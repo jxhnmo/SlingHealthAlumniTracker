@@ -36,7 +36,7 @@ const Profile: React.FC = () => {
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumnitrackertest-958bb6be1026.herokuapp.com";
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
     if (!id) return;
 
     const fetchData = async () => {
