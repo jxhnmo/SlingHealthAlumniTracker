@@ -83,14 +83,14 @@ const EditProfile: React.FC = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(updatedUser),
             });
-            console.log("response");
-            const responseText = await response.text();
-            console.log("text: " + responseText);
-            console.log("Stringify: " + JSON.stringify(updatedUser));
+            console.log("response::::::::");
+            // const responseText = await response.text();
+            // console.log("text: " + responseText);
+            // console.log("Stringify: " + JSON.stringify(updatedUser));
             const errorData = await response.json();
-            // console.log(response.status);
-            // console.log(response.statusText);
-            // console.log(errorData.message);
+            console.log(response.status);
+            console.log(response.statusText);
+            console.log(errorData.message);
             if (!response.ok) throw new Error(`${response.status} - ${response.statusText}: ${errorData.message || 'No error message provided'}`);
 
             router.push(`/profiles/${id}`);
