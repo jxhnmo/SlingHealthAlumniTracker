@@ -79,12 +79,13 @@ const EditProfile: React.FC = () => {
                 body: JSON.stringify(updatedUser),
             });
 
-            if (!response.ok) throw new Error("Failed to update profile");
+            if (!response.ok) throw new Error(`${response.status} - ${response.statusText}: ${errorData.message || 'No error message provided'}`);
 
             router.push(`/profiles/${id}`);
         } catch (err) {
             console.error("Error updating profile:", err);
-            setError("Failed to update profile");
+            setError(err.message);
+            console.error("HTTP Request Error:", err);
         }
     };
 
