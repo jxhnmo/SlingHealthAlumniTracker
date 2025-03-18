@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { json } from "stream/consumers";
 
 const EditProfile: React.FC = () => {
     const router = useRouter();
@@ -83,11 +84,12 @@ const EditProfile: React.FC = () => {
             });
             console.log("response");
             const responseText = await response.text();
-            console.log(responseText);
+            console.log("text: " + responseText);
+            console.log("Stringify: " + JSON.stringify(updatedUser));
             const errorData = await response.json();
-            console.log(response.status);
-            console.log(response.statusText);
-            console.log(errorData.message);
+            // console.log(response.status);
+            // console.log(response.statusText);
+            // console.log(errorData.message);
             if (!response.ok) throw new Error(`${response.status} - ${response.statusText}: ${errorData.message || 'No error message provided'}`);
 
             router.push(`/profiles/${id}`);
