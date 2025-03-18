@@ -82,6 +82,9 @@ const EditProfile: React.FC = () => {
                 body: JSON.stringify(updatedUser),
             });
             const errorData = await response.json();
+            console.log(response.status);
+            console.log(response.statusText);
+            console.log(errorData.message);
             if (!response.ok) throw new Error(`${response.status} - ${response.statusText}: ${errorData.message || 'No error message provided'}`);
 
             router.push(`/profiles/${id}`);
