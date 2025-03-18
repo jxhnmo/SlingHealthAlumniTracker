@@ -65,6 +65,10 @@ const EditProfile: React.FC = () => {
         setUser((prevUser) => ({ ...prevUser, [name]: value }));
     };
 
+    const handleImageUpdate = () => {
+        setUser((prevUser) => ({ ...prevUser, "user_profile_url": imageURLs}))
+    }
+
     const handleSave = async () => {
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumnitrackertest-958bb6be1026.herokuapp.com";
         try {
@@ -135,6 +139,7 @@ const EditProfile: React.FC = () => {
                         queuedImage.push(renamedFile);
                         console.log(queuedImage);
                         setImageURLs(URL.createObjectURL(renamedFile));
+                        handleImageUpdate(); // update into user object
                         console.log(imageURLs);
                         console.log(renamedFile);
                     }}>
