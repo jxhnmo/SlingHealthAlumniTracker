@@ -70,9 +70,16 @@ const EditProfile: React.FC = () => {
             graduation_year: Number(user.graduation_year),
         };
 
+        const updatedUser = {
+            ...user,
+            contact_info: "test",
+            graduation_year: Number(user.graduation_year),
+        };
+
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
         console.log("User data being sent:", JSON.stringify(updatedUser));
 
+        console.log("User data being sent:", JSON.stringify(updatedUser));
         try {
             const response = await fetch(`${API_BASE_URL}/users/${id}`, {
                 method: "PUT",
