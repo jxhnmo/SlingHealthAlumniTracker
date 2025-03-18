@@ -81,6 +81,9 @@ const EditProfile: React.FC = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(updatedUser),
             });
+
+            const responseText = await response.text();
+            console.log(responseText);
             const errorData = await response.json();
             console.log(response.status);
             console.log(response.statusText);
