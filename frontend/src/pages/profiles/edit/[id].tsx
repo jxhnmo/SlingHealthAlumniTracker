@@ -78,6 +78,7 @@ const EditProfile: React.FC = () => {
 
         try {
             const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+                mode: "cors",
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(updatedUser),
