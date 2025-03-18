@@ -64,11 +64,7 @@ const EditProfile: React.FC = () => {
             return;
         }
 
-        const updatedUser = {
-            ...user,
-            contact_info: "test",
-            graduation_year: Number(user.graduation_year),
-        };
+
 
         const updatedUser = {
             ...user,
@@ -79,21 +75,23 @@ const EditProfile: React.FC = () => {
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
         console.log("User data being sent:", JSON.stringify(updatedUser));
 
-        console.log("User data being sent:", JSON.stringify(updatedUser));
         try {
             const response = await fetch(`${API_BASE_URL}/users/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(updatedUser),
             });
-
+            const errorData = await response.json();
             if (!response.ok) throw new Error(`${response.status} - ${response.statusText}: ${errorData.message || 'No error message provided'}`);
 
             router.push(`/profiles/${id}`);
         } catch (err) {
             console.error("Error updating profile:", err);
-            setError(err.message);
-            console.error("HTTP Request Error:", err);
+            if (err instanceof Error) {
+                setError(err.message || "Failed to update profile");
+            } else {
+                setError("An unknown error occurred.");
+            }
         }
     };
 
