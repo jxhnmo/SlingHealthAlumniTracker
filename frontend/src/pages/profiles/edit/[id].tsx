@@ -7,6 +7,7 @@ const EditProfile: React.FC = () => {
     const router = useRouter();
     const { id } = router.query;
     const [user, setUser] = useState({
+        id: "",
         name: "",
         email: "",
         major: "",
@@ -25,7 +26,7 @@ const EditProfile: React.FC = () => {
     const photoInputRef = React.useRef<HTMLInputElement | null>(null); // HTML element for the image input
     const [imageURLs, setImageURLs] = React.useState<string>(user.user_profile_url); // user profile URL by default
     const [selectedImage, setSelectedImage] = React.useState(null);
-    let queuedImage = []; // queue with only 1 element
+    let queuedImage: File[] = []; // queue with only 1 element
 
 
     useEffect(() => {
@@ -152,26 +153,30 @@ const EditProfile: React.FC = () => {
                     disabled={isUploading}
                     onChange={ (e) => {
                         // console.log(e.target.files);
-                        var fileOld = e.target.files[0];
-                        if(fileOld == null) {
-                          return;
+                        try {
+                            if(!e.target.files) return;
+                            var fileOld = e.target.files[0];
+                            if(fileOld.size > 500000) {
+                                setTooLarge(true);
+                                return;
+                            }
+                            setTooLarge(false);
+                            var oldName = fileOld.name;
+                            var name = user.id + "." + oldName.substring(oldName.lastIndexOf('.')+1, oldName.length)/* || oldName*/; // CHANGE TO CORRECT TYPE
+                            const renamedFile = new File([fileOld], name);
+                            // setSelectedImage(renamedFile); // its not null trust me bro
+                            queuedImage.pop(); // change queued image
+                            queuedImage.push(renamedFile);
+                            console.log(queuedImage);
+                            setImageURLs(URL.createObjectURL(renamedFile));
+                            handleImageUpdate(); // update into user object
+                            console.log(imageURLs);
+                            console.log(renamedFile);
                         }
-                        if(fileOld.size > 500000) {
-                          setTooLarge(true);
-                          return;
+                        catch(e) {
+                            console.error(e);
                         }
-                        setTooLarge(false);
-                        var oldName = fileOld.name;
-                        var name = user.id + "." + oldName.substring(oldName.lastIndexOf('.')+1, oldName.length)/* || oldName*/; // CHANGE TO CORRECT TYPE
-                        const renamedFile = new File([fileOld], name);
-                        setSelectedImage(renamedFile); // its not null trust me bro
-                        queuedImage.pop(); // change queued image
-                        queuedImage.push(renamedFile);
-                        console.log(queuedImage);
-                        setImageURLs(URL.createObjectURL(renamedFile));
-                        handleImageUpdate(); // update into user object
-                        console.log(imageURLs);
-                        console.log(renamedFile);
+                        
                     }}>
                 </input>
 
