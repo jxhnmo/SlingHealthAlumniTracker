@@ -1,6 +1,7 @@
 // import React from "react";
 // import Link from "next/link";
 
+
 // interface User {
 //   id: string; // unique user id
 //   user_profile_url: string;
@@ -12,8 +13,10 @@
 //   contact?: string;
 // }
 
+
 // const Profile: React.FC = () => {
 //   const loggedInId = "jomgos"; // me
+
 
 //   const user: User = {
 //     id: "jomgos", // profile owner's id
@@ -26,8 +29,10 @@
 //     contact: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
 //   };
 
+
 //   const [isEditing, setIsEditing] = React.useState(false);
 //   const [editedUser, setEditedUser] = React.useState<User>(user);
+
 
 //   const [isUploading, setIsUploading] = React.useState(false); // user uploading image
 //   const [tooLarge, setTooLarge] = React.useState(false); // if image is too large
@@ -35,6 +40,7 @@
 //   const [imageURLs, setImageURLs] = React.useState<string>(user.user_profile_url); // user profile URL by default
 //   const [selectedImage, setSelectedImage] = React.useState(null);
 //   let queuedImage = []; // queue with only 1 element
+
 
 //   const handleEdit = () => {
 //     setIsEditing(true);
@@ -118,6 +124,7 @@
 //             )}
 //           </div>
 
+
 //           <div className="w-full h-full flex flex-col items-center gap-5">
 //             <div className="h-[250px] w-[250px]">
 //               {isEditing ? ( // editing for pfp
@@ -171,6 +178,7 @@
 //                   className="w-auto h-full rounded-[10px] object-cover aspect-square"
 //                 />
 //               )}
+
               
 //             </div>
 //             {/* name, major, year */}

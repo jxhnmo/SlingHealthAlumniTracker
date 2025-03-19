@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { json } from "stream/consumers";
 
 const EditProfile: React.FC = () => {
     const router = useRouter();
@@ -12,6 +13,7 @@ const EditProfile: React.FC = () => {
         graduation_year: "",
         user_profile_url: "",
         biography: "",
+        contact_info: "",
     });
     const [achievements, setAchievements] = useState([]);
     const [contactMethods, setContactMethods] = useState([]);
@@ -70,22 +72,50 @@ const EditProfile: React.FC = () => {
     }
 
     const handleSave = async () => {
-        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumnitrackertest-958bb6be1026.herokuapp.com";
+        if (!user.name || !user.email || !user.major || !user.graduation_year) {
+            setError("Please fill in all required fields.");
+            return;
+        }
+
+
+
+        const updatedUser = {
+            ...user,
+            contact_info: "test",
+            graduation_year: Number(user.graduation_year),
+        };
+
+        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
+        console.log("User data being sent:", JSON.stringify(updatedUser));
+
         try {
             const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+                mode: "cors",
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(user),
+                body: JSON.stringify(updatedUser),
             });
-
-            if (!response.ok) throw new Error("Failed to update profile");
+            console.log("response::::::::");
+            // const responseText = await response.text();
+            // console.log("text: " + responseText);
+            // console.log("Stringify: " + JSON.stringify(updatedUser));
+            const errorData = await response.json();
+            console.log(response.status);
+            console.log(response.statusText);
+            console.log(errorData.message);
+            if (!response.ok) throw new Error(`${response.status} - ${response.statusText}: ${errorData.message || 'No error message provided'}`);
 
             router.push(`/profiles/${id}`);
         } catch (err) {
             console.error("Error updating profile:", err);
-            setError("Failed to update profile");
+            if (err instanceof Error) {
+                setError(err.message || "Failed to update profile");
+            } else {
+                setError("An unknown error occurred.");
+            }
         }
     };
+
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
