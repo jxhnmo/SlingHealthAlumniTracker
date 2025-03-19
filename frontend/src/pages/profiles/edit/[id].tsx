@@ -7,6 +7,7 @@ const EditProfile: React.FC = () => {
     const router = useRouter();
     const { id } = router.query;
     const [user, setUser] = useState({
+        id: "",
         name: "",
         email: "",
         major: "",
@@ -161,7 +162,7 @@ const EditProfile: React.FC = () => {
                             }
                             setTooLarge(false);
                             var oldName = fileOld.name;
-                            var name = user.email + "." + oldName.substring(oldName.lastIndexOf('.')+1, oldName.length)/* || oldName*/; // CHANGE TO CORRECT TYPE
+                            var name = user.id + "." + oldName.substring(oldName.lastIndexOf('.')+1, oldName.length)/* || oldName*/; // CHANGE TO CORRECT TYPE
                             const renamedFile = new File([fileOld], name);
                             // setSelectedImage(renamedFile); // its not null trust me bro
                             queuedImage.pop(); // change queued image
