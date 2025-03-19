@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import Profile from "../pages/profile";
+import Profile from "../pages/profiles/[id]";
 
 describe("Profile Tests", () => {
   const testUser = {
