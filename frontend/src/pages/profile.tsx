@@ -5,7 +5,7 @@ interface User {
   id: string; // unique user id
   user_profile_url: string;
   name: string;
-  year: string;
+  year: number;
   major: string;
   bio?: string;
   achievements?: string;
@@ -19,7 +19,7 @@ const Profile: React.FC = () => {
     id: "jomgos", // profile owner's id
     user_profile_url: "/profilePix/default.jpg",
     name: "Sabrina Carpet",
-    year: "2024",
+    year: 2024,
     major: "Computer Science",
     bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     achievements: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
@@ -33,8 +33,8 @@ const Profile: React.FC = () => {
   const [tooLarge, setTooLarge] = React.useState(false); // if image is too large
   const photoInputRef = React.useRef<HTMLInputElement | null>(null); // HTML element for the image input
   const [imageURLs, setImageURLs] = React.useState<string>(user.user_profile_url); // user profile URL by default
-  const [selectedImage, setSelectedImage] = React.useState(null);
-  let queuedImage = []; // queue with only 1 element
+  const [selectedImage, setSelectedImage] = React.useState<File | null>(null);
+  let queuedImage: (File | string)[] = []; // queue with only 1 element
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -142,6 +142,7 @@ const Profile: React.FC = () => {
                     disabled={isUploading}
                     onChange={ (e) => {
                         // console.log(e.target.files);
+                        if (!e.target.files) return;
                         var fileOld = e.target.files[0];
                         if(fileOld == null) {
                           return;
