@@ -28,7 +28,7 @@ const UserIndex: React.FC = () => {
       process.env.NEXT_PUBLIC_API_BASE_URL ||
       "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
 
-    console.log(API_BASE_URL)
+    console.log(API_BASE_URL);
     const loadUsersAndAchievements = async () => {
       try {
         const [usersResponse, achievementsResponse] = await Promise.all([
@@ -58,8 +58,12 @@ const UserIndex: React.FC = () => {
 
   const filteredUsers = users
     .filter((user) => {
-      const userMatches = user.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const userAchievements = achievements.filter((ach) => ach.user_id === user.id);
+      const userMatches = user.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+      const userAchievements = achievements.filter(
+        (ach) => ach.user_id === user.id
+      );
       const achievementMatches = userAchievements.some((ach) =>
         ach.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
@@ -93,7 +97,9 @@ const UserIndex: React.FC = () => {
 
       <div className="w-screen h-screen px-[5%] flex flex-col justify-start items-center gap-[48px] p-10">
         <div className="mt-5 pt-[12px]">
-          <h1 className="text-center text-5xl font-bold text-white">Directory</h1>
+          <h1 className="text-center text-5xl font-bold text-white">
+            Directory
+          </h1>
         </div>
 
         <div>
@@ -108,11 +114,8 @@ const UserIndex: React.FC = () => {
         <div className="w-[80%] h-[80%] bg-[--dark2] rounded-2xl shadow-xl p-[2%]">
           <div className="gap-[12px] h-[100%] flex flex-col overflow-y-scroll overflow-x-hidden relative">
             {filteredUsers.map((user) => (
-              <div
-                key={user.id}
-                className="relative w-full h-[20%] border-4 border-[--grey1] rounded-[15px] cursor-pointer hover:border-[--popcol] hover:text-[--popcol] flex"
-              >
-                <Link href={`/profiles/${user.id}`} passHref>
+              <Link key={user.id} href={`/profiles/${user.id}`} passHref>
+                <div className="relative w-full h-[20%] border-4 border-[--grey1] rounded-[15px] cursor-pointer hover:border-[--popcol] hover:text-[--popcol] flex">
                   <div className="w-full h-full flex">
                     <div className="w-[auto] min-w-[64px] h-full flex flex-col">
                       <img
@@ -126,8 +129,8 @@ const UserIndex: React.FC = () => {
                       <h3 className="text-lg">{user.graduation_year}</h3>
                     </div>
                   </div>
-                </Link>
-              </div>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
