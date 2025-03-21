@@ -8,9 +8,9 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     origins 'https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com'
-    # origins 'https://localhost:3000'
+    # origins 'http://localhost:3000'
     resource '*',
              headers: :any,
-             methods: %i[get post put patch delete options head]
+             methods: %i[get post put patch delete options head], credentials: true
   end
 end
