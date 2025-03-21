@@ -8,9 +8,13 @@ const IndexPage: React.FC = () => {
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      const user = JSON.parse(storedUser);
-      setIsAuthenticated(true);
-      setUserName(user.fullName || "User"); // Default fallback
+      try {
+        const user = JSON.parse(storedUser); // Parse JSON string
+        setIsAuthenticated(true);
+        setUserName(user.full_name);
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+      }
     }
   }, []);
 
@@ -79,11 +83,12 @@ const IndexPage: React.FC = () => {
           Alumni Tracker
         </h1>
 
-        <div className="mt-20">
+        <div className="mt-12">
           {isAuthenticated ? (
-            <p className="text-center text-5xl font-semibold text-[--white]">
-              Welcome, {userName}
-            </p>
+            <div className="text-center">
+              <p className="text-5xl font-semibold text-white">Welcome,</p>
+              <p className="text-5xl font-semibold text-[--popcol]">{userName}</p>
+            </div>
           ) : (
             <Link
               href="/login"
