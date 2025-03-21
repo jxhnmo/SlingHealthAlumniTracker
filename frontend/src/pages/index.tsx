@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 
 const IndexPage: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    setIsAuthenticated(!!user);
+  }, []);
+
   return (
     <div className="relative w-screen h-screen flex justify-center items-center">
       {/* background img */}
@@ -18,20 +25,34 @@ const IndexPage: React.FC = () => {
 
       {/* nav */}
       <nav className="absolute top-5 right-10 flex gap-3 z-20">
-        {[
-          { name: "Home", path: "/" },
-          { name: "Index", path: "/userIndex" },
-          { name: "Profile", path: "/profile" },
-          { name: "Login", path: "/login" },
-        ].map((item) => (
-          <Link
-            key={item.name}
-            href={item.path}
-            className="px-4 py-2 text-[--popcol] bg-[--dark2] rounded-md shadow-lg transition hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
-          >
-            {item.name}
-          </Link>
-        ))}
+        {isAuthenticated && (
+          <>
+            <Link
+              href="/"
+              className="px-4 py-2 text-[--popcol] bg-[--dark2] rounded-md shadow-lg transition hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
+            >
+              Home
+            </Link>
+            <Link
+              href="/userIndex"
+              className="px-4 py-2 text-[--popcol] bg-[--dark2] rounded-md shadow-lg transition hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
+            >
+              Index
+            </Link>
+            <Link
+              href="/profile"
+              className="px-4 py-2 text-[--popcol] bg-[--dark2] rounded-md shadow-lg transition hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
+            >
+              Profile
+            </Link>
+          </>
+        )}
+        <Link
+          href="/login"
+          className="px-4 py-2 text-[--popcol] bg-[--dark2] rounded-md shadow-lg transition hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
+        >
+          Login
+        </Link>
       </nav>
 
       <div className="relative w-screen h-screen px-[5%] flex flex-col justify-center items-center gap-[48px] p-10 z-10">
