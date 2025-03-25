@@ -18,12 +18,6 @@ const IndexPage: React.FC = () => {
     }
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    setIsAuthenticated(false);
-    setUserName("");
-  };
-
   return (
     <div className="relative w-screen h-screen flex justify-center items-center">
       {/* Background Image */}
@@ -60,12 +54,12 @@ const IndexPage: React.FC = () => {
             >
               Profile
             </Link>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 text-red-500 bg-[--dark2] rounded-md shadow-lg transition hover:bg-red-500 hover:text-white hover:scale-105"
+            <Link
+              href="/logout"
+              className="px-4 py-2 text-[--popcol] bg-[--dark2] rounded-md shadow-lg transition hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
             >
               Logout
-            </button>
+            </Link>
           </>
         ) : (
           <Link
