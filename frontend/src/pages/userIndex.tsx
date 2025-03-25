@@ -27,7 +27,9 @@ const UserIndex: React.FC = () => {
     const API_BASE_URL =
       process.env.NEXT_PUBLIC_API_BASE_URL ||
       "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
-
+    // const API_BASE_URL =
+    //   process.env.NEXT_PUBLIC_API_BASE_URL ||
+    //   "http://localhost:4000";
     console.log(API_BASE_URL)
     const loadUsersAndAchievements = async () => {
       try {
@@ -78,7 +80,7 @@ const UserIndex: React.FC = () => {
           { name: "Home", path: "/" },
           { name: "Index", path: "/userIndex" },
           { name: "Profile", path: "/profile" },
-          { name: "Login", path: "/login" },
+          { name: "Logout", path: "/logout" },
         ].map((item) => (
           <Link
             key={item.name}
