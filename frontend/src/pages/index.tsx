@@ -4,6 +4,7 @@ import Link from "next/link";
 const IndexPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userName, setUserName] = useState("");
+  const [userID, setUserID] = useState("");
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -12,6 +13,7 @@ const IndexPage: React.FC = () => {
         const user = JSON.parse(storedUser); // Parse JSON string
         setIsAuthenticated(true);
         setUserName(user.full_name);
+        setUserID(user.id);
       } catch (error) {
         console.error("Error parsing user data:", error);
       }
@@ -49,10 +51,16 @@ const IndexPage: React.FC = () => {
               Index
             </Link>
             <Link
-              href="/profile"
+              href={`/profiles/${userID}`}
               className="px-4 py-2 text-[--popcol] bg-[--dark2] rounded-md shadow-lg transition hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
             >
               Profile
+            </Link>
+            <Link
+              href={`profiles/teams/${userID}`}
+              className="px-4 py-2 text-[--popcol] bg-[--dark2] rounded-md shadow-lg transition hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
+            >
+              Teams
             </Link>
             <Link
               href="/logout"
@@ -81,7 +89,9 @@ const IndexPage: React.FC = () => {
           {isAuthenticated ? (
             <div className="text-center">
               <p className="text-5xl font-semibold text-white">Welcome,</p>
-              <p className="text-5xl font-semibold text-[--popcol]">{userName}</p>
+              <p className="text-5xl font-semibold text-[--popcol]">
+                {userName}
+              </p>
             </div>
           ) : (
             <Link
