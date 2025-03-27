@@ -7,12 +7,8 @@ const Logout: React.FC = () => {
   useEffect(() => {
     // Clear the user session or authentication data from localStorage
     localStorage.removeItem("user");
-
-    // Optionally, clear cookies or tokens if using them
-    // document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-
-    // Redirect to localhost:3000 after logout
-    router.push("http://https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com");
+    router.push("https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com");
+    // router.push("http://localhost:3000");
   }, [router]);
 
   return (

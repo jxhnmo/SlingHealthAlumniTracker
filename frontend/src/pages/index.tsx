@@ -8,17 +8,15 @@ const IndexPage: React.FC = () => {
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      const user = JSON.parse(storedUser);
-      setIsAuthenticated(true);
-      setUserName(user.fullName || "User"); // Default fallback
+      try {
+        const user = JSON.parse(storedUser); // Parse JSON string
+        setIsAuthenticated(true);
+        setUserName(user.full_name);
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+      }
     }
   }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    setIsAuthenticated(false);
-    setUserName("");
-  };
 
   return (
     <div className="relative w-screen h-screen flex justify-center items-center">
@@ -56,12 +54,12 @@ const IndexPage: React.FC = () => {
             >
               Profile
             </Link>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 text-red-500 bg-[--dark2] rounded-md shadow-lg transition hover:bg-red-500 hover:text-white hover:scale-105"
+            <Link
+              href="/logout"
+              className="px-4 py-2 text-[--popcol] bg-[--dark2] rounded-md shadow-lg transition hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
             >
               Logout
-            </button>
+            </Link>
           </>
         ) : (
           <Link
@@ -79,11 +77,12 @@ const IndexPage: React.FC = () => {
           Alumni Tracker
         </h1>
 
-        <div className="mt-20">
+        <div className="mt-12">
           {isAuthenticated ? (
-            <p className="text-center text-5xl font-semibold text-[--white]">
-              Welcome, {userName}
-            </p>
+            <div className="text-center">
+              <p className="text-5xl font-semibold text-white">Welcome,</p>
+              <p className="text-5xl font-semibold text-[--popcol]">{userName}</p>
+            </div>
           ) : (
             <Link
               href="/login"

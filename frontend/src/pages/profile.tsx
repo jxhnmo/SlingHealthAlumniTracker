@@ -89,7 +89,7 @@ const Profile: React.FC = () => {
           { name: "Home", path: "/" },
           { name: "Index", path: "/userIndex" },
           { name: "Profile", path: "/profile" },
-          { name: "Login", path: "/login" },
+          { name: "Logout", path: "/logout" },
           // { name: "Edit", path: "/profileEdit" },
         ].map((item) => (
           <Link
