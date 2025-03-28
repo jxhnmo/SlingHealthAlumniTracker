@@ -9,8 +9,8 @@ class Admins::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       create_user_if_not_exists(from_google_params)
       token = Admin.generate_jwt(admin)
       Rails.logger.debug("Generated Token: #{token}")
-      redirect_to "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com/login?user=#{Base64.urlsafe_encode64(from_google_params.to_json)}&token=#{token}" and return
-      # redirect_to "http://localhost:4000/login?user=#{Base64.urlsafe_encode64(from_google_params.to_json)}&token=#{token}" and return
+      # redirect_to "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com/login?user=#{Base64.urlsafe_encode64(from_google_params.to_json)}&token=#{token}" and return
+      redirect_to "http://localhost:4000/login?user=#{Base64.urlsafe_encode64(from_google_params.to_json)}&token=#{token}" and return
     else
       flash[:alert] = t 'devise.omniauth_callbacks.failure', kind: 'Google', reason: "#{auth.info.email} is not authorized."
       redirect_to new_admin_session_path and return
