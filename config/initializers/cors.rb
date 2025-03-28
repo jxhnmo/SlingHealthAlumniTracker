@@ -10,7 +10,8 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     origins 'http://localhost:4000', 'https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com' 
     resource '*',
              headers: :any,          
-             methods: %i[get post put delete options head],
+             methods: %i[get post put delete options head]
   end
 end
+
 
