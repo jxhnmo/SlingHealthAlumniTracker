@@ -31,6 +31,7 @@ class Admins::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       email: auth.info.email,
       full_name: auth.info.name,
       avatar_url: auth.info.image
+      token: auth.credentials.token
     }
   end
 
