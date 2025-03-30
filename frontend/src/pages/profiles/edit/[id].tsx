@@ -29,10 +29,10 @@ const EditProfile: React.FC = () => {
     let queuedImage: File[] = []; // queue with only 1 element
 
 
-    useEffect(() => {
-        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
     // useEffect(() => {
-    //     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
+    //     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
+    useEffect(() => {
+        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
         if (!id) return;
 
         const fetchData = async () => {

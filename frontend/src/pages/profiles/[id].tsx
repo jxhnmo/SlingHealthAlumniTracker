@@ -35,31 +35,42 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
-  useEffect(() => {
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
   // useEffect(() => {
-  //   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
+  //   const API_BASE_URL =
+  //     process.env.NEXT_PUBLIC_API_BASE_URL ||
+  //     "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
+    useEffect(() => {
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
     if (!id) return;
 
     const fetchData = async () => {
       try {
-        const [userResponse, achievementsResponse, contactMethodsResponse] = await Promise.all([
-          fetch(`${API_BASE_URL}/users/${id}`),
-          fetch(`${API_BASE_URL}/achievements`),
-          fetch(`${API_BASE_URL}/contact_methods`)
-        ]);
+        const [userResponse, achievementsResponse, contactMethodsResponse] =
+          await Promise.all([
+            fetch(`${API_BASE_URL}/users/${id}`),
+            fetch(`${API_BASE_URL}/achievements`),
+            fetch(`${API_BASE_URL}/contact_methods`),
+          ]);
 
         if (!userResponse.ok) throw new Error("User not found");
-        if (!achievementsResponse.ok) throw new Error("Failed to fetch achievements");
-        if (!contactMethodsResponse.ok) throw new Error("Failed to fetch contact methods");
+        if (!achievementsResponse.ok)
+          throw new Error("Failed to fetch achievements");
+        if (!contactMethodsResponse.ok)
+          throw new Error("Failed to fetch contact methods");
 
         const userData = await userResponse.json();
-        const achievementsData: Achievement[] = await achievementsResponse.json();
-        const contactMethodsData: ContactMethod[] = await contactMethodsResponse.json();
+        const achievementsData: Achievement[] =
+          await achievementsResponse.json();
+        const contactMethodsData: ContactMethod[] =
+          await contactMethodsResponse.json();
 
         setUser(userData);
-        setAchievements(achievementsData.filter(ach => ach.user_id === Number(id)));
-        setContactMethods(contactMethodsData.filter(contact => contact.user_id === Number(id)));
+        setAchievements(
+          achievementsData.filter((ach) => ach.user_id === Number(id))
+        );
+        setContactMethods(
+          contactMethodsData.filter((contact) => contact.user_id === Number(id))
+        );
         setLoading(false);
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -81,7 +92,7 @@ const Profile: React.FC = () => {
       <nav className="absolute top-5 right-10 flex gap-3 z-20">
         {[
           { name: "Home", path: "/" },
-          { name: "Index", path: "/userIndex" },
+          { name: "Directory", path: "/userIndex" },
           { name: "Profile", path: "/profile" },
           { name: "Login", path: "/login" },
         ].map((item) => (
@@ -119,18 +130,24 @@ const Profile: React.FC = () => {
               className="h-[250px] w-[250px] rounded-[10px] object-cover"
             />
             <h1 className="text-3xl font-bold text-[--popcol]">{user.name}</h1>
-            <h2 className="text-xl font-bold text-white">{user.major} Class of {user.graduation_year}</h2>
+            <h2 className="text-xl font-bold text-white">
+              {user.major} Class of {user.graduation_year}
+            </h2>
 
             <div className="w-full flex justify-between gap-5 mt-5">
               {/* Bio Section */}
               <div className="w-1/3 bg-[--grey1] rounded-xl p-5 text-white">
-                <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">Bio</h3>
+                <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">
+                  Bio
+                </h3>
                 <p>{user.biography || "No bio available."}</p>
               </div>
 
               {/* Achievements Section */}
               <div className="w-1/3 bg-[--grey1] rounded-xl p-5 text-white">
-                <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">Achievements</h3>
+                <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">
+                  Achievements
+                </h3>
                 {achievements.length > 0 ? (
                   <ul className="list-disc pl-5">
                     {achievements.map((ach) => (
@@ -146,7 +163,9 @@ const Profile: React.FC = () => {
 
               {/* Contact Section */}
               <div className="w-1/3 bg-[--grey1] rounded-xl p-5 text-white">
-                <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">Contact</h3>
+                <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">
+                  Contact
+                </h3>
                 {contactMethods.length > 0 ? (
                   <ul>
                     {contactMethods.map((contact) => (

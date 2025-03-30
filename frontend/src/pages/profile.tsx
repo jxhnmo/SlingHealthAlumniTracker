@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 
-
 interface User {
   id: string; // unique user id
   user_profile_url: string;
@@ -13,10 +12,8 @@ interface User {
   contact?: string;
 }
 
-
 const Profile: React.FC = () => {
   const loggedInId = "jomgos"; // me
-
 
   const user: User = {
     id: "jomgos", // profile owner's id
@@ -29,19 +26,17 @@ const Profile: React.FC = () => {
     contact: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   };
 
-
   const [isEditing, setIsEditing] = React.useState(false);
   const [editedUser, setEditedUser] = React.useState<User>(user);
-
 
   const [isUploading, setIsUploading] = React.useState(false); // user uploading image
   const [tooLarge, setTooLarge] = React.useState(false); // if image is too large
   const photoInputRef = React.useRef<HTMLInputElement | null>(null); // HTML element for the image input
-  const [imageURLs, setImageURLs] = React.useState<string>(user.user_profile_url); // user profile URL by default
+  const [imageURLs, setImageURLs] = React.useState<string>(
+    user.user_profile_url
+  ); // user profile URL by default
   const [selectedImage, setSelectedImage] = React.useState(null);
   let queuedImage: File[] = []; // queue with only 1 element
-
-
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -64,7 +59,8 @@ const Profile: React.FC = () => {
   const handleSave = async () => {
     // u guys set this up
     setIsEditing(false);
-    try { // TODO: save image
+    try {
+      // TODO: save image
       const response = await fetch(`/api/profile/${user.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -125,7 +121,6 @@ const Profile: React.FC = () => {
             )}
           </div>
 
-
           <div className="w-full h-full flex flex-col items-center gap-5">
             <div className="h-[250px] w-[250px]">
               {isEditing ? ( // editing for pfp
@@ -139,49 +134,61 @@ const Profile: React.FC = () => {
                     disabled={isUploading}
                     onClick={() => {
                       photoInputRef.current?.click();
-                    }
-                  }>{isUploading ? "Uploading..." : "Upload"}</button>
-                  <p>{tooLarge ? "Image is too large! Must be under 5MB" : "Images must be under 5MB"}</p>
-                  <input ref={photoInputRef}
+                    }}
+                  >
+                    {isUploading ? "Uploading..." : "Upload"}
+                  </button>
+                  <p>
+                    {tooLarge
+                      ? "Image is too large! Must be under 5MB"
+                      : "Images must be under 5MB"}
+                  </p>
+                  <input
+                    ref={photoInputRef}
                     type="file"
                     className="absolute right-[9999px]"
                     id="imageInput"
                     accept="image/png, image/jpeg"
                     disabled={isUploading}
-                    onChange={ (e) => {
-                      if(!e.target.files) return;
-                        // console.log(e.target.files);
-                        var fileOld = e.target.files[0];
-                        if(fileOld == null) {
-                          return;
-                        }
-                        if(fileOld.size > 500000) {
-                          setTooLarge(true);
-                          return;
-                        }
-                        setTooLarge(false);
-                        var oldName = fileOld.name;
-                        var name = user.id + "." + oldName.substring(oldName.lastIndexOf('.')+1, oldName.length)/* || oldName*/; // CHANGE TO CORRECT TYPE
-                        const renamedFile = new File([fileOld], name);
-                        // setSelectedImage(renamedFile); // its not null trust me bro
-                        queuedImage.pop(); // change queued image
-                        queuedImage.push(renamedFile);
-                        console.log(queuedImage);
-                        setImageURLs(URL.createObjectURL(renamedFile));
-                        console.log(imageURLs);
-                        console.log(renamedFile);
-                    }}>
-                  </input>
+                    onChange={(e) => {
+                      if (!e.target.files) return;
+                      // console.log(e.target.files);
+                      var fileOld = e.target.files[0];
+                      if (fileOld == null) {
+                        return;
+                      }
+                      if (fileOld.size > 500000) {
+                        setTooLarge(true);
+                        return;
+                      }
+                      setTooLarge(false);
+                      var oldName = fileOld.name;
+                      var name =
+                        user.id +
+                        "." +
+                        oldName.substring(
+                          oldName.lastIndexOf(".") + 1,
+                          oldName.length
+                        ); /* || oldName*/ // CHANGE TO CORRECT TYPE
+                      const renamedFile = new File([fileOld], name);
+                      // setSelectedImage(renamedFile); // its not null trust me bro
+                      queuedImage.pop(); // change queued image
+                      queuedImage.push(renamedFile);
+                      console.log(queuedImage);
+                      setImageURLs(URL.createObjectURL(renamedFile));
+                      console.log(imageURLs);
+                      console.log(renamedFile);
+                    }}
+                  ></input>
                 </div>
-              ) : ( // not editing for pfp
+              ) : (
+                // not editing for pfp
                 <img
                   src={user.user_profile_url}
                   alt={user.name}
                   className="w-auto h-full rounded-[10px] object-cover aspect-square"
                 />
               )}
-
-              
             </div>
             {/* name, major, year */}
             {isEditing ? (

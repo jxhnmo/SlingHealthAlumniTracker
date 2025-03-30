@@ -46,7 +46,7 @@ const IndexPage: React.FC = () => {
               href="/userIndex"
               className="px-4 py-2 text-[--popcol] bg-[--dark2] rounded-md shadow-lg transition hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
             >
-              Index
+              Directory
             </Link>
             <Link
               href="/profile"
@@ -81,7 +81,9 @@ const IndexPage: React.FC = () => {
           {isAuthenticated ? (
             <div className="text-center">
               <p className="text-5xl font-semibold text-white">Welcome,</p>
-              <p className="text-5xl font-semibold text-[--popcol]">{userName}</p>
+              <p className="text-5xl font-semibold text-[--popcol]">
+                {userName}
+              </p>
             </div>
           ) : (
             <Link

@@ -7,26 +7,24 @@ const Login = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const encodedUserData = urlParams.get("user");
-
-    if (encodedUserData) {
+    const token = urlParams.get("token"); 
+  
+    if (encodedUserData && token) {
       try {
-        // Decode the base64-encoded user data
         const userData = JSON.parse(atob(encodedUserData));
-
-        // Store user data in localStorage
+  
         localStorage.setItem("user", JSON.stringify(userData));
-
-        // Redirect to the homepage after storing the user data
+        localStorage.setItem("auth_token", token);
         router.replace("/");
       } catch (error) {
         console.error("Error parsing user data:", error);
-        router.replace("/login"); 
+        router.replace("/login");
       }
     } else {
-      window.location.href = "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com/admins/auth/google_oauth2";
-      // window.location.href = "http://localhost:4000/admins/auth/google_oauth2";
+      window.location.href = "http://localhost:4000/admins/auth/google_oauth2";
+      // window.location.href = "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com/admins/auth/google_oauth2";
     }
-  }, [router]);
+  }, [router]);  
 
   return <div>Redirecting to Google OAuth...</div>;
 };
