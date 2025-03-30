@@ -24,12 +24,9 @@ const UserIndex: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
-    // const API_BASE_URL =
-    //   process.env.NEXT_PUBLIC_API_BASE_URL ||
-    //   "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
     const API_BASE_URL =
       process.env.NEXT_PUBLIC_API_BASE_URL ||
-      "http://localhost:4000";
+      "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
     const loadUsersAndAchievements = async () => {
       try {
         const [usersResponse, achievementsResponse] = await Promise.all([
