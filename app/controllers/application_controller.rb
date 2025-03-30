@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_action :authenticate_admin!
+  protect_from_forgery with: :null_session, if: -> { request.format.json? }
+  before_action :authenticate_admin!, unless: -> { request.format.json? }
 end
 

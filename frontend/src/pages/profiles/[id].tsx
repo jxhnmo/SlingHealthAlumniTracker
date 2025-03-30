@@ -35,12 +35,10 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
-  // useEffect(() => {
-  //   const API_BASE_URL =
-  //     process.env.NEXT_PUBLIC_API_BASE_URL ||
-  //     "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
-    useEffect(() => {
-      const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
+  useEffect(() => {
+    const API_BASE_URL =
+      process.env.NEXT_PUBLIC_API_BASE_URL ||
+      "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
     if (!id) return;
 
     const fetchData = async () => {
