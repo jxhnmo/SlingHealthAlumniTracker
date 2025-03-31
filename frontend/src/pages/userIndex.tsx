@@ -30,7 +30,7 @@ const UserIndex: React.FC = () => {
     // const API_BASE_URL =
     //   process.env.NEXT_PUBLIC_API_BASE_URL ||
     //   "http://localhost:4000";
-    console.log(API_BASE_URL)
+    console.log(API_BASE_URL);
     const loadUsersAndAchievements = async () => {
       try {
         const [usersResponse, achievementsResponse] = await Promise.all([
@@ -60,8 +60,12 @@ const UserIndex: React.FC = () => {
 
   const filteredUsers = users
     .filter((user) => {
-      const userMatches = user.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const userAchievements = achievements.filter((ach) => ach.user_id === user.id);
+      const userMatches = user.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+      const userAchievements = achievements.filter(
+        (ach) => ach.user_id === user.id
+      );
       const achievementMatches = userAchievements.some((ach) =>
         ach.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
@@ -80,6 +84,7 @@ const UserIndex: React.FC = () => {
           { name: "Home", path: "/" },
           { name: "Index", path: "/userIndex" },
           { name: "Profile", path: "/profile" },
+          //{ name: "Teams", path: `/profiles/teams/${id}` },
           { name: "Logout", path: "/logout" },
         ].map((item) => (
           <Link
@@ -95,7 +100,9 @@ const UserIndex: React.FC = () => {
 
       <div className="w-screen h-screen px-[5%] flex flex-col justify-start items-center gap-[48px] p-10">
         <div className="mt-5 pt-[12px]">
-          <h1 className="text-center text-5xl font-bold text-white">Directory</h1>
+          <h1 className="text-center text-5xl font-bold text-white">
+            Directory
+          </h1>
         </div>
 
         <div>

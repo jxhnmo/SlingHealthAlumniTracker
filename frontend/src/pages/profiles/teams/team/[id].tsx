@@ -19,11 +19,11 @@ interface Team {
   members: User[];
 }
 
-const Teams: React.FC = () => {
+const Team: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
   const [user, setUser] = useState<User | null>(null);
-  const [teams, setTeams] = useState<Team[]>([]);
+  const [team, setTeam] = useState<Team | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
@@ -57,33 +57,16 @@ const Teams: React.FC = () => {
 
         <div className="w-[80%] h-[80%] bg-[--dark2] rounded-2xl shadow-xl p-[2%]">
           <div className="w-full h-full flex flex-col items-center gap-5">
-            {teams.length > 0 ? (
-              <ul className="list-disc pl-5">
-                {teams.map((team) => (
-                  <li key={team.id}>
-                    <Link href={`/profiles/teams/team/${team.id}`}>
-                      <h2>{team.name}</h2>
-                      <p>{team.description}</p>
+            <ul className="list-disc pl-5">
+              {team &&
+                team.members.map((member) => (
+                  <li key={member.id}>
+                    <Link href={`/profiles/${member.id}`}>
+                      <img src={member.user_profile_url} title={member.name} />
                     </Link>
-
-                    <ul>
-                      {team.members.map((member) => (
-                        <li key={member.id}>
-                          <Link href={`/profiles/${member.id}`}>
-                            <img
-                              src={member.user_profile_url}
-                              title={member.name}
-                            />
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
                   </li>
                 ))}
-              </ul>
-            ) : (
-              <p>No teams found</p>
-            )}
+            </ul>
           </div>
         </div>
       </div>
@@ -91,4 +74,4 @@ const Teams: React.FC = () => {
   );
 };
 
-export default Teams;
+export default Team;
