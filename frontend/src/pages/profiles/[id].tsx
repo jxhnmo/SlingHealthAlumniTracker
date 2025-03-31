@@ -26,12 +26,20 @@ interface ContactMethod {
   user_id: number;
 }
 
+interface Team {
+  id: number;
+  name: string;
+  description: string;
+  members: User[];
+}
+
 const Profile: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
   const [user, setUser] = useState<User | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [contactMethods, setContactMethods] = useState<ContactMethod[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
