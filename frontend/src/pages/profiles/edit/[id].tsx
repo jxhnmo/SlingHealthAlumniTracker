@@ -25,7 +25,8 @@ const EditProfile: React.FC = () => {
     const [tooLarge, setTooLarge] = React.useState(false); // if image is too large
     const photoInputRef = React.useRef<HTMLInputElement | null>(null); // HTML element for the image input
     const [imageURLs, setImageURLs] = React.useState<string>(user.user_profile_url); // user profile URL by default
-    const [selectedImage, setSelectedImage] = React.useState(null);
+    const [selectedImage, setSelectedImage] = React.useState<File | null>(null);
+    const [imageChanged, setImageChanged] = React.useState(false);
     let queuedImage: File[] = []; // queue with only 1 element
 
 
@@ -78,6 +79,16 @@ const EditProfile: React.FC = () => {
             return;
         }
 
+        // save image to pinata
+        if(selectedImage != null) {
+            const data = new FormData();
+            data.set("file", selectedImage);
+            const uploadRequest = await fetch("api/files", {
+                method: "POST",
+                body: data,
+            });
+        }
+        
 
 
         const updatedUser = {
@@ -122,39 +133,39 @@ const EditProfile: React.FC = () => {
     if (error) return <div>{error}</div>;
 
     /////////////////////////////
-    const express = require("express");
-    const multer = require("multer");
-    const fs = require("fs");
-    const path = require("path");
-    const util = require("util");
-    const unlinkFile = util.promisify(fs.unlink);
+    // const express = require("express");
+    // const multer = require("multer");
+    // const fs = require("fs");
+    // const path = require("path");
+    // const util = require("util");
+    // const unlinkFile = util.promisify(fs.unlink);
 
-    const port = 3000;
+    // const port = 3000;
 
-    const app = express();
+    // const app = express();
 
-    app.use(express.json());
-    app.use(express.urlencoded({extended: false}));
+    // app.use(express.json());
+    // app.use(express.urlencoded({extended: false}));
 
-    // const storage = multer.diskStorage({
-    //     destination: function(req, file, cb) {
-    //         cb(null, "./public/profilePix/")
-    //     },
-    //     filename: function(req, file, cb) {
-    //         cb(null, "filename");
-    //     }
+    // // const storage = multer.diskStorage({
+    // //     destination: function(req, file, cb) {
+    // //         cb(null, "./public/profilePix/")
+    // //     },
+    // //     filename: function(req, file, cb) {
+    // //         cb(null, "filename");
+    // //     }
+    // // });
+
+    // const upload = multer({
+    //     dest: "./public/profilePix/"
     // });
 
-    const upload = multer({
-        dest: "./public/profilePix/"
-    });
-
-    app.post('/upload', upload.single('myfile'), (req:any, res:any) => {
-        const fileName = req.file.filename;
-        const fileSize = req.file.size;
+    // app.post('/upload', upload.single('myfile'), (req:any, res:any) => {
+    //     const fileName = req.file.filename;
+    //     const fileSize = req.file.size;
     
-        res.send(`File uploaded successfully! ` + `Name: ${fileName}, Size: ${fileSize}`);
-    });
+    //     res.send(`File uploaded successfully! ` + `Name: ${fileName}, Size: ${fileSize}`);
+    // });
 
     /////////////////////////////
 
@@ -188,7 +199,7 @@ const EditProfile: React.FC = () => {
                     id="imageInput"
                     accept="image/png, image/jpeg"
                     disabled={isUploading}
-                    onChange={ (e) => {
+                    onChange={ async (e) => {
                         // console.log(e.target.files);
                         try {
                             if(!e.target.files) return;
@@ -198,10 +209,14 @@ const EditProfile: React.FC = () => {
                                 return;
                             }
                             setTooLarge(false);
+
+                            setIsUploading(true);
+
                             var oldName = fileOld.name;
                             var name = user.id + "." + oldName.substring(oldName.lastIndexOf('.')+1, oldName.length)/* || oldName*/; // CHANGE TO CORRECT TYPE
                             const renamedFile = new File([fileOld], name);
-                            // setSelectedImage(renamedFile); // its not null trust me bro
+                            setSelectedImage(renamedFile); // its not null trust me bro
+
                             queuedImage.pop(); // change queued image
                             queuedImage.push(renamedFile);
                             console.log(queuedImage);
@@ -209,6 +224,7 @@ const EditProfile: React.FC = () => {
                             handleImageUpdate(); // update into user object
                             console.log(imageURLs);
                             console.log(renamedFile);
+                            setImageChanged(true);
                         }
                         catch(e) {
                             console.error(e);
