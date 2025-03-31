@@ -83,13 +83,13 @@ const EditProfile: React.FC = () => {
         if(selectedImage != null) {
             const data = new FormData();
             data.set("file", selectedImage);
-            const uploadRequest = await fetch("api/files", {
+            const imageResponse = await fetch("api/files", {
                 method: "POST",
                 body: data,
             });
+            const signedURL = await imageResponse.json();
+            setUser((prevUser) => ({ ...prevUser, ["user_profile_url"]: signedURL }));
         }
-        
-
 
         const updatedUser = {
             ...user,
@@ -225,6 +225,7 @@ const EditProfile: React.FC = () => {
                             console.log(imageURLs);
                             console.log(renamedFile);
                             setImageChanged(true);
+                            setIsUploading(false);
                         }
                         catch(e) {
                             console.error(e);

@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
         const data = await request.formData();
         const file: File | null = data.get("file") as unknown as File;
         const uploadData = await pinata.upload.public.file(file);
+        const url = await pinata.gateways.public.convert(uploadData.cid);
         console.log("file" + file);
         // const storage = multer.diskStorage({
         //     destination: (request:any, file:any, cb:any) => {
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
         // });
         // const uploadData = //Upload data to wherever
         // const url = await ... // get image URL
-        return NextResponse.json("", { status: 200 });
+        return NextResponse.json(url, { status: 200 });
     }
     catch(e) {
         console.log(e);
