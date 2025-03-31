@@ -121,6 +121,43 @@ const EditProfile: React.FC = () => {
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
 
+    /////////////////////////////
+    const express = require("express");
+    const multer = require("multer");
+    const fs = require("fs");
+    const path = require("path");
+    const util = require("util");
+    const unlinkFile = util.promisify(fs.unlink);
+
+    const port = 3000;
+
+    const app = express();
+
+    app.use(express.json());
+    app.use(express.urlencoded({extended: false}));
+
+    // const storage = multer.diskStorage({
+    //     destination: function(req, file, cb) {
+    //         cb(null, "./public/profilePix/")
+    //     },
+    //     filename: function(req, file, cb) {
+    //         cb(null, "filename");
+    //     }
+    // });
+
+    const upload = multer({
+        dest: "./public/profilePix/"
+    });
+
+    app.post('/upload', upload.single('myfile'), (req:any, res:any) => {
+        const fileName = req.file.filename;
+        const fileSize = req.file.size;
+    
+        res.send(`File uploaded successfully! ` + `Name: ${fileName}, Size: ${fileSize}`);
+    });
+
+    /////////////////////////////
+
     return (
         <div className="w-screen h-screen px-[5%] flex flex-col justify-start items-center gap-[48px] p-10">
             <h1 className="text-center text-5xl font-bold text-white">Edit Profile</h1>
