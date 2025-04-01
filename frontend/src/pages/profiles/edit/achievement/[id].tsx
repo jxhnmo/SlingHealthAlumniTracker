@@ -19,6 +19,7 @@ const EditAchievements: React.FC = () => {
 
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
 
+
     useEffect(() => {
         if (!id) return;
         const fetchAchievements = async () => {
