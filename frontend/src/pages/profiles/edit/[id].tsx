@@ -24,7 +24,8 @@ const EditProfile: React.FC = () => {
     const [tooLarge, setTooLarge] = React.useState(false); // if image is too large
     const photoInputRef = React.useRef<HTMLInputElement | null>(null); // HTML element for the image input
     const [imageURLs, setImageURLs] = React.useState<string>(user.user_profile_url); // user profile URL by default
-    const [selectedImage, setSelectedImage] = React.useState(null);
+    const [selectedImage, setSelectedImage] = React.useState<File | null>(null);
+    const [imageChanged, setImageChanged] = React.useState(false);
     let queuedImage: File[] = []; // queue with only 1 element
 
     useEffect(() => {
@@ -76,6 +77,18 @@ const EditProfile: React.FC = () => {
             return;
         }
 
+        // save image to pinata
+        if(selectedImage != null) {
+            const data = new FormData();
+            data.set("file", selectedImage);
+            const imageResponse = await fetch("api/files", {
+                method: "POST",
+                body: data,
+            });
+            const signedURL = await imageResponse.json();
+            setUser((prevUser) => ({ ...prevUser, ["user_profile_url"]: signedURL }));
+        }
+      
         const updatedUser = {
             ...user,
             contact_info: "test",
@@ -118,6 +131,43 @@ const EditProfile: React.FC = () => {
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
 
+    /////////////////////////////
+    // const express = require("express");
+    // const multer = require("multer");
+    // const fs = require("fs");
+    // const path = require("path");
+    // const util = require("util");
+    // const unlinkFile = util.promisify(fs.unlink);
+
+    // const port = 3000;
+
+    // const app = express();
+
+    // app.use(express.json());
+    // app.use(express.urlencoded({extended: false}));
+
+    // // const storage = multer.diskStorage({
+    // //     destination: function(req, file, cb) {
+    // //         cb(null, "./public/profilePix/")
+    // //     },
+    // //     filename: function(req, file, cb) {
+    // //         cb(null, "filename");
+    // //     }
+    // // });
+
+    // const upload = multer({
+    //     dest: "./public/profilePix/"
+    // });
+
+    // app.post('/upload', upload.single('myfile'), (req:any, res:any) => {
+    //     const fileName = req.file.filename;
+    //     const fileSize = req.file.size;
+    
+    //     res.send(`File uploaded successfully! ` + `Name: ${fileName}, Size: ${fileSize}`);
+    // });
+
+    /////////////////////////////
+
     return (
         <div className="w-screen h-screen px-[5%] flex flex-col justify-start items-center gap-[48px] p-10">
             <h1 className="text-center text-5xl font-bold text-white">Edit Profile</h1>
@@ -141,7 +191,9 @@ const EditProfile: React.FC = () => {
                     id="imageInput"
                     accept="image/png, image/jpeg"
                     disabled={isUploading}
-                    onChange={ (e) => {
+
+                    onChange={ async (e) => {
+                        // console.log(e.target.files);
                         try {
                             if(!e.target.files) return;
                             var fileOld = e.target.files[0];
@@ -150,13 +202,23 @@ const EditProfile: React.FC = () => {
                                 return;
                             }
                             setTooLarge(false);
+
+                            setIsUploading(true);
+
                             var oldName = fileOld.name;
                             var name = user.id + "." + oldName.substring(oldName.lastIndexOf('.')+1, oldName.length);
                             const renamedFile = new File([fileOld], name);
-                            queuedImage.pop();
+
+                            setSelectedImage(renamedFile); // its not null trust me bro
+
+                            queuedImage.pop(); // change queued image
                             queuedImage.push(renamedFile);
                             setImageURLs(URL.createObjectURL(renamedFile));
-                            handleImageUpdate(); 
+                            handleImageUpdate(); // update into user object
+                            console.log(imageURLs);
+                            console.log(renamedFile);
+                            setImageChanged(true);
+                            setIsUploading(false);
                         }
                         catch(e) {
                             console.error(e);
