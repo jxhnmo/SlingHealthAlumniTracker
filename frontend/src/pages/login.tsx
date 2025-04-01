@@ -15,7 +15,8 @@ const Login = () => {
   
         localStorage.setItem("user", JSON.stringify(userData));
         localStorage.setItem("auth_token", token);
-        router.replace("/");
+        console.log("Redirecting 222222to:", `/profiles/${userData.id}`);
+        router.replace(`/profiles/${userData.id}`);
       } catch (error) {
         console.error("Error parsing user data:", error);
         router.replace("/login");
