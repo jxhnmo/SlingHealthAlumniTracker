@@ -67,7 +67,7 @@ const EditProfile: React.FC = () => {
     };
 
     const handleImageUpdate = () => {
-        setUser((prevUser) => ({ ...prevUser, "user_profile_url": imageURLs}))
+        setUser((prevUser) => ({ ...prevUser, "user_profile_url": imageURLs }))
     }
 
     const handleSave = async () => {
@@ -90,12 +90,12 @@ const EditProfile: React.FC = () => {
             const response = await fetch(`${API_BASE_URL}/users/${id}`, {
                 mode: "cors",
                 method: "PUT",
-                headers: { 
+                headers: {
                     "Content-Type": "application/json",
                     "X-CSRF-Token": csrfToken || "",
                     "Authorization": `Bearer ${localStorage.getItem("authToken")}`
-                 },
-                 credentials: "include",
+                },
+                credentials: "include",
                 body: JSON.stringify(updatedUser),
             });
             const errorData = await response.json();

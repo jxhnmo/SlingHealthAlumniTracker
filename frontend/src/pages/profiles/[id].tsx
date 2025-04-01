@@ -34,6 +34,7 @@ const Profile: React.FC = () => {
   const [contactMethods, setContactMethods] = useState<ContactMethod[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
     const API_BASE_URL =
@@ -70,6 +71,18 @@ const Profile: React.FC = () => {
           contactMethodsData.filter((contact) => contact.user_id === Number(id))
         );
         setLoading(false);
+
+        const localUser = localStorage.getItem("user");
+        if (localUser) {
+          const parseUser = JSON.parse(localUser);
+          const userEmail = parseUser.email;
+          if (userEmail) {
+            const storedUser = await fetch(`${API_BASE_URL}/users`);
+            const storedUserData = await storedUser.json();
+            const matchedUser = storedUserData.find((u: User) => u.email === userEmail);
+            if (matchedUser) setUserId(matchedUser.id);
+          }
+        }
       } catch (err) {
         console.error("Error fetching data:", err);
         setError("Failed to load profile");
@@ -91,7 +104,7 @@ const Profile: React.FC = () => {
         {[
           { name: "Home", path: "/" },
           { name: "Directory", path: "/userIndex" },
-          { name: "Profile", path: "/profile" },
+          { name: "Profile", path: userId ? `/profiles/${userId}` : "#" },
           { name: "Login", path: "/login" },
         ].map((item) => (
           <Link
