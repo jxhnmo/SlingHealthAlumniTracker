@@ -64,3 +64,4 @@ gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-rails_csrf_protection'
 
+gem 'concurrent-ruby', '1.3.4'
