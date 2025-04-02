@@ -19,13 +19,7 @@ const EditProfile: React.FC = () => {
     const [contactMethods, setContactMethods] = useState([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
-
-    const [isUploading, setIsUploading] = React.useState(false); // user uploading image
-    const [tooLarge, setTooLarge] = React.useState(false); // if image is too large
-    const photoInputRef = React.useRef<HTMLInputElement | null>(null); // HTML element for the image input
-    const [imageURLs, setImageURLs] = React.useState<string>(user.user_profile_url); // user profile URL by default
-    const [selectedImage, setSelectedImage] = React.useState(null);
-    let queuedImage: File[] = []; // queue with only 1 element
+    const [showErrorPopup, setShowErrorPopup] = useState(false);
 
     useEffect(() => {
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
@@ -66,13 +60,10 @@ const EditProfile: React.FC = () => {
         setUser((prevUser) => ({ ...prevUser, [name]: value }));
     };
 
-    const handleImageUpdate = () => {
-        setUser((prevUser) => ({ ...prevUser, "user_profile_url": imageURLs}))
-    }
-
     const handleSave = async () => {
         if (!user.name || !user.email || !user.major || !user.graduation_year) {
-            setError("Please fill in all required fields.");
+            setShowErrorPopup(true);
+            setTimeout(() => setShowErrorPopup(false), 5000);
             return;
         }
 
@@ -94,24 +85,20 @@ const EditProfile: React.FC = () => {
                     "Content-Type": "application/json",
                     "X-CSRF-Token": csrfToken || "",
                     "Authorization": `Bearer ${localStorage.getItem("authToken")}`
-                 },
-                 credentials: "include",
+                },
+                credentials: "include",
                 body: JSON.stringify(updatedUser),
             });
-            const errorData = await response.json();
-            console.log(response.status);
-            console.log(response.statusText);
-            console.log(errorData.message);
-            if (!response.ok) throw new Error(`${response.status} - ${response.statusText}: ${errorData.message || 'No error message provided'}`);
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`${response.status} - ${response.statusText}: ${errorData.message || 'No error message provided'}`);
+            }
 
             router.push(`/profiles/${id}`);
         } catch (err) {
             console.error("Error updating profile:", err);
-            if (err instanceof Error) {
-                setError(err.message || "Failed to update profile");
-            } else {
-                setError("An unknown error occurred.");
-            }
+            setError(err instanceof Error ? err.message : "An unknown error occurred.");
         }
     };
 
@@ -121,49 +108,18 @@ const EditProfile: React.FC = () => {
     return (
         <div className="w-screen h-screen px-[5%] flex flex-col justify-start items-center gap-[48px] p-10">
             <h1 className="text-center text-5xl font-bold text-white">Edit Profile</h1>
+
+            {/* Error Popup */}
+            {showErrorPopup && (
+                <div className="fixed top-10 right-10 bg-red-500 text-white p-4 rounded-md shadow-lg">
+                    Please fill in all required fields.
+                </div>
+            )}
+
             <div className="w-[80%] bg-[--dark2] rounded-2xl shadow-xl p-[2%]">
                 <div className="w-full flex justify-center">
-                    <img src={imageURLs} alt={user.name} className="h-[250px] w-[250px] rounded-[10px] object-cover" />
+                    <img src={user.user_profile_url} alt={user.name} className="h-[250px] w-[250px] rounded-[10px] object-cover" />
                 </div>
-
-                {/* 
-                <button
-                    disabled={isUploading}
-                    onClick={() => {
-                      photoInputRef.current?.click();
-                    }}
-                >{isUploading ? "Uploading..." : "Upload"}
-                </button>
-                <p>{tooLarge ? "Image is too large! Must be under 5MB" : "Images must be under 5MB"}</p>
-                <input ref={photoInputRef}
-                    type="file"
-                    className="absolute right-[9999px]"
-                    id="imageInput"
-                    accept="image/png, image/jpeg"
-                    disabled={isUploading}
-                    onChange={ (e) => {
-                        try {
-                            if(!e.target.files) return;
-                            var fileOld = e.target.files[0];
-                            if(fileOld.size > 500000) {
-                                setTooLarge(true);
-                                return;
-                            }
-                            setTooLarge(false);
-                            var oldName = fileOld.name;
-                            var name = user.id + "." + oldName.substring(oldName.lastIndexOf('.')+1, oldName.length);
-                            const renamedFile = new File([fileOld], name);
-                            queuedImage.pop();
-                            queuedImage.push(renamedFile);
-                            setImageURLs(URL.createObjectURL(renamedFile));
-                            handleImageUpdate(); 
-                        }
-                        catch(e) {
-                            console.error(e);
-                        }
-                    }}>
-                </input>
-                */}
 
                 <input
                     type="text"
@@ -208,7 +164,14 @@ const EditProfile: React.FC = () => {
                     </div>
                 </div>
 
-                <button onClick={handleSave}>Save</button>
+                <div className="flex justify-center mt-5">
+                    <button 
+                        onClick={handleSave} 
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                        Save
+                    </button>
+                </div>
             </div>
         </div>
     );
