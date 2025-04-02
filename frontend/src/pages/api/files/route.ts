@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
         const file: File | null = data.get("file") as unknown as File;
         const uploadData = await pinata.upload.public.file(file);
         const url = await pinata.gateways.public.convert(uploadData.cid);
-        console.log("file" + file);
+        console.log("file uploaded: " + file);
         // const storage = multer.diskStorage({
         //     destination: (request:any, file:any, cb:any) => {
         //         cb(null, "uploads/");
@@ -36,8 +36,8 @@ export async function POST(request: NextRequest) {
         // const url = await ... // get image URL
         return NextResponse.json(url, { status: 200 });
     }
-    catch(e) {
-        console.log(e);
+    catch (e) {
+        console.log("ERROR: " + e);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
