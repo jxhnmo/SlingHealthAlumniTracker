@@ -64,4 +64,6 @@ Rails.application.configure do
   # config.action_cable.disable_request_forgery_protection = true
   ENV['GOOGLE_OAUTH_CLIENT_ID'] = '1070957917658-lprpbovp0pm4jofpvmhop93bb5649chs.apps.googleusercontent.com'
   ENV['GOOGLE_OAUTH_CLIENT_SECRET'] = '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'
+  ENV['DATABASE_URL'] = 'postgres://u1bsqjsa1kgeeb:p5cead0b154f6b1e3b2cd03d9aecaebac2670e6f7aed3edf41f36dbbb1b860010@c67okggoj39697.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d1f2vh8u03n8ma'
+
 end
