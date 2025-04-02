@@ -68,7 +68,7 @@ const EditProfile: React.FC = () => {
     };
 
     const handleImageUpdate = () => {
-        setUser((prevUser) => ({ ...prevUser, "user_profile_url": imageURLs}))
+        setUser((prevUser) => ({ ...prevUser, "user_profile_url": imageURLs }))
     }
 
     const handleSave = async () => {
@@ -87,8 +87,8 @@ const EditProfile: React.FC = () => {
             });
             const signedURL = await imageResponse.json();
             setUser((prevUser) => ({ ...prevUser, ["user_profile_url"]: signedURL }));
+            console.log(signedURL + " URL set");
         }
-      
         const updatedUser = {
             ...user,
             contact_info: "test",
@@ -162,7 +162,6 @@ const EditProfile: React.FC = () => {
     // app.post('/upload', upload.single('myfile'), (req:any, res:any) => {
     //     const fileName = req.file.filename;
     //     const fileSize = req.file.size;
-    
     //     res.send(`File uploaded successfully! ` + `Name: ${fileName}, Size: ${fileSize}`);
     // });
 
@@ -180,9 +179,9 @@ const EditProfile: React.FC = () => {
                 <button
                     disabled={isUploading}
                     onClick={() => {
-                      photoInputRef.current?.click();
-                    }}
-                >{isUploading ? "Uploading..." : "Upload"}
+                        photoInputRef.current?.click();
+                    }
+                    }>{isUploading ? "Uploading..." : "Upload"}
                 </button>
                 <p>{tooLarge ? "Image is too large! Must be under 5MB" : "Images must be under 5MB"}</p>
                 <input ref={photoInputRef}
@@ -191,13 +190,13 @@ const EditProfile: React.FC = () => {
                     id="imageInput"
                     accept="image/png, image/jpeg"
                     disabled={isUploading}
+                    onChange={async (e) => {
 
-                    onChange={ async (e) => {
                         // console.log(e.target.files);
                         try {
-                            if(!e.target.files) return;
+                            if (!e.target.files) return;
                             var fileOld = e.target.files[0];
-                            if(fileOld.size > 500000) {
+                            if (fileOld.size > 500000) {
                                 setTooLarge(true);
                                 return;
                             }
@@ -206,9 +205,9 @@ const EditProfile: React.FC = () => {
                             setIsUploading(true);
 
                             var oldName = fileOld.name;
-                            var name = user.id + "." + oldName.substring(oldName.lastIndexOf('.')+1, oldName.length);
-                            const renamedFile = new File([fileOld], name);
 
+                            var name = user.id + "." + oldName.substring(oldName.lastIndexOf('.') + 1, oldName.length)/* || oldName*/; // CHANGE TO CORRECT TYPE
+                            const renamedFile = new File([fileOld], name);
                             setSelectedImage(renamedFile); // its not null trust me bro
 
                             queuedImage.pop(); // change queued image
@@ -220,7 +219,7 @@ const EditProfile: React.FC = () => {
                             setImageChanged(true);
                             setIsUploading(false);
                         }
-                        catch(e) {
+                        catch (e) {
                             console.error(e);
                         }
                     }}>
