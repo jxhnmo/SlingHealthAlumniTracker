@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { json } from "stream/consumers";
 
 const EditProfile: React.FC = () => {
     const router = useRouter();
@@ -29,11 +28,8 @@ const EditProfile: React.FC = () => {
     const [imageChanged, setImageChanged] = React.useState(false);
     let queuedImage: File[] = []; // queue with only 1 element
 
-
     useEffect(() => {
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
-    // useEffect(() => {
-    //     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
         if (!id) return;
 
         const fetchData = async () => {
@@ -83,7 +79,6 @@ const EditProfile: React.FC = () => {
 
         // save image to pinata
         if (selectedImage != null) {
-            console.log("Save to Pinata");
             const data = new FormData();
             data.set("file", selectedImage);
             const imageResponse = await fetch("api/files", {
@@ -94,7 +89,6 @@ const EditProfile: React.FC = () => {
             setUser((prevUser) => ({ ...prevUser, ["user_profile_url"]: signedURL }));
             console.log(signedURL + " URL set");
         }
-
         const updatedUser = {
             ...user,
             contact_info: "test",
@@ -103,18 +97,20 @@ const EditProfile: React.FC = () => {
 
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
         console.log("User data being sent:", JSON.stringify(updatedUser));
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
         try {
             const response = await fetch(`${API_BASE_URL}/users/${id}`, {
                 mode: "cors",
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-Token": csrfToken || "",
+                    "Authorization": `Bearer ${localStorage.getItem("authToken")}`
+                },
+                credentials: "include",
                 body: JSON.stringify(updatedUser),
             });
-            console.log("response::::::::");
-            // const responseText = await response.text();
-            // console.log("text: " + responseText);
-            // console.log("Stringify: " + JSON.stringify(updatedUser));
             const errorData = await response.json();
             console.log(response.status);
             console.log(response.statusText);
@@ -131,7 +127,6 @@ const EditProfile: React.FC = () => {
             }
         }
     };
-
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
@@ -167,7 +162,6 @@ const EditProfile: React.FC = () => {
     // app.post('/upload', upload.single('myfile'), (req:any, res:any) => {
     //     const fileName = req.file.filename;
     //     const fileSize = req.file.size;
-
     //     res.send(`File uploaded successfully! ` + `Name: ${fileName}, Size: ${fileSize}`);
     // });
 
@@ -181,14 +175,6 @@ const EditProfile: React.FC = () => {
                     <img src={imageURLs} alt={user.name} className="h-[250px] w-[250px] rounded-[10px] object-cover" />
                 </div>
 
-                {/* <input
-                    type="file"
-                    name="user_profile_url"
-                    value={user.user_profile_url}
-                    onChange={handleChange}
-                    placeholder="Profile Image URL"
-                    className="text-3xl font-bold text-center bg-[--dark2] text-[--popcol] border-b-2 border-[--popcol] outline-none block mx-auto"
-                /> */}
                 <button
                     disabled={isUploading}
                     onClick={() => {
@@ -204,6 +190,7 @@ const EditProfile: React.FC = () => {
                     accept="image/png, image/jpeg"
                     disabled={isUploading}
                     onChange={async (e) => {
+
                         // console.log(e.target.files);
                         try {
                             if (!e.target.files) return;
@@ -217,13 +204,13 @@ const EditProfile: React.FC = () => {
                             setIsUploading(true);
 
                             var oldName = fileOld.name;
+
                             var name = user.id + "." + oldName.substring(oldName.lastIndexOf('.') + 1, oldName.length)/* || oldName*/; // CHANGE TO CORRECT TYPE
                             const renamedFile = new File([fileOld], name);
                             setSelectedImage(renamedFile); // its not null trust me bro
 
                             queuedImage.pop(); // change queued image
                             queuedImage.push(renamedFile);
-                            console.log(queuedImage);
                             setImageURLs(URL.createObjectURL(renamedFile));
                             handleImageUpdate(); // update into user object
                             console.log(imageURLs);
@@ -234,10 +221,8 @@ const EditProfile: React.FC = () => {
                         catch (e) {
                             console.error(e);
                         }
-
                     }}>
                 </input>
-
 
                 <input
                     type="text"

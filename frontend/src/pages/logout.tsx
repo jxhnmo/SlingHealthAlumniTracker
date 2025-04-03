@@ -5,10 +5,9 @@ const Logout: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    // Clear the user session or authentication data from localStorage
     localStorage.removeItem("user");
-    router.push("https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com");
-    // router.push("http://localhost:3000");
+    // router.push("https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com");
+    router.push("http://localhost:3000");
   }, [router]);
 
   return (
