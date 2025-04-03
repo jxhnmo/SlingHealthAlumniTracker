@@ -37,6 +37,7 @@ const Profile: React.FC = () => {
   const [error, setError] = useState<string>("");
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [isFaculty, setIsFaculty] = useState<boolean | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false); // State for delete modal
 
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL ||
@@ -68,7 +69,6 @@ const Profile: React.FC = () => {
       const user: User | undefined = (userData as User[]).find(
         (u: User) => u.email.toLowerCase() === storedEmail.toLowerCase()
       );
-      
 
       if (!user) {
         console.error("User not found in API response");
@@ -76,9 +76,8 @@ const Profile: React.FC = () => {
         setIsFaculty(false);
         return;
       }
-      setCurrentUserId(user.id);  
+      setCurrentUserId(user.id);
       setIsFaculty(user.isfaculty ?? false);
-      
     } catch (error) {
       console.error("Error fetching user data:", error);
       setCurrentUserId(null);
@@ -86,57 +85,71 @@ const Profile: React.FC = () => {
     }
   };
 
+  const fetchData = async () => {
+    try {
+      await fetchCurrentUserData();
+      const [userResponse, achievementsResponse, contactMethodsResponse] =
+        await Promise.all([
+          fetch(`${API_BASE_URL}/users/${id}`),
+          fetch(`${API_BASE_URL}/achievements`),
+          fetch(`${API_BASE_URL}/contact_methods`),
+        ]);
+
+      if (!userResponse.ok) throw new Error("User not found");
+      if (!achievementsResponse.ok)
+        throw new Error("Failed to fetch achievements");
+      if (!contactMethodsResponse.ok)
+        throw new Error("Failed to fetch contact methods");
+
+      const userData = await userResponse.json();
+      const achievementsData: Achievement[] = await achievementsResponse.json();
+      const contactMethodsData: ContactMethod[] = await contactMethodsResponse.json();
+
+      setUser(userData);
+      setAchievements(
+        achievementsData.filter((ach) => ach.user_id === Number(id))
+      );
+      setContactMethods(
+        contactMethodsData.filter((contact) => contact.user_id === Number(id))
+      );
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setError("Failed to load profile");
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!id) return;
-
-    const fetchData = async () => {
-      try {
-        await fetchCurrentUserData();
-        const [userResponse, achievementsResponse, contactMethodsResponse] =
-          await Promise.all([
-            fetch(`${API_BASE_URL}/users/${id}`),
-            fetch(`${API_BASE_URL}/achievements`),
-            fetch(`${API_BASE_URL}/contact_methods`),
-          ]);
-
-        if (!userResponse.ok) throw new Error("User not found");
-        if (!achievementsResponse.ok)
-          throw new Error("Failed to fetch achievements");
-        if (!contactMethodsResponse.ok)
-          throw new Error("Failed to fetch contact methods");
-
-        const userData = await userResponse.json();
-        const achievementsData: Achievement[] =
-          await achievementsResponse.json();
-        const contactMethodsData: ContactMethod[] =
-          await contactMethodsResponse.json();
-
-        setUser(userData);
-        setAchievements(
-          achievementsData.filter((ach) => ach.user_id === Number(id))
-        );
-        setContactMethods(
-          contactMethodsData.filter((contact) => contact.user_id === Number(id))
-        );
-        await fetchCurrentUserData(); // Fetch current user ID
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-        setError("Failed to load profile");
-        setLoading(false);
-      }
-    };
-
     fetchData();
   }, [id]);
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/${user?.id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        alert(`${user?.name} has been deleted successfully.`);
+        router.push("/userIndex"); 
+      } else {
+        throw new Error("Failed to delete user");
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      alert("Failed to delete user.");
+    } finally {
+      setShowDeleteModal(false); 
+    }
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
   if (!user) return <div>User not found</div>;
 
-
   const canEdit = currentUserId === user.id || isFaculty;
-  console.log("Can Edit:", canEdit);
 
   return (
     <div className="relative w-screen h-screen flex justify-center items-center">
@@ -172,6 +185,15 @@ const Profile: React.FC = () => {
               >
                 Edit Profile
               </Link>
+            )}
+            {canEdit && (
+              <button
+                onClick={() => setShowDeleteModal(true)}
+                className="px-4 py-2 bg-red-500 text-white rounded-md shadow-lg transition 
+                           hover:bg-red-600 hover:scale-105 ml-2"
+              >
+                Delete Profile
+              </button>
             )}
           </div>
 
@@ -234,6 +256,31 @@ const Profile: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Custom Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
+          <div className="bg-white p-5 rounded-lg w-1/3">
+            <h2 className="text-center text-xl font-bold mb-4">
+              Are you sure you want to delete this profile?
+            </h2>
+            <div className="flex justify-between gap-3">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
