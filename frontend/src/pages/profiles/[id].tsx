@@ -24,13 +24,13 @@ interface ContactMethod {
   contact_type: string;
   info: string;
   user_id: number;
+  link: boolean;
 }
 
 interface Team {
   id: number;
   name: string;
-  description: string;
-  members: User[];
+  area: string;
 }
 
 const Profile: React.FC = () => {
@@ -39,7 +39,7 @@ const Profile: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [contactMethods, setContactMethods] = useState<ContactMethod[]>([]);
-  const [teams, setTeams] = useState<Team[]>([]);
+  const [team, setTeam] = useState<Team | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
@@ -47,28 +47,37 @@ const Profile: React.FC = () => {
     const API_BASE_URL =
       process.env.NEXT_PUBLIC_API_BASE_URL ||
       "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
+    // useEffect(() => {
+    //   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
     if (!id) return;
 
     const fetchData = async () => {
       try {
-        const [userResponse, achievementsResponse, contactMethodsResponse] =
-          await Promise.all([
-            fetch(`${API_BASE_URL}/users/${id}`),
-            fetch(`${API_BASE_URL}/achievements`),
-            fetch(`${API_BASE_URL}/contact_methods`),
-          ]);
+        const [
+          userResponse,
+          achievementsResponse,
+          contactMethodsResponse,
+          teamResponse,
+        ] = await Promise.all([
+          fetch(`${API_BASE_URL}/users/${id}`),
+          fetch(`${API_BASE_URL}/achievements`),
+          fetch(`${API_BASE_URL}/contact_methods`),
+          fetch(`${API_BASE_URL}/team`),
+        ]);
 
         if (!userResponse.ok) throw new Error("User not found");
         if (!achievementsResponse.ok)
           throw new Error("Failed to fetch achievements");
         if (!contactMethodsResponse.ok)
           throw new Error("Failed to fetch contact methods");
+        if (!teamResponse.ok) throw new Error("Failed to fetch team");
 
         const userData = await userResponse.json();
         const achievementsData: Achievement[] =
           await achievementsResponse.json();
         const contactMethodsData: ContactMethod[] =
           await contactMethodsResponse.json();
+        const teamData = await teamResponse.json();
 
         setUser(userData);
         setAchievements(
@@ -77,6 +86,7 @@ const Profile: React.FC = () => {
         setContactMethods(
           contactMethodsData.filter((contact) => contact.user_id === Number(id))
         );
+        setTeam(teamData);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -139,6 +149,11 @@ const Profile: React.FC = () => {
             <h2 className="text-xl font-bold text-white">
               {user.major} Class of {user.graduation_year}
             </h2>
+            {team && (
+              <h2 className="text-xl font-bold text-white">
+                {team.name} - {team.area}
+              </h2>
+            )}
 
             <div className="w-full flex justify-between gap-5 mt-5">
               {/* Bio Section */}
@@ -176,7 +191,12 @@ const Profile: React.FC = () => {
                   <ul>
                     {contactMethods.map((contact) => (
                       <li key={contact.id}>
-                        <strong>{contact.contact_type}:</strong> {contact.info}
+                        <strong>{contact.contact_type}:</strong>{" "}
+                        {contact.link ? (
+                          <Link href={contact.info}>{contact.info}</Link>
+                        ) : (
+                          <>{contact.info}</>
+                        )}
                       </li>
                     ))}
                   </ul>

@@ -15,6 +15,11 @@ const EditProfile: React.FC = () => {
     biography: "",
     contact_info: "",
   });
+  const [team, setTeam] = useState({
+    id: "",
+    name: "",
+    area: "",
+  });
   const [achievements, setAchievements] = useState([]);
   const [contactMethods, setContactMethods] = useState([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -34,26 +39,35 @@ const EditProfile: React.FC = () => {
     const API_BASE_URL =
       process.env.NEXT_PUBLIC_API_BASE_URL ||
       "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
+    // useEffect(() => {
+    //     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
     if (!id) return;
 
     const fetchData = async () => {
       try {
-        const [userResponse, achievementsResponse, contactMethodsResponse] =
-          await Promise.all([
-            fetch(`${API_BASE_URL}/users/${id}`),
-            fetch(`${API_BASE_URL}/achievements`),
-            fetch(`${API_BASE_URL}/contact_methods`),
-          ]);
+        const [
+          userResponse,
+          achievementsResponse,
+          contactMethodsResponse,
+          teamResponse,
+        ] = await Promise.all([
+          fetch(`${API_BASE_URL}/users/${id}`),
+          fetch(`${API_BASE_URL}/achievements`),
+          fetch(`${API_BASE_URL}/contact_methods`),
+          fetch(`${API_BASE_URL}/team`),
+        ]);
 
         if (!userResponse.ok) throw new Error("User not found");
         if (!achievementsResponse.ok)
           throw new Error("Failed to fetch achievements");
         if (!contactMethodsResponse.ok)
           throw new Error("Failed to fetch contact methods");
+        if (!teamResponse.ok) throw new Error("Failed to fetch team");
 
         const userData = await userResponse.json();
         const achievementsData = await achievementsResponse.json();
         const contactMethodsData = await contactMethodsResponse.json();
+        const teamData = await teamResponse.json();
 
         setUser(userData);
         setAchievements(
@@ -66,6 +80,7 @@ const EditProfile: React.FC = () => {
             (contact: { user_id: number }) => contact.user_id === Number(id)
           )
         );
+        setTeam(teamData);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -84,6 +99,13 @@ const EditProfile: React.FC = () => {
     setUser((prevUser) => ({ ...prevUser, [name]: value }));
   };
 
+  const handleTeamChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setTeam((prevTeam) => ({ ...prevTeam, [name]: value }));
+  };
+
   const handleImageUpdate = () => {
     setUser((prevUser) => ({ ...prevUser, user_profile_url: imageURLs }));
   };
@@ -91,6 +113,11 @@ const EditProfile: React.FC = () => {
   const handleSave = async () => {
     if (!user.name || !user.email || !user.major || !user.graduation_year) {
       setError("Please fill in all required fields.");
+      return;
+    }
+
+    if ((team.name && !team.area) || (!team.name && team.area)) {
+      setError("Please fill in both fields for team.");
       return;
     }
 
@@ -110,6 +137,10 @@ const EditProfile: React.FC = () => {
       ...user,
       contact_info: "test",
       graduation_year: Number(user.graduation_year),
+    };
+
+    const updatedTeam = {
+      ...team,
     };
 
     const API_BASE_URL =
@@ -142,6 +173,26 @@ const EditProfile: React.FC = () => {
             errorData.message || "No error message provided"
           }`
         );
+
+      const teamResponse = await fetch(`${API_BASE_URL}/team/${team.id}`, {
+        mode: "cors",
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedTeam),
+      });
+      const teamErrorData = await teamResponse.json();
+      console.log(teamResponse.status);
+      console.log(teamResponse.statusText);
+      console.log(teamErrorData.message);
+      if (!teamResponse.ok) {
+        throw new Error(
+          `${teamResponse.status} - ${teamResponse.statusText}: ${
+            teamErrorData.message || "No error message provided"
+          }`
+        );
+      }
 
       router.push(`/profiles/${id}`);
     } catch (err) {
@@ -287,6 +338,25 @@ const EditProfile: React.FC = () => {
           />
         </div>
 
+        <div className="flex justify-center gap-4">
+          <input
+            type="text"
+            name="team_name"
+            value={team.name}
+            onChange={handleTeamChange}
+            placeholder="Team Name"
+            className="text-3xl font-bold text-center bg-[--dark2] text-[--popcol] border-b-2 border-[--popcol] outline-none block mx-auto"
+          />
+          <input
+            type="text"
+            name="team_area"
+            value={team.area}
+            onChange={handleTeamChange}
+            placeholder="Team Area"
+            className="text-3xl font-bold text-center bg-[--dark2] text-[--popcol] border-b-2 border-[--popcol] outline-none block mx-auto"
+          />
+        </div>
+
         <div className="w-full flex justify-between gap-5 mt-5">
           <div className="w-1/3 bg-[--grey1] rounded-xl p-5 text-white">
             <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">
@@ -312,12 +382,6 @@ const EditProfile: React.FC = () => {
               Contact
             </h3>
             <Link href={`/profiles/edit/contact/${id}`}>Edit Contacts</Link>
-          </div>
-          <div className="w-1/3 bg-[--grey1] rounded-xl p-5 text-white">
-            <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">
-              Teams
-            </h3>
-            <Link href={`/profiles/edit/teams/${id}`}>Edit Teams</Link>
           </div>
         </div>
 
