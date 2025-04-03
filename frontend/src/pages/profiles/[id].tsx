@@ -10,7 +10,7 @@ interface User {
   graduation_year: number;
   user_profile_url: string;
   biography?: string;
-  isFaculty?: boolean;
+  isfaculty?: boolean;
 }
 
 interface Achievement {
@@ -36,6 +36,7 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [isFaculty, setIsFaculty] = useState<boolean | null>(null);
 
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL ||
@@ -57,6 +58,7 @@ const Profile: React.FC = () => {
       if (!storedEmail) {
         console.error("No email found in stored user data");
         setCurrentUserId(null);
+        setIsFaculty(false);
         return;
       }
 
@@ -66,16 +68,21 @@ const Profile: React.FC = () => {
       const user: User | undefined = (userData as User[]).find(
         (u: User) => u.email.toLowerCase() === storedEmail.toLowerCase()
       );
+      
 
       if (!user) {
         console.error("User not found in API response");
         setCurrentUserId(null);
+        setIsFaculty(false);
         return;
       }
-      setCurrentUserId(user.id);
+      setCurrentUserId(user.id);  
+      setIsFaculty(user.isfaculty ?? false);
+      
     } catch (error) {
       console.error("Error fetching user data:", error);
       setCurrentUserId(null);
+      setIsFaculty(false);
     }
   };
 
@@ -84,6 +91,7 @@ const Profile: React.FC = () => {
 
     const fetchData = async () => {
       try {
+        await fetchCurrentUserData();
         const [userResponse, achievementsResponse, contactMethodsResponse] =
           await Promise.all([
             fetch(`${API_BASE_URL}/users/${id}`),
@@ -127,7 +135,8 @@ const Profile: React.FC = () => {
   if (!user) return <div>User not found</div>;
 
 
-  const canEdit = user.id === currentUserId || user.isFaculty;
+  const canEdit = currentUserId === user.id || isFaculty;
+  console.log("Can Edit:", canEdit);
 
   return (
     <div className="relative w-screen h-screen flex justify-center items-center">
