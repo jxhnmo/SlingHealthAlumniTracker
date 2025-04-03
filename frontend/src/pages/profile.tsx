@@ -357,7 +357,7 @@ const Profile: React.FC = () => {
             </div>
 
             {/* bio, achievements, contact */}
-            <div className="w-full h-[100%] bg-[] flex flex-col justify-between gap-5 mb-10 overflow-y-auto md:flex-row">
+            <div className="w-full h-[100%] bg-[] flex flex-col justify-between gap-5 mb-10 pb-5 overflow-y-auto md:flex-row min-h-[200px]">
               <div className="w-full md:w-1/3 h-[full] bg-[--grey1] rounded-xl p-5 text-white flex flex-col">
                 <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">
                   Bio
