@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: undefined,
+  output: "standalone",
   reactStrictMode: true,
   images: {
     unoptimized: true,
