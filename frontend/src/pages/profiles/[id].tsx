@@ -10,6 +10,7 @@ interface User {
   graduation_year: number;
   user_profile_url: string;
   biography?: string;
+  isFaculty?: boolean;
 }
 
 interface Achievement {
@@ -34,11 +35,51 @@ const Profile: React.FC = () => {
   const [contactMethods, setContactMethods] = useState<ContactMethod[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+
+  const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
+
+  const fetchCurrentUserData = async () => {
+    try {
+      const storedUser = localStorage.getItem("user");
+
+      if (!storedUser) {
+        console.error("No user data found in localStorage");
+        setCurrentUserId(null);
+        return;
+      }
+
+      const parsedUser = JSON.parse(storedUser);
+      const storedEmail = parsedUser?.email;
+
+      if (!storedEmail) {
+        console.error("No email found in stored user data");
+        setCurrentUserId(null);
+        return;
+      }
+
+      const apiUrl = `${API_BASE_URL}/users?email=${encodeURIComponent(storedEmail)}`;
+      const response = await fetch(apiUrl);
+      const userData = await response.json();
+      const user: User | undefined = (userData as User[]).find(
+        (u: User) => u.email.toLowerCase() === storedEmail.toLowerCase()
+      );
+
+      if (!user) {
+        console.error("User not found in API response");
+        setCurrentUserId(null);
+        return;
+      }
+      setCurrentUserId(user.id);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      setCurrentUserId(null);
+    }
+  };
 
   useEffect(() => {
-    const API_BASE_URL =
-      process.env.NEXT_PUBLIC_API_BASE_URL ||
-      "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
     if (!id) return;
 
     const fetchData = async () => {
@@ -69,6 +110,7 @@ const Profile: React.FC = () => {
         setContactMethods(
           contactMethodsData.filter((contact) => contact.user_id === Number(id))
         );
+        await fetchCurrentUserData(); // Fetch current user ID
         setLoading(false);
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -83,6 +125,9 @@ const Profile: React.FC = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
   if (!user) return <div>User not found</div>;
+
+
+  const canEdit = user.id === currentUserId || user.isFaculty;
 
   return (
     <div className="relative w-screen h-screen flex justify-center items-center">
@@ -110,7 +155,7 @@ const Profile: React.FC = () => {
 
         <div className="w-[80%] h-[80%] bg-[--dark2] rounded-2xl shadow-xl p-[2%]">
           <div className="w-full flex justify-end p-2">
-            {user && (
+            {canEdit && (
               <Link
                 href={`/profiles/edit/${id}`}
                 className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
