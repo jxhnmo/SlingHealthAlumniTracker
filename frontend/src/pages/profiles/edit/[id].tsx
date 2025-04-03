@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { json } from "stream/consumers";
 
 const EditProfile: React.FC = () => {
     const router = useRouter();
@@ -25,14 +24,12 @@ const EditProfile: React.FC = () => {
     const [tooLarge, setTooLarge] = React.useState(false); // if image is too large
     const photoInputRef = React.useRef<HTMLInputElement | null>(null); // HTML element for the image input
     const [imageURLs, setImageURLs] = React.useState<string>(user.user_profile_url); // user profile URL by default
-    const [selectedImage, setSelectedImage] = React.useState(null);
+    const [selectedImage, setSelectedImage] = React.useState<File | null>(null);
+    const [imageChanged, setImageChanged] = React.useState(false);
     let queuedImage: File[] = []; // queue with only 1 element
-
 
     useEffect(() => {
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
-    // useEffect(() => {
-    //     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
         if (!id) return;
 
         const fetchData = async () => {
@@ -71,7 +68,7 @@ const EditProfile: React.FC = () => {
     };
 
     const handleImageUpdate = () => {
-        setUser((prevUser) => ({ ...prevUser, "user_profile_url": imageURLs}))
+        setUser((prevUser) => ({ ...prevUser, "user_profile_url": imageURLs }))
     }
 
     const handleSave = async () => {
@@ -80,8 +77,18 @@ const EditProfile: React.FC = () => {
             return;
         }
 
-
-
+        // save image to pinata
+        if (selectedImage != null) {
+            const data = new FormData();
+            data.set("file", selectedImage);
+            const imageResponse = await fetch("api/files", {
+                method: "POST",
+                body: data,
+            });
+            const signedURL = await imageResponse.json();
+            setUser((prevUser) => ({ ...prevUser, ["user_profile_url"]: signedURL }));
+            console.log(signedURL + " URL set");
+        }
         const updatedUser = {
             ...user,
             contact_info: "test",
@@ -90,18 +97,20 @@ const EditProfile: React.FC = () => {
 
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
         console.log("User data being sent:", JSON.stringify(updatedUser));
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
         try {
             const response = await fetch(`${API_BASE_URL}/users/${id}`, {
                 mode: "cors",
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-Token": csrfToken || "",
+                    "Authorization": `Bearer ${localStorage.getItem("authToken")}`
+                },
+                credentials: "include",
                 body: JSON.stringify(updatedUser),
             });
-            console.log("response::::::::");
-            // const responseText = await response.text();
-            // console.log("text: " + responseText);
-            // console.log("Stringify: " + JSON.stringify(updatedUser));
             const errorData = await response.json();
             console.log(response.status);
             console.log(response.statusText);
@@ -119,9 +128,44 @@ const EditProfile: React.FC = () => {
         }
     };
 
-
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
+
+    /////////////////////////////
+    // const express = require("express");
+    // const multer = require("multer");
+    // const fs = require("fs");
+    // const path = require("path");
+    // const util = require("util");
+    // const unlinkFile = util.promisify(fs.unlink);
+
+    // const port = 3000;
+
+    // const app = express();
+
+    // app.use(express.json());
+    // app.use(express.urlencoded({extended: false}));
+
+    // // const storage = multer.diskStorage({
+    // //     destination: function(req, file, cb) {
+    // //         cb(null, "./public/profilePix/")
+    // //     },
+    // //     filename: function(req, file, cb) {
+    // //         cb(null, "filename");
+    // //     }
+    // // });
+
+    // const upload = multer({
+    //     dest: "./public/profilePix/"
+    // });
+
+    // app.post('/upload', upload.single('myfile'), (req:any, res:any) => {
+    //     const fileName = req.file.filename;
+    //     const fileSize = req.file.size;
+    //     res.send(`File uploaded successfully! ` + `Name: ${fileName}, Size: ${fileSize}`);
+    // });
+
+    /////////////////////////////
 
     return (
         <div className="w-screen h-screen px-[5%] flex flex-col justify-start items-center gap-[48px] p-10">
@@ -131,20 +175,12 @@ const EditProfile: React.FC = () => {
                     <img src={imageURLs} alt={user.name} className="h-[250px] w-[250px] rounded-[10px] object-cover" />
                 </div>
 
-                {/* <input
-                    type="file"
-                    name="user_profile_url"
-                    value={user.user_profile_url}
-                    onChange={handleChange}
-                    placeholder="Profile Image URL"
-                    className="text-3xl font-bold text-center bg-[--dark2] text-[--popcol] border-b-2 border-[--popcol] outline-none block mx-auto"
-                /> */}
                 <button
                     disabled={isUploading}
                     onClick={() => {
-                      photoInputRef.current?.click();
+                        photoInputRef.current?.click();
                     }
-                  }>{isUploading ? "Uploading..." : "Upload"}
+                    }>{isUploading ? "Uploading..." : "Upload"}
                 </button>
                 <p>{tooLarge ? "Image is too large! Must be under 5MB" : "Images must be under 5MB"}</p>
                 <input ref={photoInputRef}
@@ -153,35 +189,40 @@ const EditProfile: React.FC = () => {
                     id="imageInput"
                     accept="image/png, image/jpeg"
                     disabled={isUploading}
-                    onChange={ (e) => {
+                    onChange={async (e) => {
+
                         // console.log(e.target.files);
                         try {
-                            if(!e.target.files) return;
+                            if (!e.target.files) return;
                             var fileOld = e.target.files[0];
-                            if(fileOld.size > 500000) {
+                            if (fileOld.size > 500000) {
                                 setTooLarge(true);
                                 return;
                             }
                             setTooLarge(false);
+
+                            setIsUploading(true);
+
                             var oldName = fileOld.name;
-                            var name = user.id + "." + oldName.substring(oldName.lastIndexOf('.')+1, oldName.length)/* || oldName*/; // CHANGE TO CORRECT TYPE
+
+                            var name = user.id + "." + oldName.substring(oldName.lastIndexOf('.') + 1, oldName.length)/* || oldName*/; // CHANGE TO CORRECT TYPE
                             const renamedFile = new File([fileOld], name);
-                            // setSelectedImage(renamedFile); // its not null trust me bro
+                            setSelectedImage(renamedFile); // its not null trust me bro
+
                             queuedImage.pop(); // change queued image
                             queuedImage.push(renamedFile);
-                            console.log(queuedImage);
                             setImageURLs(URL.createObjectURL(renamedFile));
                             handleImageUpdate(); // update into user object
                             console.log(imageURLs);
                             console.log(renamedFile);
+                            setImageChanged(true);
+                            setIsUploading(false);
                         }
-                        catch(e) {
+                        catch (e) {
                             console.error(e);
                         }
-                        
                     }}>
                 </input>
-
 
                 <input
                     type="text"

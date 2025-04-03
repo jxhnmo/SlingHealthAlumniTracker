@@ -3,6 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     unoptimized: true,
+    domains: [process.env.PINATA_GATEWAY],
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
