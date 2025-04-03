@@ -158,7 +158,7 @@ const Profile: React.FC = () => {
           <h1 className="text-center text-5xl font-bold text-white">Profile</h1>
         </div>
 
-        <div className="w-[80%] h-[80%] bg-[--dark2] rounded-2xl shadow-xl p-[2%] flex flex-col">
+        <div className="w-[80%] h-[80%] bg-[--dark2] rounded-2xl shadow-xl p-[2%] flex flex-col overflow-y-auto overflow-x-hidden relative">
           <div className="w-full flex justify-between p-2">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
@@ -213,7 +213,7 @@ const Profile: React.FC = () => {
               ) : (
                 editedUser.faculty && (
                   <div className="px-4 py-2 bg-[--popcol] text-[--background] rounded-md shadow-lg">
-                    Available for Mentorship
+                    Mentor
                   </div>
                 )
               )}
@@ -357,8 +357,8 @@ const Profile: React.FC = () => {
             </div>
 
             {/* bio, achievements, contact */}
-            <div className="w-full h-[100%] bg-[] flex justify-between gap-5 mb-10 overflow-y-auto">
-              <div className="w-1/3 h-[full] bg-[--grey1] rounded-xl p-5 text-white flex flex-col">
+            <div className="w-full h-[100%] bg-[] flex flex-col justify-between gap-5 mb-10 overflow-y-auto md:flex-row">
+              <div className="w-full md:w-1/3 h-[full] bg-[--grey1] rounded-xl p-5 text-white flex flex-col">
                 <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">
                   Bio
                 </h3>
@@ -378,7 +378,7 @@ const Profile: React.FC = () => {
                 </div>
               </div>
 
-              <div className="w-1/3 h-[full] bg-[--grey1] rounded-xl p-5 text-white flex flex-col">
+              <div className="w-full md:w-1/3 h-[full] bg-[--grey1] rounded-xl p-5 text-white flex flex-col">
                 <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">
                   Achievements
                 </h3>
@@ -498,7 +498,7 @@ const Profile: React.FC = () => {
                 </div>
               </div>
 
-              <div className="w-1/3 h-[full] bg-[--grey1] rounded-xl p-5 text-white flex flex-col">
+              <div className="w-full md:w-1/3 h-[full] bg-[--grey1] rounded-xl p-5 text-white flex flex-col">
                 <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">
                   Contact Information
                 </h3>
