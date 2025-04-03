@@ -189,8 +189,8 @@ const Profile: React.FC = () => {
             {canEdit && (
               <button
                 onClick={() => setShowDeleteModal(true)}
-                className="px-4 py-2 bg-red-500 text-white rounded-md shadow-lg transition 
-                           hover:bg-red-600 hover:scale-105 ml-2"
+                className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
+                           hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
               >
                 Delete Profile
               </button>
