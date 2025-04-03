@@ -78,7 +78,7 @@ const EditProfile: React.FC = () => {
         }
 
         // save image to pinata
-        if(selectedImage != null) {
+        if (selectedImage != null) {
             const data = new FormData();
             data.set("file", selectedImage);
             const imageResponse = await fetch("api/files", {
@@ -103,12 +103,12 @@ const EditProfile: React.FC = () => {
             const response = await fetch(`${API_BASE_URL}/users/${id}`, {
                 mode: "cors",
                 method: "PUT",
-                headers: { 
+                headers: {
                     "Content-Type": "application/json",
                     "X-CSRF-Token": csrfToken || "",
                     "Authorization": `Bearer ${localStorage.getItem("authToken")}`
-                 },
-                 credentials: "include",
+                },
+                credentials: "include",
                 body: JSON.stringify(updatedUser),
             });
             const errorData = await response.json();
@@ -175,7 +175,6 @@ const EditProfile: React.FC = () => {
                     <img src={imageURLs} alt={user.name} className="h-[250px] w-[250px] rounded-[10px] object-cover" />
                 </div>
 
-                {/* 
                 <button
                     disabled={isUploading}
                     onClick={() => {
@@ -224,7 +223,6 @@ const EditProfile: React.FC = () => {
                         }
                     }}>
                 </input>
-                */}
 
                 <input
                     type="text"
