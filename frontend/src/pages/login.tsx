@@ -15,14 +15,14 @@ const Login = () => {
 
         localStorage.setItem("user", JSON.stringify(userData));
         localStorage.setItem("auth_token", token);
-        router.replace("/");
+        router.replace(`/profiles/${userData.id}`);
       } catch (error) {
         console.error("Error parsing user data:", error);
         router.replace("/login");
       }
     } else {
-
-      window.location.href = "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com/admins/auth/google_oauth2";
+      
+      window.location.href = "https://alumni-tracker-sprint3-84062556e525.herokuapp.com/admins/auth/google_oauth2";
       // window.location.href = "http://localhost:4000/admins/auth/google_oauth2";
 
     }
