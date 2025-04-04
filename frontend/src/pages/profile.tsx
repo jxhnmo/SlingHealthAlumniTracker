@@ -16,7 +16,7 @@ interface User {
   year: string;
   major: string;
   team_area?: string;
-  bio?: string;
+  biography?: string;
   achievements?: Achievement[];
   contact?: string;
   faculty?: boolean;
@@ -33,7 +33,7 @@ const Profile: React.FC = () => {
     year: "2024",
     major: "Computer Science",
     team_area: "fire type",
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    biography: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     achievements: [],
     contact: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     faculty: true,
@@ -366,14 +366,14 @@ const Profile: React.FC = () => {
                 <div className="overflow-y-auto h-[90%]">
                   {isEditing ? (
                     <textarea
-                      name="bio"
-                      value={editedUser.bio}
+                      name="biography"
+                      value={editedUser.biography}
                       onChange={handleChange}
                       placeholder="Bio"
                       className="w-full h-[90%] bg-[--dark2] text-[--popcol] outline-none p-2"
                     />
                   ) : (
-                    <p>{editedUser.bio}</p>
+                    <p>{editedUser.biography}</p>
                   )}
                 </div>
               </div>
