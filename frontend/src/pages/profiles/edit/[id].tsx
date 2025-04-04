@@ -21,6 +21,14 @@ const EditProfile: React.FC = () => {
     const [error, setError] = useState<string>("");
     const [showErrorPopup, setShowErrorPopup] = useState(false);
 
+    const [isUploading, setIsUploading] = React.useState(false); // user uploading image
+    const [tooLarge, setTooLarge] = React.useState(false); // if image is too large
+    const photoInputRef = React.useRef<HTMLInputElement | null>(null); // HTML element for the image input
+    const [imageURLs, setImageURLs] = React.useState<string>(user.user_profile_url); // user profile URL by default
+    const [selectedImage, setSelectedImage] = React.useState<File | null>(null);
+    const [imageChanged, setImageChanged] = React.useState(false);
+    let queuedImage: File[] = []; // queue with only 1 element
+
     useEffect(() => {
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
         if (!id) return;
@@ -67,6 +75,18 @@ const EditProfile: React.FC = () => {
             return;
         }
 
+        // save image to pinata
+        if (selectedImage != null) {
+            const data = new FormData();
+            data.set("file", selectedImage);
+            const imageResponse = await fetch("api/files", {
+                method: "POST",
+                body: data,
+            });
+            const signedURL = await imageResponse.json();
+            setUser((prevUser) => ({ ...prevUser, ["user_profile_url"]: signedURL }));
+            console.log(signedURL + " URL set");
+        }
         const updatedUser = {
             ...user,
             contact_info: "test",
@@ -80,7 +100,7 @@ const EditProfile: React.FC = () => {
             const response = await fetch(`${API_BASE_URL}/users/${id}`, {
                 mode: "cors",
                 method: "PUT",
-                headers: { 
+                headers: {
                     "Content-Type": "application/json",
                     "X-CSRF-Token": csrfToken || "",
                     "Authorization": `Bearer ${localStorage.getItem("authToken")}`
@@ -103,6 +123,42 @@ const EditProfile: React.FC = () => {
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
+
+    /////////////////////////////
+    // const express = require("express");
+    // const multer = require("multer");
+    // const fs = require("fs");
+    // const path = require("path");
+    // const util = require("util");
+    // const unlinkFile = util.promisify(fs.unlink);
+
+    // const port = 3000;
+
+    // const app = express();
+
+    // app.use(express.json());
+    // app.use(express.urlencoded({extended: false}));
+
+    // // const storage = multer.diskStorage({
+    // //     destination: function(req, file, cb) {
+    // //         cb(null, "./public/profilePix/")
+    // //     },
+    // //     filename: function(req, file, cb) {
+    // //         cb(null, "filename");
+    // //     }
+    // // });
+
+    // const upload = multer({
+    //     dest: "./public/profilePix/"
+    // });
+
+    // app.post('/upload', upload.single('myfile'), (req:any, res:any) => {
+    //     const fileName = req.file.filename;
+    //     const fileSize = req.file.size;
+    //     res.send(`File uploaded successfully! ` + `Name: ${fileName}, Size: ${fileSize}`);
+    // });
+
+    /////////////////////////////
 
     return (
         <div className="w-screen h-screen px-[5%] flex flex-col justify-start items-center gap-[48px] p-10">
