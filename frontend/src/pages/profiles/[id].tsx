@@ -31,6 +31,7 @@ interface Team {
   id: number;
   name: string;
   area: string;
+  user_id: number;
 }
 
 const Profile: React.FC = () => {

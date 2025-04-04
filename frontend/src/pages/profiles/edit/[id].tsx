@@ -19,6 +19,7 @@ const EditProfile: React.FC = () => {
     id: "",
     name: "",
     area: "",
+    user_id: "",
   });
   const [achievements, setAchievements] = useState([]);
   const [contactMethods, setContactMethods] = useState([]);
