@@ -263,8 +263,8 @@ Devise.setup do |config|
     config.omniauth :google_oauth2, ENV['GOOGLE_OAUTH_CLIENT_ID'], ENV['GOOGLE_OAUTH_CLIENT_SECRET'], {
       scope: 'email,profile',
       prompt: 'select_account',
-      # redirect_uri: "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com/admins/auth/google_oauth2/callback"
-      redirect_uri: "http://localhost:4000/admins/auth/google_oauth2/callback"
+      redirect_uri: "https://alumni-tracker-sprint3-84062556e525.herokuapp.com/admins/auth/google_oauth2/callback"
+      # redirect_uri: "http://localhost:4000/admins/auth/google_oauth2/callback"
     }
     OmniAuth.config.allowed_request_methods = %i[get]
 
