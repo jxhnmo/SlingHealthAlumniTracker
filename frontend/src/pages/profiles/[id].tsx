@@ -149,10 +149,14 @@ const Profile: React.FC = () => {
             <h2 className="text-xl font-bold text-white">
               {user.major} Class of {user.graduation_year}
             </h2>
-            {team && (
-              <h2 className="text-xl font-bold text-white">
+            {team ? (
+              <h3 className="text-xl font-bold text-white mt-2">
                 {team.name} - {team.area}
-              </h2>
+              </h3>
+            ) : (
+              <h3 className="text-xl font-bold text-white mt-2">
+                No team area specified.
+              </h3>
             )}
 
             <div className="w-full flex justify-between gap-5 mt-5">
@@ -183,26 +187,30 @@ const Profile: React.FC = () => {
               </div>
 
               {/* Contact Section */}
-              <div className="w-1/3 bg-[--grey1] rounded-xl p-5 text-white">
+              <div className="w-full md:w-1/3 h-[full] bg-[--grey1] rounded-xl p-5 text-white flex flex-col">
                 <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">
-                  Contact
+                  Contact Information
                 </h3>
-                {contactMethods.length > 0 ? (
-                  <ul>
-                    {contactMethods.map((contact) => (
-                      <li key={contact.id}>
-                        <strong>{contact.contact_type}:</strong>{" "}
-                        {contact.link ? (
-                          <Link href={contact.info}>{contact.info}</Link>
-                        ) : (
-                          <>{contact.info}</>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No contact information provided.</p>
-                )}
+                <div className="overflow-y-auto h-[90%]">
+                  {contactMethods.length > 0 ? (
+                    <ul>
+                      {contactMethods.map((contact) => (
+                        <li key={contact.id}>
+                          <strong>{contact.contact_type}:</strong>{" "}
+                          {contact.link ? (
+                            <a href={contact.info} target="_blank">
+                              {contact.info}
+                            </a>
+                          ) : (
+                            <>{contact.info}</>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No contact information provided.</p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
