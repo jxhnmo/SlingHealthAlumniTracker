@@ -88,7 +88,7 @@ const EditProfile: React.FC = () => {
             // const uploadData = await pinata.upload.public.file(selectedImage);
             // const url = await pinata.gateways.public.convert(uploadData.cid);
             console.log("get Pinata");
-            const imageResponse = await fetch("/files/", {
+            const imageResponse = await fetch("../pages/api/files", {
                 mode: "cors",
                 method: "POST",
                 body: data,
