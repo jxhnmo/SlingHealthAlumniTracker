@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { pinata } from "@/utils/config";
 import { json } from "stream/consumers";
 
 const EditProfile: React.FC = () => {
@@ -84,11 +85,13 @@ const EditProfile: React.FC = () => {
             console.log("Save to Pinata");
             const data = new FormData();
             data.set("file", selectedImage);
-            const imageResponse = await fetch("api/files", {
-                method: "POST",
-                body: data,
-            });
-            const signedURL = await imageResponse.json();
+            const uploadData = await pinata.upload.public.file(selectedImage);
+            const url = await pinata.gateways.public.convert(uploadData.cid);
+            // const imageResponse = await fetch("api/files", {
+            //     method: "POST",
+            //     body: data,
+            // });
+            const signedURL = url; // await imageResponse.json();
             setUser((prevUser) => ({ ...prevUser, ["user_profile_url"]: signedURL }));
             console.log(signedURL + " URL set");
         }
