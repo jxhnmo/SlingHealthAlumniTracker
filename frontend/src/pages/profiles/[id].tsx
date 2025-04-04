@@ -13,7 +13,7 @@ interface Achievement {
 }
 
 interface User {
-  id: number; 
+  id: number;
   name: string;
   email: string;
   major: string;
@@ -48,13 +48,13 @@ const Profile: React.FC = () => {
   const [isEditing, setIsEditing] = React.useState(false);
   const [editedUser, setEditedUser] = React.useState<User | null>(user);
   const [isUploading, setIsUploading] = React.useState(false); // user uploading image
-    const [tooLarge, setTooLarge] = React.useState(false); // if image is too large
-    const photoInputRef = React.useRef<HTMLInputElement | null>(null); // HTML element for the image input
-    const [imageURLs, setImageURLs] = React.useState<string>(
-      user?.user_profile_url || ""
-    ); // user profile URL by default
-    const [selectedImage, setSelectedImage] = React.useState(null);
-    let queuedImage: File[] = []; // queue with only 1 element
+  const [tooLarge, setTooLarge] = React.useState(false); // if image is too large
+  const photoInputRef = React.useRef<HTMLInputElement | null>(null); // HTML element for the image input
+  const [imageURLs, setImageURLs] = React.useState<string>(
+    user?.user_profile_url || ""
+  ); // user profile URL by default
+  const [selectedImage, setSelectedImage] = React.useState(null);
+  let queuedImage: File[] = []; // queue with only 1 element
 
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL ||
@@ -76,7 +76,7 @@ const Profile: React.FC = () => {
       if (!storedEmail) {
         console.error("No email found in stored user data");
         setCurrentUserId(null);
-        setIsFaculty(false);  
+        setIsFaculty(false);
         return;
       }
 
@@ -102,15 +102,14 @@ const Profile: React.FC = () => {
     }
   };
   const handleSave = async () => {
-    // u guys set this up
-    setEditedUser(editedUser);
-    setIsEditing(false);
     try {
-      // TODO: save image
-      if (!user) {
-        console.error("User is null");
+      if (!user || !editedUser) {
+        console.error("User or editedUser is null");
         return;
       }
+
+      console.log("Edited User:", editedUser); // Debugging log
+
       const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -119,73 +118,76 @@ const Profile: React.FC = () => {
 
       if (!response.ok) throw new Error("Failed to update profile");
 
+      const updatedUser = await response.json();
+      setUser(updatedUser);
+      setEditedUser(updatedUser);
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating profile:", error);
     }
   };
   const handleEdit = () => {
-      setIsEditing(true);
-    };
+    setIsEditing(true);
+  };
+
+  // const checkImageDims = (file: File) => {
+  //   var reader = new FileReader();
+  //   reader.onload = function(e) {
+
+  //   }
+  // };
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setEditedUser((prev) => ({
+      ...prev!,
+      [name]: value, // this works dynamically — as long as the name matches a valid field
+    }));
+  };
   
-    // const checkImageDims = (file: File) => {
-    //   var reader = new FileReader();
-    //   reader.onload = function(e) {
-  
-    //   }
-    // };
-  
-    const handleChange = (
-      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-      const { name, value } = e.target;
-      if (editedUser) {
-        setEditedUser({ ...editedUser, [name]: value } as User);
-      }
+  const handleAchievementChange = (
+    index: number,
+    field: keyof Achievement,
+    value: string | boolean
+  ) => {
+    if (!editedUser) return;
+    const updatedAchievements = [...((editedUser?.achievements) || [])];
+    updatedAchievements[index] = {
+      ...updatedAchievements[index],
+      [field]: value,
     };
-    const handleAchievementChange = (
-      index: number,
-      field: keyof Achievement,
-      value: string | boolean
-    ) => {
-      if (!editedUser) return;
-      const updatedAchievements = [...((editedUser?.achievements) || [])];
-      updatedAchievements[index] = {
-        ...updatedAchievements[index],
-        [field]: value,
-      };
-      if (editedUser) {
-              setEditedUser({ ...editedUser, achievements: updatedAchievements } as User);
-      }
-    };
-  
-    const addAchievement = () => {
-      if (editedUser && editedUser.id) {
-        setEditedUser({
-          ...editedUser,
-          achievements: [
-            ...(editedUser.achievements || []),
-            {
-              id: Date.now(), // Ensure id is a number
-              type: "Accelerator",
-              name: "",
-              description: "",
-              checked: false,
-              user_id: editedUser.id, // Ensure user_id is set appropriately
-            },
-          ],
-        });
-      }
-    };
-    const handleAchievementDelete = (index: number) => {
-      if (!editedUser) return;
-      const updatedAchievements = [...(editedUser.achievements || [])];
-      updatedAchievements.splice(index, 1);
-      if (editedUser) {
-        setEditedUser({ ...editedUser, achievements: updatedAchievements } as User);
-      }
-    };
-  
+    if (editedUser) {
+      setEditedUser({ ...editedUser, achievements: updatedAchievements } as User);
+    }
+  };
+
+  const addAchievement = () => {
+    if (editedUser && editedUser.id) {
+      setEditedUser({
+        ...editedUser,
+        achievements: [
+          ...(editedUser.achievements || []),
+          {
+            id: Date.now(), // Ensure id is a number
+            type: "Accelerator",
+            name: "",
+            description: "",
+            checked: false,
+            user_id: editedUser.id, // Ensure user_id is set appropriately
+          },
+        ],
+      });
+    }
+  };
+  const handleAchievementDelete = (index: number) => {
+    if (!editedUser) return;
+    const updatedAchievements = [...(editedUser.achievements || [])];
+    updatedAchievements.splice(index, 1);
+    if (editedUser) {
+      setEditedUser({ ...editedUser, achievements: updatedAchievements } as User);
+    }
+  };
+
 
   const fetchData = async () => {
     try {
@@ -208,7 +210,7 @@ const Profile: React.FC = () => {
       const contactMethodsData: ContactMethod[] = await contactMethodsResponse.json();
 
       setUser(userData);
-      setEditedUser(userData); 
+      setEditedUser(userData);
       setAchievements(
         achievementsData.filter((ach) => ach.user_id === Number(id))
       );
@@ -228,6 +230,8 @@ const Profile: React.FC = () => {
     fetchData();
   }, [id]);
 
+
+
   const handleDelete = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/users/${user?.id}`, {
@@ -236,7 +240,7 @@ const Profile: React.FC = () => {
 
       if (response.ok) {
         alert(`${user?.name} has been deleted successfully.`);
-        router.push("/userIndex"); 
+        router.push("/userIndex");
       } else {
         throw new Error("Failed to delete user");
       }
@@ -244,7 +248,7 @@ const Profile: React.FC = () => {
       console.error("Error deleting user:", error);
       alert("Failed to delete user.");
     } finally {
-      setShowDeleteModal(false); 
+      setShowDeleteModal(false);
     }
   };
 
@@ -291,7 +295,7 @@ const Profile: React.FC = () => {
           <div className="w-full flex justify-between p-2">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                {isEditing ? ( //check for faculty as well! only allow show
+                {isEditing && isFaculty ? ( //check for faculty as well! only allow show
                   <div className="flex items-center gap-2 text-white">
                     <label
                       htmlFor="faculty-checkbox"
@@ -332,13 +336,13 @@ const Profile: React.FC = () => {
                     id="mentorship-checkbox"
                     type="checkbox"
                     checked={editedUser?.mentorship || false}
-                    onChange={(e) =>
-                      {editedUser && 
+                    onChange={(e) => {
+                      editedUser &&
                         setEditedUser({
                           ...editedUser,
                           mentorship: e.target.checked,
                         });
-                      }
+                    }
                     }
                     className="w-4 h-4 cursor-pointer"
                   />
@@ -352,7 +356,7 @@ const Profile: React.FC = () => {
               )}
             </div>
 
-            {currentUserId === user.id && isFaculty &&(
+            {currentUserId === user.id && isFaculty && (
               <button
                 onClick={isEditing ? handleSave : handleEdit}
                 className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
@@ -499,10 +503,10 @@ const Profile: React.FC = () => {
                 <div className="overflow-y-auto h-[90%]">
                   {isEditing ? (
                     <textarea
-                      name="bio"
+                      name="biography"
                       value={editedUser?.biography || ""}
                       onChange={handleChange}
-                      placeholder="Bio"
+                      placeholder="Biography"
                       className="w-full h-[90%] bg-[--dark2] text-[--popcol] outline-none p-2"
                     />
                   ) : (
