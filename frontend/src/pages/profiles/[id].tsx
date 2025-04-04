@@ -2,22 +2,29 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-interface User {
+
+interface Achievement {
   id: number;
+  type: "Pitches" | "Grants" | "Accelerator" | "Other Achievements";
+  name: string;
+  description: string;
+  checked: boolean;
+  user_id: number;
+}
+
+interface User {
+  id: number; 
   name: string;
   email: string;
   major: string;
   graduation_year: number;
   user_profile_url: string;
   biography?: string;
+  team_area?: string;
   isfaculty?: boolean;
-}
-
-interface Achievement {
-  id: number;
-  name: string;
-  description: string;
-  user_id: number;
+  achievements?: Achievement[];
+  contact?: string;
+  mentorship?: boolean;
 }
 
 interface ContactMethod {
@@ -38,6 +45,16 @@ const Profile: React.FC = () => {
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [isFaculty, setIsFaculty] = useState<boolean | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false); // State for delete modal
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [editedUser, setEditedUser] = React.useState<User | null>(user);
+  const [isUploading, setIsUploading] = React.useState(false); // user uploading image
+    const [tooLarge, setTooLarge] = React.useState(false); // if image is too large
+    const photoInputRef = React.useRef<HTMLInputElement | null>(null); // HTML element for the image input
+    const [imageURLs, setImageURLs] = React.useState<string>(
+      user?.user_profile_url || ""
+    ); // user profile URL by default
+    const [selectedImage, setSelectedImage] = React.useState(null);
+    let queuedImage: File[] = []; // queue with only 1 element
 
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL ||
@@ -59,7 +76,7 @@ const Profile: React.FC = () => {
       if (!storedEmail) {
         console.error("No email found in stored user data");
         setCurrentUserId(null);
-        setIsFaculty(false);
+        setIsFaculty(false);  
         return;
       }
 
@@ -84,6 +101,91 @@ const Profile: React.FC = () => {
       setIsFaculty(false);
     }
   };
+  const handleSave = async () => {
+    // u guys set this up
+    setEditedUser(editedUser);
+    setIsEditing(false);
+    try {
+      // TODO: save image
+      if (!user) {
+        console.error("User is null");
+        return;
+      }
+      const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editedUser),
+      });
+
+      if (!response.ok) throw new Error("Failed to update profile");
+
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+  };
+  const handleEdit = () => {
+      setIsEditing(true);
+    };
+  
+    // const checkImageDims = (file: File) => {
+    //   var reader = new FileReader();
+    //   reader.onload = function(e) {
+  
+    //   }
+    // };
+  
+    const handleChange = (
+      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+      const { name, value } = e.target;
+      if (editedUser) {
+        setEditedUser({ ...editedUser, [name]: value } as User);
+      }
+    };
+    const handleAchievementChange = (
+      index: number,
+      field: keyof Achievement,
+      value: string | boolean
+    ) => {
+      if (!editedUser) return;
+      const updatedAchievements = [...((editedUser?.achievements) || [])];
+      updatedAchievements[index] = {
+        ...updatedAchievements[index],
+        [field]: value,
+      };
+      if (editedUser) {
+              setEditedUser({ ...editedUser, achievements: updatedAchievements } as User);
+      }
+    };
+  
+    const addAchievement = () => {
+      if (editedUser && editedUser.id) {
+        setEditedUser({
+          ...editedUser,
+          achievements: [
+            ...(editedUser.achievements || []),
+            {
+              id: Date.now(), // Ensure id is a number
+              type: "Accelerator",
+              name: "",
+              description: "",
+              checked: false,
+              user_id: editedUser.id, // Ensure user_id is set appropriately
+            },
+          ],
+        });
+      }
+    };
+    const handleAchievementDelete = (index: number) => {
+      if (!editedUser) return;
+      const updatedAchievements = [...(editedUser.achievements || [])];
+      updatedAchievements.splice(index, 1);
+      if (editedUser) {
+        setEditedUser({ ...editedUser, achievements: updatedAchievements } as User);
+      }
+    };
+  
 
   const fetchData = async () => {
     try {
@@ -106,6 +208,7 @@ const Profile: React.FC = () => {
       const contactMethodsData: ContactMethod[] = await contactMethodsResponse.json();
 
       setUser(userData);
+      setEditedUser(userData); 
       setAchievements(
         achievementsData.filter((ach) => ach.user_id === Number(id))
       );
@@ -153,19 +256,26 @@ const Profile: React.FC = () => {
 
   return (
     <div className="relative w-screen h-screen flex justify-center items-center">
-      {/* Nav */}
+      {/* background img */}
+      {/* <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat blur-md"
+        style={{ backgroundImage: "url('/background.jpg')" }}
+      /> */}
+
+      {/* nav */}
       <nav className="absolute top-5 right-10 flex gap-3 z-20">
         {[
           { name: "Home", path: "/" },
-          { name: "Directory", path: "/userIndex" },
+          { name: "Index", path: "/userIndex" },
           { name: "Profile", path: "/profile" },
           { name: "Logout", path: "/logout" },
+          // { name: "Edit", path: "/profileEdit" },
         ].map((item) => (
           <Link
             key={item.name}
             href={item.path}
             className="px-4 py-2 text-[--popcol] bg-[--dark2] rounded-md shadow-lg transition 
-                     hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
+                       hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
           >
             {item.name}
           </Link>
@@ -173,114 +283,377 @@ const Profile: React.FC = () => {
       </nav>
 
       <div className="w-screen h-screen px-[5%] flex flex-col justify-start items-center gap-[48px] p-10">
-        <h1 className="text-center text-5xl font-bold text-white">Profile</h1>
+        <div className="mt-5 pt-[12px]">
+          <h1 className="text-center text-5xl font-bold text-white">Profile</h1>
+        </div>
 
-        <div className="w-[80%] h-[80%] bg-[--dark2] rounded-2xl shadow-xl p-[2%]">
-          <div className="w-full flex justify-end p-2">
-            {canEdit && (
-              <Link
-                href={`/profiles/edit/${id}`}
-                className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
-                           hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
-              >
-                Edit Profile
-              </Link>
-            )}
-            {canEdit && (
+        <div className="w-[80%] h-[80%] bg-[--dark2] rounded-2xl shadow-xl p-[2%] flex flex-col overflow-y-auto overflow-x-hidden relative">
+          <div className="w-full flex justify-between p-2">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                {isEditing ? ( //check for faculty as well! only allow show
+                  <div className="flex items-center gap-2 text-white">
+                    <label
+                      htmlFor="faculty-checkbox"
+                      className="cursor-pointer"
+                    >
+                      Faculty?
+                    </label>
+                    <input
+                      id="faculty-checkbox"
+                      type="checkbox"
+                      checked={editedUser?.isfaculty || false}
+                      onChange={(e) => {
+                        if (editedUser) {
+                          setEditedUser({
+                            ...editedUser,
+                            isfaculty: e.target.checked,
+                          });
+                        }
+                      }}
+                      className="w-4 h-4 cursor-pointer"
+                    />
+                  </div>
+                ) : (
+                  editedUser?.isfaculty && (
+                    <div className="px-4 py-2 bg-[--popcol] text-[--background] rounded-md shadow-lg">
+                      Faculty
+                    </div>
+                  )
+                )}
+              </div>
+
+              {isEditing ? (
+                <div className="flex items-center gap-2 text-white">
+                  <label htmlFor="faculty-checkbox" className="cursor-pointer">
+                    Available for Mentorship?
+                  </label>
+                  <input
+                    id="mentorship-checkbox"
+                    type="checkbox"
+                    checked={editedUser?.mentorship || false}
+                    onChange={(e) =>
+                      {editedUser && 
+                        setEditedUser({
+                          ...editedUser,
+                          mentorship: e.target.checked,
+                        });
+                      }
+                    }
+                    className="w-4 h-4 cursor-pointer"
+                  />
+                </div>
+              ) : (
+                editedUser?.isfaculty && (
+                  <div className="px-4 py-2 bg-[--popcol] text-[--background] rounded-md shadow-lg">
+                    Mentor
+                  </div>
+                )
+              )}
+            </div>
+
+            {currentUserId === user.id && isFaculty &&(
               <button
-                onClick={() => setShowDeleteModal(true)}
+                onClick={isEditing ? handleSave : handleEdit}
                 className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
                            hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
               >
-                Delete Profile
+                {isEditing ? "Save" : "Edit"}
               </button>
             )}
           </div>
 
           <div className="w-full h-full flex flex-col items-center gap-5">
-            <img
-              src={user.user_profile_url}
-              alt={user.name}
-              className="h-[250px] w-[250px] rounded-[10px] object-cover"
-            />
-            <h1 className="text-3xl font-bold text-[--popcol]">{user.name}</h1>
-            <h2 className="text-xl font-bold text-white">
-              {user.major} Class of {user.graduation_year}
-            </h2>
+            <div className="w-full flex flex-col items-center justify-center mb-5">
+              <div className="h-[250px] w-[250px]">
+                {isEditing ? ( // editing for pfp
+                  <div>
+                    <img
+                      src={imageURLs}
+                      alt={user.name}
+                      className="w-auto h-full rounded-[10px] object-cover aspect-square"
+                    />
+                    <button
+                      disabled={isUploading}
+                      onClick={() => {
+                        photoInputRef.current?.click();
+                      }}
+                    >
+                      {isUploading ? "Uploading..." : "Upload"}
+                    </button>
+                    <p>
+                      {tooLarge
+                        ? "Image is too large! Must be under 5MB"
+                        : "Images must be under 5MB"}
+                    </p>
+                    <input
+                      ref={photoInputRef}
+                      type="file"
+                      className="absolute right-[9999px]"
+                      id="imageInput"
+                      accept="image/png, image/jpeg"
+                      disabled={isUploading}
+                      onChange={(e) => {
+                        if (!e.target.files) return;
+                        // console.log(e.target.files);
+                        var fileOld = e.target.files[0];
+                        if (fileOld == null) {
+                          return;
+                        }
+                        if (fileOld.size > 500000) {
+                          setTooLarge(true);
+                          return;
+                        }
+                        setTooLarge(false);
+                        var oldName = fileOld.name;
+                        var name =
+                          user.id +
+                          "." +
+                          oldName.substring(
+                            oldName.lastIndexOf(".") + 1,
+                            oldName.length
+                          ); /* || oldName*/ // CHANGE TO CORRECT TYPE
+                        const renamedFile = new File([fileOld], name);
+                        // setSelectedImage(renamedFile); // its not null trust me bro
+                        queuedImage.pop(); // change queued image
+                        queuedImage.push(renamedFile);
+                        console.log(queuedImage);
+                        setImageURLs(URL.createObjectURL(renamedFile));
+                        console.log(imageURLs);
+                        console.log(renamedFile);
+                      }}
+                    ></input>
+                  </div>
+                ) : (
+                  // not editing for pfp
+                  <img
+                    src={user.user_profile_url}
+                    alt={user.name}
+                    className="w-auto h-full rounded-[10px] object-cover aspect-square"
+                  />
+                )}
+              </div>
 
-            <div className="w-full flex justify-between gap-5 mt-5">
-              {/* Bio Section */}
-              <div className="w-1/3 bg-[--grey1] rounded-xl p-5 text-white">
+              {/* name, major, year, team */}
+              {isEditing ? (
+                <>
+                  <input
+                    type="text"
+                    name="name"
+                    value={editedUser?.name || ""}
+                    onChange={handleChange}
+                    placeholder="Name"
+                    className="text-3xl font-bold text-center bg-[--dark2] text-[--popcol] border-b-2 border-[--popcol] outline-none"
+                  />
+
+                  <div className="flex justify-center gap-4">
+                    <input
+                      type="text"
+                      name="major"
+                      value={editedUser?.major || ""}
+                      onChange={handleChange}
+                      placeholder="Major"
+                      className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none"
+                    />
+                    <input
+                      type="text"
+                      name="year"
+                      value={editedUser?.graduation_year || ""}
+                      onChange={handleChange}
+                      placeholder="Year"
+                      className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none"
+                    />
+                  </div>
+
+                  <input
+                    type="text"
+                    name="team_area"
+                    value={editedUser?.team_area || ""}
+                    onChange={handleChange}
+                    placeholder="Team Area"
+                    className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
+                  />
+                </>
+              ) : (
+                <>
+                  <h1 className="text-3xl font-bold text-[--popcol]">
+                    {editedUser?.name || "No name provided"}
+                  </h1>
+                  <h2 className="text-xl font-bold text-white">
+                    {editedUser?.major || "Unknown Major"} Class of {editedUser?.graduation_year || "Unknown Year"}
+                  </h2>
+                  <h3 className="text-xl font-bold text-white mt-2">
+                    {editedUser?.team_area || "No team area specified"}
+                  </h3>
+                </>
+              )}
+            </div>
+
+            {/* bio, achievements, contact */}
+            <div className="w-full h-[100%] bg-[] flex flex-col justify-between gap-5 mb-10 pb-5 overflow-y-auto md:flex-row min-h-[200px]">
+              <div className="w-full md:w-1/3 h-[full] bg-[--grey1] rounded-xl p-5 text-white flex flex-col">
                 <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">
                   Bio
                 </h3>
-                <p>{user.biography || "No bio available."}</p>
+
+                <div className="overflow-y-auto h-[90%]">
+                  {isEditing ? (
+                    <textarea
+                      name="bio"
+                      value={editedUser?.biography || ""}
+                      onChange={handleChange}
+                      placeholder="Bio"
+                      className="w-full h-[90%] bg-[--dark2] text-[--popcol] outline-none p-2"
+                    />
+                  ) : (
+                    <p>{editedUser?.biography}</p>
+                  )}
+                </div>
               </div>
 
-              {/* Achievements Section */}
-              <div className="w-1/3 bg-[--grey1] rounded-xl p-5 text-white">
+              <div className="w-full md:w-1/3 h-[full] bg-[--grey1] rounded-xl p-5 text-white flex flex-col">
                 <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">
                   Achievements
                 </h3>
-                {achievements.length > 0 ? (
-                  <ul className="list-disc pl-5">
-                    {achievements.map((ach) => (
-                      <li key={ach.id}>
-                        <strong>{ach.name}</strong> - {ach.description}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No achievements listed.</p>
-                )}
+                <div className="overflow-y-auto h-[90%]">
+                  {isEditing ? (
+                    <>
+                      {(editedUser?.achievements || []).map(
+                        (achievement, index) => (
+                          <div
+                            key={achievement.id}
+                            className="w-full flex gap-2 justify-between pb-2"
+                          >
+                            <select
+                              className=""
+                              value={achievement.type}
+                              onChange={(e) =>
+                                handleAchievementChange(
+                                  index,
+                                  "type",
+                                  e.target.value
+                                )
+                              }
+                            >
+                              <option value="Pitches">Pitches</option>
+                              <option value="Grants">Grants</option>
+                              <option value="Accelerator">Accelerator</option>
+                              <option value="Other Achievements">
+                                Other Achievements
+                              </option>
+                            </select>
+
+                            <input
+                              className="text-xs w-[30%] bg-[--dark2] text-[--popcol] outline-none"
+                              type="text"
+                              value={achievement.name}
+                              placeholder="Name"
+                              onChange={(e) =>
+                                handleAchievementChange(
+                                  index,
+                                  "name",
+                                  e.target.value
+                                )
+                              }
+                            />
+
+                            <textarea
+                              className="text-xs w-[30%] bg-[--dark2] text-[--popcol] outline-none"
+                              value={achievement.description}
+                              placeholder="Description"
+                              onChange={(e) =>
+                                handleAchievementChange(
+                                  index,
+                                  "description",
+                                  e.target.value
+                                )
+                              }
+                            />
+
+                            <div className="flex justify-end">
+                              <button
+                                className="text-[--white] font-bold text-xl p-1 hover:text-[--popcol] rounded-md transition"
+                                onClick={() => handleAchievementDelete(index)}
+                              >
+                                X
+                              </button>
+                            </div>
+                          </div>
+                        )
+                      )}
+                      <button
+                        className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
+                           hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
+                        onClick={addAchievement}
+                      >
+                        Add
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      {(() => {
+                        const achievementsByType: Record<
+                          string,
+                          Achievement[]
+                        > = {};
+
+                        (editedUser?.achievements ?? []).forEach(
+                          (achievement) => {
+                            if (!achievementsByType[achievement.type]) {
+                              achievementsByType[achievement.type] = [];
+                            }
+                            achievementsByType[achievement.type].push(
+                              achievement
+                            );
+                          }
+                        );
+
+                        return Object.entries(achievementsByType).map(
+                          ([type, achievements]) => (
+                            <div key={type} className="mb-4">
+                              <h4 className="font-bold text-[--popcol]">
+                                {type}:
+                              </h4>
+                              {achievements.map((achievement) => (
+                                <div key={achievement.id} className="mb-2">
+                                  <p className="text-s">{achievement.name}</p>
+                                  <p className="text-xs">
+                                    {achievement.description}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          )
+                        );
+                      })()}
+                    </>
+                  )}
+                </div>
               </div>
 
-              {/* Contact Section */}
-              <div className="w-1/3 bg-[--grey1] rounded-xl p-5 text-white">
+              <div className="w-full md:w-1/3 h-[full] bg-[--grey1] rounded-xl p-5 text-white flex flex-col">
                 <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">
-                  Contact
+                  Contact Information
                 </h3>
-                {contactMethods.length > 0 ? (
-                  <ul>
-                    {contactMethods.map((contact) => (
-                      <li key={contact.id}>
-                        <strong>{contact.contact_type}:</strong> {contact.info}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No contact information provided.</p>
-                )}
+
+                <div className="overflow-y-auto h-[90%]">
+                  {isEditing ? (
+                    <textarea
+                      name="contact"
+                      value={editedUser?.contact || ""}
+                      onChange={handleChange}
+                      placeholder="Contact Information"
+                      className="w-full h-[90%] bg-[--dark2] text-[--popcol] outline-none p-2"
+                    />
+                  ) : (
+                    <p>{editedUser?.contact || "No contact information provided"}</p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Custom Delete Confirmation Modal */}
-      {showDeleteModal && (
-        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
-          <div className="bg-white p-5 rounded-lg w-1/3">
-            <h2 className="text-center text-xl font-bold mb-4">
-              Are you sure you want to delete this profile?
-            </h2>
-            <div className="flex justify-between gap-3">
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDelete}
-                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
