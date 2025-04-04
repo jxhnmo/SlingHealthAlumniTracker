@@ -30,7 +30,7 @@ const UserIndex: React.FC = () => {
     // const API_BASE_URL =
     //   process.env.NEXT_PUBLIC_API_BASE_URL ||
     //   "http://localhost:4000";
-    console.log(API_BASE_URL)
+    console.log("API BASE URL: " + API_BASE_URL)
     const loadUsersAndAchievements = async () => {
       try {
         const [usersResponse, achievementsResponse] = await Promise.all([
