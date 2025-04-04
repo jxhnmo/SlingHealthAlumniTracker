@@ -85,13 +85,15 @@ const EditProfile: React.FC = () => {
             console.log("Save to Pinata");
             const data = new FormData();
             data.set("file", selectedImage);
-            const uploadData = await pinata.upload.public.file(selectedImage);
-            const url = await pinata.gateways.public.convert(uploadData.cid);
-            // const imageResponse = await fetch("api/files", {
-            //     method: "POST",
-            //     body: data,
-            // });
-            const signedURL = url; // await imageResponse.json();
+            // const uploadData = await pinata.upload.public.file(selectedImage);
+            // const url = await pinata.gateways.public.convert(uploadData.cid);
+            console.log("get Pinata");
+            const imageResponse = await fetch("api/files", {
+                mode: "cors",
+                method: "POST",
+                body: data,
+            });
+            const signedURL = await imageResponse.json();
             setUser((prevUser) => ({ ...prevUser, ["user_profile_url"]: signedURL }));
             console.log(signedURL + " URL set");
         }
