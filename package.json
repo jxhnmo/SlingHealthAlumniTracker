@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "engines": {
     "node": "20.x",
-    "yarn": "1.22.x"
+    "yarn": "1.x"
   },
   "scripts": {
     "build": "cd frontend && yarn install && npx next build",
