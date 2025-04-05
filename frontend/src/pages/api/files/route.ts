@@ -17,26 +17,26 @@ export const config = {
 export async function POST(request: NextRequest) {
     // const multer = require("multer");
     try {
-        // console.log("await form data");
-        // const data = await request.formData();
-        // const file: File | null = data.get("file") as unknown as File;
-        // const uploadData = await pinata.upload.public.file(file);
-        // const url = await pinata.gateways.public.convert(uploadData.cid);
-        // console.log("file uploaded: " + file);
-        // // const storage = multer.diskStorage({
-        // //     destination: (request:any, file:any, cb:any) => {
-        // //         cb(null, "uploads/");
-        // //     },
-        // //     filename: (request:any, file:any, cb:any) => {
-        // //         cb(null, Date.now() + "test");
-        // //     }
-        // // });
-        // // const uploadData = //Upload data to wherever
-        // // const url = await ... // get image URL
-        // return NextResponse.json(url, { status: 200 });
+        console.log("await form data");
+        const data = await request.formData();
+        const file: File | null = data.get("file") as unknown as File;
+        const uploadData = await pinata.upload.public.file(file);
+        const url = await pinata.gateways.public.convert(uploadData.cid);
+        console.log("file" + file);
+        // const storage = multer.diskStorage({
+        //     destination: (request:any, file:any, cb:any) => {
+        //         cb(null, "uploads/");
+        //     },
+        //     filename: (request:any, file:any, cb:any) => {
+        //         cb(null, Date.now() + "test");
+        //     }
+        // });
+        // const uploadData = //Upload data to wherever
+        // const url = await ... // get image URL
+        return NextResponse.json(url, { status: 200 });
     }
-    catch (e) {
-        console.log("ERROR: " + e);
+    catch(e) {
+        console.log(e);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
