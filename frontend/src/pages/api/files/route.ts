@@ -1,5 +1,4 @@
-
-import { NextResponse, NextRequest } from "next/server";
+/*import { NextResponse, NextRequest } from "next/server";
 import { pinata } from "@/utils/config";
 // import express from "express";
 // import multer from "multer";
@@ -41,3 +40,4 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
+*/

@@ -29,9 +29,8 @@ interface ContactMethod {
 
 interface Team {
   id: number;
-  name: string;
-  area: string;
-  user_id: number;
+  team_name: string;
+  team_area: string;
 }
 
 const Profile: React.FC = () => {
@@ -59,11 +58,13 @@ const Profile: React.FC = () => {
           achievementsResponse,
           contactMethodsResponse,
           teamResponse,
+          teamsUsersResponse,
         ] = await Promise.all([
           fetch(`${API_BASE_URL}/users/${id}`),
           fetch(`${API_BASE_URL}/achievements`),
           fetch(`${API_BASE_URL}/contact_methods`),
-          fetch(`${API_BASE_URL}/team`),
+          fetch(`${API_BASE_URL}/teams`),
+          fetch(`${API_BASE_URL}/teams_users`),
         ]);
 
         if (!userResponse.ok) throw new Error("User not found");
@@ -72,13 +73,17 @@ const Profile: React.FC = () => {
         if (!contactMethodsResponse.ok)
           throw new Error("Failed to fetch contact methods");
         if (!teamResponse.ok) throw new Error("Failed to fetch team");
+        if (!teamsUsersResponse.ok)
+          throw new Error("Failed to fetch teams_users");
 
         const userData = await userResponse.json();
         const achievementsData: Achievement[] =
           await achievementsResponse.json();
         const contactMethodsData: ContactMethod[] =
           await contactMethodsResponse.json();
-        const teamData = await teamResponse.json();
+        const teamData: Team[] = await teamResponse.json();
+        const teamsUsersData: { user_id: number; team_id: number }[] =
+          await teamsUsersResponse.json();
 
         setUser(userData);
         setAchievements(
@@ -87,7 +92,14 @@ const Profile: React.FC = () => {
         setContactMethods(
           contactMethodsData.filter((contact) => contact.user_id === Number(id))
         );
-        setTeam(teamData);
+        setTeam(
+          teamData.filter((team) =>
+            teamsUsersData.some(
+              (tu) => tu.user_id === Number(id) && tu.team_id === team.id
+            )
+          )[0]
+        );
+
         setLoading(false);
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -152,7 +164,7 @@ const Profile: React.FC = () => {
             </h2>
             {team ? (
               <h3 className="text-xl font-bold text-white mt-2">
-                {team.name} - {team.area}
+                {team.team_name} - {team.team_area}
               </h3>
             ) : (
               <h3 className="text-xl font-bold text-white mt-2">

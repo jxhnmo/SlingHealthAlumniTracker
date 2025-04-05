@@ -1,5 +1,7 @@
 class User < ApplicationRecord
     devise :database_authenticatable, :registerable, :omniauthable, omniauth_providers: [:google_oauth2]
+    has_many :teams_users
+    has_many :teams, through: :teams_users
   
     def self.from_google(auth)
       user = User.find_or_initialize_by(email: auth.info.email)
