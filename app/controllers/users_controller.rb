@@ -1,5 +1,4 @@
 class UsersController < ApplicationController
-  # skip_before_action :authenticate_admin!, only: [:index, :show, :update]
   before_action :set_user, only: %i[ show update destroy create]
 
   # GET /users
