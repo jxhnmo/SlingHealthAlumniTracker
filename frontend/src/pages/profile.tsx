@@ -369,7 +369,7 @@ const Profile: React.FC = () => {
                       name="biography"
                       value={editedUser.biography}
                       onChange={handleChange}
-                      placeholder="Bio"
+                      placeholder="Biography"
                       className="w-full h-[90%] bg-[--dark2] text-[--popcol] outline-none p-2"
                     />
                   ) : (

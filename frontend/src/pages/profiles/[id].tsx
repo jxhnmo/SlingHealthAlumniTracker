@@ -5,10 +5,10 @@ import Link from "next/link";
 
 interface Achievement {
   id: number;
-  type: "Pitches" | "Grants" | "Accelerator" | "Other Achievements";
+  achievement_type: "Pitches" | "Grants" | "Accelerator" | "Other Achievements";
   name: string;
   description: string;
-  checked: boolean;
+  // checked: boolean;
   user_id: number;
 }
 
@@ -24,7 +24,7 @@ interface User {
   isfaculty?: boolean;
   achievements?: Achievement[];
   contact?: string;
-  mentorship?: boolean;
+  availability?: boolean;
 }
 
 interface ContactMethod {
@@ -102,22 +102,23 @@ const Profile: React.FC = () => {
     }
   };
   const handleSave = async () => {
+    //u guys need to set this up
     try {
       if (!user || !editedUser) {
         console.error("User or editedUser is null");
         return;
       }
-
+  
       console.log("Edited User:", editedUser); // Debugging log
-
+  
       const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editedUser),
       });
-
+  
       if (!response.ok) throw new Error("Failed to update profile");
-
+  
       const updatedUser = await response.json();
       setUser(updatedUser);
       setEditedUser(updatedUser);
@@ -144,7 +145,7 @@ const Profile: React.FC = () => {
       [name]: value, // this works dynamically — as long as the name matches a valid field
     }));
   };
-  
+
   const handleAchievementChange = (
     index: number,
     field: keyof Achievement,
@@ -169,11 +170,11 @@ const Profile: React.FC = () => {
           ...(editedUser.achievements || []),
           {
             id: Date.now(), // Ensure id is a number
-            type: "Accelerator",
+            achievement_type: "Accelerator",
             name: "",
             description: "",
-            checked: false,
-            user_id: editedUser.id, // Ensure user_id is set appropriately
+            // checked: false,
+            user_id: editedUser.id, 
           },
         ],
       });
@@ -256,7 +257,7 @@ const Profile: React.FC = () => {
   if (error) return <div>{error}</div>;
   if (!user) return <div>User not found</div>;
 
-  const canEdit = currentUserId === user.id || isFaculty;
+  const canEdit = (currentUserId === user.id || isFaculty);
 
   return (
     <div className="relative w-screen h-screen flex justify-center items-center">
@@ -335,12 +336,12 @@ const Profile: React.FC = () => {
                   <input
                     id="mentorship-checkbox"
                     type="checkbox"
-                    checked={editedUser?.mentorship || false}
+                    checked={editedUser?.availability || false}
                     onChange={(e) => {
                       editedUser &&
                         setEditedUser({
                           ...editedUser,
-                          mentorship: e.target.checked,
+                          availability: e.target.checked,
                         });
                     }
                     }
@@ -348,15 +349,15 @@ const Profile: React.FC = () => {
                   />
                 </div>
               ) : (
-                editedUser?.isfaculty && (
+                editedUser?.availability && (
                   <div className="px-4 py-2 bg-[--popcol] text-[--background] rounded-md shadow-lg">
                     Mentor
                   </div>
                 )
               )}
             </div>
-
-            {currentUserId === user.id && isFaculty && (
+             
+            {(currentUserId === user.id || isFaculty) && (
               <button
                 onClick={isEditing ? handleSave : handleEdit}
                 className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
@@ -530,11 +531,11 @@ const Profile: React.FC = () => {
                           >
                             <select
                               className=""
-                              value={achievement.type}
+                              value={achievement.achievement_type}
                               onChange={(e) =>
                                 handleAchievementChange(
                                   index,
-                                  "type",
+                                  "achievement_type",
                                   e.target.value
                                 )
                               }
@@ -603,10 +604,10 @@ const Profile: React.FC = () => {
 
                         (editedUser?.achievements ?? []).forEach(
                           (achievement) => {
-                            if (!achievementsByType[achievement.type]) {
-                              achievementsByType[achievement.type] = [];
+                            if (!achievementsByType[achievement.achievement_type]) {
+                              achievementsByType[achievement.achievement_type] = [];
                             }
-                            achievementsByType[achievement.type].push(
+                            achievementsByType[achievement.achievement_type].push(
                               achievement
                             );
                           }

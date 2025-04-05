@@ -1,10 +1,9 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ show update destroy create]
+  before_action :set_user, only: %i[show update destroy]
 
   # GET /users
   def index
     @users = User.all
-
     render json: @users
   end
 
@@ -26,6 +25,7 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
+    Rails.logger.debug "Parameters22222222222: #{params.inspect}"
     if @user.update(user_params)
       render json: @user
     else
@@ -39,13 +39,18 @@ class UsersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user
-      @user = User.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def user_params
-      params.require(:user).permit(:name, :email, :major, :graduation_year, :user_profile_url, :biography, :contact_info)
-    end
+  def set_user
+    @user = User.find(params[:id])
+  end
+
+  def user_params
+  params.require(:user).permit(
+    :name, :email, :major, :graduation_year,
+    :user_profile_url, :biography, :contact_info,
+    :availability, :isfaculty,
+    achievements_attributes: [:id, :name, :description, :achievement_type, :user_id, :_destroy]
+  )
+end
+
 end

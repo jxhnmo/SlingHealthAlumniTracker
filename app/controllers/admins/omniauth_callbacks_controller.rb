@@ -11,8 +11,8 @@ class Admins::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       user_params = from_google_params.merge(id: user.id)
       token = Admin.generate_jwt(admin)
 
-      # redirect_to "http://localhost:4000/login?user=#{Base64.urlsafe_encode64(user_params.to_json)}&token=#{token}"
-      redirect_to "https://alumni-tracker-sprint3-84062556e525.herokuapp.com/login?user=#{Base64.urlsafe_encode64(user_params.to_json)}&token=#{token}"
+      redirect_to "http://localhost:4000/login?user=#{Base64.urlsafe_encode64(user_params.to_json)}&token=#{token}"
+      # redirect_to "https://alumni-tracker-sprint3-84062556e525.herokuapp.com/login?user=#{Base64.urlsafe_encode64(user_params.to_json)}&token=#{token}"
 
     else
       flash[:alert] = t 'devise.omniauth_callbacks.failure', kind: 'Google', reason: "#{auth.info.email} is not authorized."
@@ -49,6 +49,10 @@ class Admins::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     user.graduation_year ||= 0
     user.user_profile_url ||= "/profilePix/default.jpg"
     user.biography ||= ""
+    user.contact_info ||= ""
+    user.availability ||= false 
+    user.isfaculty ||= false 
+
   end
   end
 end
