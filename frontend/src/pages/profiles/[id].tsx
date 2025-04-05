@@ -108,17 +108,17 @@ const Profile: React.FC = () => {
         console.error("User or editedUser is null");
         return;
       }
-  
+
       console.log("Edited User:", editedUser); // Debugging log
-  
+
       const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editedUser),
       });
-  
+
       if (!response.ok) throw new Error("Failed to update profile");
-  
+
       const updatedUser = await response.json();
       setUser(updatedUser);
       setEditedUser(updatedUser);
@@ -174,7 +174,7 @@ const Profile: React.FC = () => {
             name: "",
             description: "",
             // checked: false,
-            user_id: editedUser.id, 
+            user_id: editedUser.id,
           },
         ],
       });
@@ -356,15 +356,24 @@ const Profile: React.FC = () => {
                 )
               )}
             </div>
-             
+
             {(currentUserId === user.id || isFaculty) && (
-              <button
-                onClick={isEditing ? handleSave : handleEdit}
-                className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
-                           hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
-              >
-                {isEditing ? "Save" : "Edit"}
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={isEditing ? handleSave : handleEdit}
+                  className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
+                             hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
+                >
+                  {isEditing ? "Save" : "Edit"}
+                </button>
+                <button
+                  onClick={() => setShowDeleteModal(true)} // Trigger the modal
+                  className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
+                             hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
+                >
+                  Delete Profile
+                </button>
+              </div>
             )}
           </div>
 
@@ -659,6 +668,31 @@ const Profile: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Custom Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
+          <div className="bg-white p-5 rounded-lg w-1/3">
+            <h2 className="text-center text-xl font-bold mb-4">
+              Are you sure you want to delete this profile?
+            </h2>
+            <div className="flex justify-between gap-3">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
