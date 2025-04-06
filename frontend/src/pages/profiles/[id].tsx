@@ -720,73 +720,72 @@ const Profile: React.FC = () => {
                   )}
                 </div>
               </div>
-            </div>
+              <div className="w-full md:w-1/3 h-[full] bg-[--grey1] rounded-xl p-5 text-white flex flex-col">
+                <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">
+                  Contact Information
+                </h3>
 
-            <div className="w-full md:w-1/3 h-[full] bg-[--grey1] rounded-xl p-5 text-white flex flex-col">
-              <h3 className="text-lg font-bold mb-3 text-center text-[--popcol]">
-                Contact Information
-              </h3>
+                <div className="overflow-y-auto h-[90%]">
+                  {isEditing ? (
+                    <>
+                      {(editedUser?.contacts || []).map((contact, index) => (
+                        <div
+                          key={contact.id}
+                          className="w-full flex gap-2 justify-between pb-2"
+                        >
+                          <input
+                            className="text-xs w-[30%] bg-[--dark2] text-[--popcol] outline-none"
+                            type="text"
+                            value={contact.contact_type}
+                            placeholder="Contact Type"
+                          />
+                          <label>
+                            Link?
+                            <input type="checkbox" checked={contact.link} />
+                          </label>
+                          <textarea
+                            className="text-xs w-[30%] bg-[--dark2] text-[--popcol] outline-none"
+                            value={contact.info}
+                            placeholder="Contact Info"
+                          />
 
-              <div className="overflow-y-auto h-[90%]">
-                {isEditing ? (
-                  <>
-                    {(editedUser?.contacts || []).map((contact, index) => (
-                      <div
-                        key={contact.id}
-                        className="w-full flex gap-2 justify-between pb-2"
-                      >
-                        <input
-                          className="text-xs w-[30%] bg-[--dark2] text-[--popcol] outline-none"
-                          type="text"
-                          value={contact.contact_type}
-                          placeholder="Contact Type"
-                        />
-                        <label>
-                          Link?
-                          <input type="checkbox" checked={contact.link} />
-                        </label>
-                        <textarea
-                          className="text-xs w-[30%] bg-[--dark2] text-[--popcol] outline-none"
-                          value={contact.info}
-                          placeholder="Contact Info"
-                        />
-
-                        <div className="flex justify-end">
-                          <button className="text-[--white] font-bold text-xl p-1 hover:text-[--popcol] rounded-md transition">
-                            X
-                          </button>
+                          <div className="flex justify-end">
+                            <button className="text-[--white] font-bold text-xl p-1 hover:text-[--popcol] rounded-md transition">
+                              X
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                    <button
-                      className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
+                      ))}
+                      <button
+                        className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
                            hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
-                    >
-                      Add
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    {(editedUser?.contacts || []).map((contact, index) => (
-                      <div key={index} className="mb-4">
-                        <div key={contact.id} className="mb-2">
-                          <p className="text-s">{contact.contact_type}</p>
-                          {contact.link ? (
-                            <a
-                              className="text-xs"
-                              href={contact.info}
-                              target="_blank"
-                            >
-                              {contact.info}
-                            </a>
-                          ) : (
-                            <p className="text-xs">{contact.info}</p>
-                          )}
+                      >
+                        Add
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      {(editedUser?.contacts || []).map((contact, index) => (
+                        <div key={index} className="mb-4">
+                          <div key={contact.id} className="mb-2">
+                            <p className="text-s">{contact.contact_type}</p>
+                            {contact.link ? (
+                              <a
+                                className="text-xs"
+                                href={contact.info}
+                                target="_blank"
+                              >
+                                {contact.info}
+                              </a>
+                            ) : (
+                              <p className="text-xs">{contact.info}</p>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </>
-                )}
+                      ))}
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>
