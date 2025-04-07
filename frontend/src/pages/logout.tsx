@@ -6,8 +6,8 @@ const Logout: React.FC = () => {
 
   useEffect(() => {
     localStorage.removeItem("user");
-    // router.push("https://alumni-tracker-sprint3-84062556e525.herokuapp.com");
-    router.push("http://localhost:3000");
+    router.push("https://alumni-tracker-sprint3-84062556e525.herokuapp.com");
+    // router.push("http://localhost:3000");
   }, [router]);
 
   return (

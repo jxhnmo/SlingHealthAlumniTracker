@@ -366,13 +366,15 @@ const Profile: React.FC = () => {
                 >
                   {isEditing ? "Save" : "Edit"}
                 </button>
-                <button
-                  onClick={() => setShowDeleteModal(true)} // Trigger the modal
-                  className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
+                {!isEditing && ( 
+                  <button
+                    onClick={() => setShowDeleteModal(true)}
+                    className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
                              hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
-                >
-                  Delete Profile
-                </button>
+                  >
+                    Delete Profile
+                  </button>
+                )}
               </div>
             )}
           </div>
