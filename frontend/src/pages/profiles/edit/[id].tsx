@@ -30,9 +30,9 @@ const EditProfile: React.FC = () => {
 
 
     useEffect(() => {
-        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
-    // useEffect(() => {
-    //     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
+        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint3-84062556e525.herokuapp.com";
+        // useEffect(() => {
+        //     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
         if (!id) return;
 
         const fetchData = async () => {
@@ -71,7 +71,7 @@ const EditProfile: React.FC = () => {
     };
 
     const handleImageUpdate = () => {
-        setUser((prevUser) => ({ ...prevUser, "user_profile_url": imageURLs}))
+        setUser((prevUser) => ({ ...prevUser, "user_profile_url": imageURLs }))
     }
 
     const handleSave = async () => {
@@ -88,7 +88,7 @@ const EditProfile: React.FC = () => {
             graduation_year: Number(user.graduation_year),
         };
 
-        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
+        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint3-84062556e525.herokuapp.com";
         console.log("User data being sent:", JSON.stringify(updatedUser));
 
         try {
@@ -142,9 +142,9 @@ const EditProfile: React.FC = () => {
                 <button
                     disabled={isUploading}
                     onClick={() => {
-                      photoInputRef.current?.click();
+                        photoInputRef.current?.click();
                     }
-                  }>{isUploading ? "Uploading..." : "Upload"}
+                    }>{isUploading ? "Uploading..." : "Upload"}
                 </button>
                 <p>{tooLarge ? "Image is too large! Must be under 5MB" : "Images must be under 5MB"}</p>
                 <input ref={photoInputRef}
@@ -153,18 +153,18 @@ const EditProfile: React.FC = () => {
                     id="imageInput"
                     accept="image/png, image/jpeg"
                     disabled={isUploading}
-                    onChange={ (e) => {
+                    onChange={(e) => {
                         // console.log(e.target.files);
                         try {
-                            if(!e.target.files) return;
+                            if (!e.target.files) return;
                             var fileOld = e.target.files[0];
-                            if(fileOld.size > 500000) {
+                            if (fileOld.size > 500000) {
                                 setTooLarge(true);
                                 return;
                             }
                             setTooLarge(false);
                             var oldName = fileOld.name;
-                            var name = user.id + "." + oldName.substring(oldName.lastIndexOf('.')+1, oldName.length)/* || oldName*/; // CHANGE TO CORRECT TYPE
+                            var name = user.id + "." + oldName.substring(oldName.lastIndexOf('.') + 1, oldName.length)/* || oldName*/; // CHANGE TO CORRECT TYPE
                             const renamedFile = new File([fileOld], name);
                             // setSelectedImage(renamedFile); // its not null trust me bro
                             queuedImage.pop(); // change queued image
@@ -175,10 +175,10 @@ const EditProfile: React.FC = () => {
                             console.log(imageURLs);
                             console.log(renamedFile);
                         }
-                        catch(e) {
+                        catch (e) {
                             console.error(e);
                         }
-                        
+
                     }}>
                 </input>
 

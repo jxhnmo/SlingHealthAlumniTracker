@@ -26,7 +26,7 @@ const UserIndex: React.FC = () => {
   useEffect(() => {
     const API_BASE_URL =
       process.env.NEXT_PUBLIC_API_BASE_URL ||
-      "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
+      "https://alumni-tracker-sprint3-84062556e525.herokuapp.com";
     // const API_BASE_URL =
     //   process.env.NEXT_PUBLIC_API_BASE_URL ||
     //   "http://localhost:4000";
