@@ -25,6 +25,7 @@ interface User {
   achievements?: Achievement[];
   contact?: string;
   availability?: boolean;
+  achievements_attributes?: Omit<Achievement, 'id'>[]; // Add this property
 }
 
 interface ContactMethod {
@@ -102,31 +103,48 @@ const Profile: React.FC = () => {
     }
   };
   const handleSave = async () => {
-    //u guys need to set this up
     try {
       if (!user || !editedUser) {
         console.error("User or editedUser is null");
         return;
       }
-
-      console.log("Edited User:", editedUser); // Debugging log
-
+  
+      // Ensure there are no duplicate achievements based on 'name' (or another unique field)
+      const cleanedAchievements = (editedUser.achievements || []).map((achievement) => {
+        const { id, ...rest } = achievement;
+  
+        // Check if an achievement with the same name already exists
+        const exists = (editedUser.achievements ?? []).some(
+          (existingAchievement) => existingAchievement.name === achievement.name && existingAchievement.id !== achievement.id
+        );
+        // If it exists, return null to avoid adding it, otherwise return the cleaned achievement
+        return exists ? null : rest;
+      }).filter(Boolean); // Filter out null values
+  
+      // Attach achievements_attributes for Rails nested update
+      editedUser.achievements_attributes = cleanedAchievements.filter(
+        (achievement): achievement is Omit<Achievement, 'id'> => achievement !== null
+      );
+  
+      console.log("Edited user being sent:", JSON.stringify(editedUser));
+  
       const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editedUser),
+        body: JSON.stringify({ user: editedUser }),
       });
-
+  
       if (!response.ok) throw new Error("Failed to update profile");
-
-      const updatedUser = await response.json();
-      setUser(updatedUser);
-      setEditedUser(updatedUser);
+  
+      // ✅ Refetch all fresh data to ensure achievements get populated
+      await fetchData();
+  
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating profile:", error);
     }
   };
+  
   const handleEdit = () => {
     setIsEditing(true);
   };
@@ -161,25 +179,29 @@ const Profile: React.FC = () => {
       setEditedUser({ ...editedUser, achievements: updatedAchievements } as User);
     }
   };
+  
 
   const addAchievement = () => {
-    if (editedUser && editedUser.id) {
-      setEditedUser({
-        ...editedUser,
+    setEditedUser((prevUser) => {
+      if (!prevUser) return prevUser;
+  
+      return {
+        ...prevUser,
         achievements: [
-          ...(editedUser.achievements || []),
+          ...(prevUser.achievements || []),
           {
-            id: Date.now(), // Ensure id is a number
+            id: Date.now(), // temporary local ID
             achievement_type: "Accelerator",
             name: "",
             description: "",
-            // checked: false,
-            user_id: editedUser.id,
+            user_id: prevUser.id,
           },
         ],
-      });
-    }
+      };
+    });
   };
+  
+  
   const handleAchievementDelete = (index: number) => {
     if (!editedUser) return;
     const updatedAchievements = [...(editedUser.achievements || [])];
@@ -209,12 +231,16 @@ const Profile: React.FC = () => {
       const userData = await userResponse.json();
       const achievementsData: Achievement[] = await achievementsResponse.json();
       const contactMethodsData: ContactMethod[] = await contactMethodsResponse.json();
-
+      const filteredAchievements = achievementsData.filter(
+        (ach) => ach.user_id === Number(id)
+      );
+      
       setUser(userData);
       setEditedUser(userData);
       setAchievements(
         achievementsData.filter((ach) => ach.user_id === Number(id))
       );
+      setEditedUser({ ...userData, achievements: filteredAchievements });
       setContactMethods(
         contactMethodsData.filter((contact) => contact.user_id === Number(id))
       );

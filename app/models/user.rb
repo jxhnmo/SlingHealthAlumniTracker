@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :omniauthable, omniauth_providers: [:google_oauth2]
 
-  has_many :achievements
+  has_many :achievements, dependent: :destroy
   accepts_nested_attributes_for :achievements, allow_destroy: true
 
   def self.from_google(auth)
