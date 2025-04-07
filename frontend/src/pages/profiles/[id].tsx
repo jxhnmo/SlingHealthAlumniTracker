@@ -5,10 +5,10 @@ import Link from "next/link";
 
 interface Achievement {
   id: number;
-  type: "Pitches" | "Grants" | "Accelerator" | "Other Achievements";
+  achievement_type: "Pitches" | "Grants" | "Accelerator" | "Other Achievements";
   name: string;
   description: string;
-  checked: boolean;
+  // checked: boolean;
   user_id: number;
 }
 
@@ -24,7 +24,7 @@ interface User {
   isfaculty?: boolean;
   achievements?: Achievement[];
   contact?: string;
-  mentorship?: boolean;
+  availability?: boolean;
 }
 
 interface ContactMethod {
@@ -102,6 +102,7 @@ const Profile: React.FC = () => {
     }
   };
   const handleSave = async () => {
+    //u guys need to set this up
     try {
       if (!user || !editedUser) {
         console.error("User or editedUser is null");
@@ -144,7 +145,7 @@ const Profile: React.FC = () => {
       [name]: value, // this works dynamically — as long as the name matches a valid field
     }));
   };
-  
+
   const handleAchievementChange = (
     index: number,
     field: keyof Achievement,
@@ -169,11 +170,11 @@ const Profile: React.FC = () => {
           ...(editedUser.achievements || []),
           {
             id: Date.now(), // Ensure id is a number
-            type: "Accelerator",
+            achievement_type: "Accelerator",
             name: "",
             description: "",
-            checked: false,
-            user_id: editedUser.id, // Ensure user_id is set appropriately
+            // checked: false,
+            user_id: editedUser.id,
           },
         ],
       });
@@ -256,7 +257,7 @@ const Profile: React.FC = () => {
   if (error) return <div>{error}</div>;
   if (!user) return <div>User not found</div>;
 
-  const canEdit = currentUserId === user.id || isFaculty;
+  const canEdit = (currentUserId === user.id || isFaculty);
 
   return (
     <div className="relative w-screen h-screen flex justify-center items-center">
@@ -335,12 +336,12 @@ const Profile: React.FC = () => {
                   <input
                     id="mentorship-checkbox"
                     type="checkbox"
-                    checked={editedUser?.mentorship || false}
+                    checked={editedUser?.availability || false}
                     onChange={(e) => {
                       editedUser &&
                         setEditedUser({
                           ...editedUser,
-                          mentorship: e.target.checked,
+                          availability: e.target.checked,
                         });
                     }
                     }
@@ -348,7 +349,7 @@ const Profile: React.FC = () => {
                   />
                 </div>
               ) : (
-                editedUser?.isfaculty && (
+                editedUser?.availability && (
                   <div className="px-4 py-2 bg-[--popcol] text-[--background] rounded-md shadow-lg">
                     Mentor
                   </div>
@@ -356,14 +357,25 @@ const Profile: React.FC = () => {
               )}
             </div>
 
-            {currentUserId === user.id && isFaculty && (
-              <button
-                onClick={isEditing ? handleSave : handleEdit}
-                className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
-                           hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
-              >
-                {isEditing ? "Save" : "Edit"}
-              </button>
+            {(currentUserId === user.id || isFaculty) && (
+              <div className="flex gap-2">
+                <button
+                  onClick={isEditing ? handleSave : handleEdit}
+                  className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
+                             hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
+                >
+                  {isEditing ? "Save" : "Edit"}
+                </button>
+                {!isEditing && ( 
+                  <button
+                    onClick={() => setShowDeleteModal(true)}
+                    className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
+                             hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
+                  >
+                    Delete Profile
+                  </button>
+                )}
+              </div>
             )}
           </div>
 
@@ -530,11 +542,11 @@ const Profile: React.FC = () => {
                           >
                             <select
                               className=""
-                              value={achievement.type}
+                              value={achievement.achievement_type}
                               onChange={(e) =>
                                 handleAchievementChange(
                                   index,
-                                  "type",
+                                  "achievement_type",
                                   e.target.value
                                 )
                               }
@@ -603,10 +615,10 @@ const Profile: React.FC = () => {
 
                         (editedUser?.achievements ?? []).forEach(
                           (achievement) => {
-                            if (!achievementsByType[achievement.type]) {
-                              achievementsByType[achievement.type] = [];
+                            if (!achievementsByType[achievement.achievement_type]) {
+                              achievementsByType[achievement.achievement_type] = [];
                             }
-                            achievementsByType[achievement.type].push(
+                            achievementsByType[achievement.achievement_type].push(
                               achievement
                             );
                           }
@@ -658,6 +670,31 @@ const Profile: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Custom Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
+          <div className="bg-white p-5 rounded-lg w-1/3">
+            <h2 className="text-center text-xl font-bold mb-4">
+              Are you sure you want to delete this profile?
+            </h2>
+            <div className="flex justify-between gap-3">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

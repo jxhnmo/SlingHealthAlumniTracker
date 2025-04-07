@@ -49,6 +49,10 @@ class Admins::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     user.graduation_year ||= 0
     user.user_profile_url ||= "/profilePix/default.jpg"
     user.biography ||= ""
+    user.contact_info ||= ""
+    user.availability ||= false 
+    user.isfaculty ||= false 
+
   end
   end
 end
