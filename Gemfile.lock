@@ -284,6 +284,7 @@ DEPENDENCIES
   debug
   devise
   dotenv-rails
+  jwt
   omniauth
   omniauth-google-oauth2
   omniauth-rails_csrf_protection
