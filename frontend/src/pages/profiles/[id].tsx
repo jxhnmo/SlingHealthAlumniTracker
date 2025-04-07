@@ -430,7 +430,7 @@ const Profile: React.FC = () => {
                 )
               )}
             </div>
-            {currentUserId === user.id && isFaculty && (
+            {(currentUserId === user.id || isFaculty) && (
               <button
                 onClick={isEditing ? handleSave : handleEdit}
                 className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
