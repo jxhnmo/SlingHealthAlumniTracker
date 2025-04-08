@@ -12,7 +12,10 @@ interface Users {
 
 interface Achievement {
   id: number;
+  achievement_type: "Pitches" | "Grants" | "Accelerator" | "Other Achievements";
   name: string;
+  description: string;
+  // checked: boolean;
   user_id: number;
 }
 
@@ -22,6 +25,8 @@ const UserIndex: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [achievementSelector, setAchievementSelector] = useState("");
+  const [achievementSearch, setAchievementSearch] = useState(false);
 
   useEffect(() => {
     const API_BASE_URL =
@@ -65,8 +70,14 @@ const UserIndex: React.FC = () => {
       const achievementMatches = userAchievements.some((ach) =>
         ach.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
+      const achievementTypeMatches =
+        !achievementSearch ||
+        (!achievementSelector && userAchievements.length > 0) ||
+        userAchievements.some(
+          (ach) => ach.achievement_type === achievementSelector
+        );
 
-      return userMatches || achievementMatches;
+      return (userMatches || achievementMatches) && achievementTypeMatches;
     })
     .sort((a, b) => a.name.localeCompare(b.name));
 
@@ -101,6 +112,31 @@ const UserIndex: React.FC = () => {
         </div>
 
         <div>
+          <label className="mr-2 text-white">Options:</label>
+          <input
+            type="checkbox"
+            checked={achievementSearch}
+            onChange={(e) => setAchievementSearch(e.target.checked)}
+            className="mr-2"
+          />
+          {achievementSearch ? (
+            <select
+              className="mr-2"
+              value={achievementSelector}
+              onChange={(e) => {
+                setAchievementSelector(e.target.value);
+              }}
+            >
+              <option value="">All Achievements</option>
+              <option value="Pitches">Pitches</option>
+              <option value="Grants">Grants</option>
+              <option value="Accelerator">Accelerator</option>
+              <option value="Other Achievements">Other Achievements</option>
+            </select>
+          ) : (
+            <></>
+          )}
+
           <input
             type="text"
             placeholder="Search by name or achievement..."
@@ -112,7 +148,11 @@ const UserIndex: React.FC = () => {
         <div className="w-[80%] h-[80%] bg-[--dark2] rounded-2xl shadow-xl p-[2%]">
           <div className="gap-[12px] h-[100%] flex flex-col overflow-y-scroll overflow-x-hidden relative">
             {filteredUsers.map((user) => (
-              <Link href={`/profiles/${user.id}`} key={user.id} className="relative w-full h-[20%] border-4 border-[--grey1] rounded-[15px] cursor-pointer hover:border-[--popcol] hover:text-[--popcol] flex">
+              <Link
+                href={`/profiles/${user.id}`}
+                key={user.id}
+                className="relative w-full h-[20%] border-4 border-[--grey1] rounded-[15px] cursor-pointer hover:border-[--popcol] hover:text-[--popcol] flex"
+              >
                 <div className="w-[auto] min-w-[64px] h-full flex flex-col">
                   <img
                     src={user.user_profile_url}
