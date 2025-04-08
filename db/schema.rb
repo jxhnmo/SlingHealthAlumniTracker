@@ -21,6 +21,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_13_170341) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "achievement_type", limit: 20, default: "Other Achievements", null: false
     t.index ["user_id"], name: "index_achievements_on_user_id"
   end
 
@@ -43,6 +44,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_13_170341) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_link", default: false
     t.index ["user_id"], name: "index_contact_methods_on_user_id"
   end
 
@@ -52,6 +54,16 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_13_170341) do
     t.string "link"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "teams", id: :serial, force: :cascade do |t|
+    t.string "team_name", limit: 255, null: false
+    t.string "team_area", limit: 255, null: false
+  end
+
+  create_table "teams_users", primary_key: ["user_id", "team_id"], force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "team_id", null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -64,8 +76,12 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_13_170341) do
     t.string "email", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "availability", default: true, null: false
+    t.boolean "isfaculty", default: false, null: false
   end
 
   add_foreign_key "achievements", "users"
   add_foreign_key "contact_methods", "users"
+  add_foreign_key "teams_users", "teams", name: "teams_users_team_id_fkey", on_delete: :cascade
+  add_foreign_key "teams_users", "users", name: "teams_users_user_id_fkey", on_delete: :cascade
 end

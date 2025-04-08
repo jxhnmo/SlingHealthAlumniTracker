@@ -32,6 +32,14 @@ class UsersController < ApplicationController
         end
       end
     end
+
+    if params[:user][:contacts_attributes].present?
+      params[:user][:contact_methods_attributes].each do |contact_params|
+        if contact_params[:id].blank?
+          contact_params[:user_id] = @user.id
+        end
+      end
+    end
   
     if @user.update(user_params)
       render json: @user
@@ -63,7 +71,8 @@ class UsersController < ApplicationController
       :contact_info,
       :availability, 
       :isfaculty,
-      achievements_attributes: [:id, :achievement_type, :name, :description, :user_id, :_destroy]
+      achievements_attributes: [:id, :achievement_type, :name, :description, :user_id, :_destroy],
+      contact_methods_attributes: [:id, :contact_type, :info, :user_id, :is_link, :_destroy]
     )
     
   end
