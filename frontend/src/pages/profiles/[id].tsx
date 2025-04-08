@@ -53,7 +53,7 @@ const Profile: React.FC = () => {
   const [imageURLs, setImageURLs] = React.useState<string>(
     user?.user_profile_url || ""
   ); // user profile URL by default
-  const [selectedImage, setSelectedImage] = React.useState(null);
+  const [selectedImage, setSelectedImage] = React.useState<File | null>(null);
   let queuedImage: File[] = []; // queue with only 1 element
 
   const API_BASE_URL =
@@ -438,7 +438,7 @@ const Profile: React.FC = () => {
                             oldName.length
                           ); /* || oldName*/ // CHANGE TO CORRECT TYPE
                         const renamedFile = new File([fileOld], name);
-                        // setSelectedImage(renamedFile); // its not null trust me bro
+                        setSelectedImage(renamedFile); // its not null trust me bro
                         queuedImage.pop(); // change queued image
                         queuedImage.push(renamedFile);
                         console.log(queuedImage);
