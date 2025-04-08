@@ -109,22 +109,29 @@ const Profile: React.FC = () => {
         return;
       }
   
-      // Ensure there are no duplicate achievements based on 'name' (or another unique field)
-      const cleanedAchievements = (editedUser.achievements || []).map((achievement) => {
-        const { id, ...rest } = achievement;
-  
-        // Check if an achievement with the same name already exists
-        const exists = (editedUser.achievements ?? []).some(
-          (existingAchievement) => existingAchievement.name === achievement.name && existingAchievement.id !== achievement.id
-        );
-        // If it exists, return null to avoid adding it, otherwise return the cleaned achievement
-        return exists ? null : rest;
-      }).filter(Boolean); // Filter out null values
-  
-      // Attach achievements_attributes for Rails nested update
-      editedUser.achievements_attributes = cleanedAchievements.filter(
-        (achievement): achievement is Omit<Achievement, 'id'> => achievement !== null
+      // 🔍 Validate achievements have non-empty name and description
+      const invalidAchievement = (editedUser.achievements || []).find(
+        (achievement) =>
+          !achievement.name.trim() || !achievement.description.trim()
       );
+  
+      if (invalidAchievement) {
+        // 🧃 Basic version
+        alert("Please fill out both name and description for all achievements.");
+        
+        // 🧈 Fancy toast version (if using react-toastify)
+        // toast.error("Please fill out both name and description for all achievements.");
+        
+        return;
+      }
+  
+      // 🧽 Prepare updated achievements for Rails nested update
+      const updatedAchievements = (editedUser.achievements || []).map((achievement) => {
+        const { id, ...rest } = achievement;
+        return { id, ...rest };
+      });
+  
+      editedUser.achievements_attributes = updatedAchievements;
   
       console.log("Edited user being sent:", JSON.stringify(editedUser));
   
@@ -136,14 +143,15 @@ const Profile: React.FC = () => {
   
       if (!response.ok) throw new Error("Failed to update profile");
   
-      // ✅ Refetch all fresh data to ensure achievements get populated
       await fetchData();
-  
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating profile:", error);
     }
   };
+  
+  
+  
   
   const handleEdit = () => {
     setIsEditing(true);
@@ -181,35 +189,97 @@ const Profile: React.FC = () => {
   };
   
 
-  const addAchievement = () => {
-    setEditedUser((prevUser) => {
-      if (!prevUser) return prevUser;
-  
-      return {
-        ...prevUser,
-        achievements: [
-          ...(prevUser.achievements || []),
-          {
-            id: Date.now(), // temporary local ID
-            achievement_type: "Accelerator",
-            name: "",
-            description: "",
-            user_id: prevUser.id,
-          },
-        ],
-      };
-    });
-  };
-  
-  
-  const handleAchievementDelete = (index: number) => {
+  const addAchievement = async () => {
     if (!editedUser) return;
-    const updatedAchievements = [...(editedUser.achievements || [])];
-    updatedAchievements.splice(index, 1);
-    if (editedUser) {
-      setEditedUser({ ...editedUser, achievements: updatedAchievements } as User);
+  
+    try {
+      // Define the new achievement with default values
+      const newAchievement: Omit<Achievement, "id"> = {
+        achievement_type: "Accelerator",
+        name: "",
+        description: "",
+        user_id: editedUser.id,
+      };
+  
+      // Call the API to create it in the backend
+      const response = await fetch(`${API_BASE_URL}/achievements`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ achievement: newAchievement }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to create new achievement");
+      }
+  
+      const createdAchievement: Achievement = await response.json();
+  
+      // Add it to the local state
+      setEditedUser((prevUser) => {
+        if (!prevUser) return prevUser;
+  
+        return {
+          ...prevUser,
+          achievements: [
+            ...(prevUser.achievements || []),
+            createdAchievement,
+          ],
+        };
+      });
+    } catch (error) {
+      console.error("Error creating new achievement:", error);
     }
   };
+  
+  
+  
+  
+  
+  
+  const handleAchievementDelete = async (index: number) => {
+    if (!editedUser || !editedUser.achievements) return;
+  
+    const achievementToDelete = editedUser.achievements[index];
+  
+    if (!achievementToDelete) {
+      console.error("Achievement not found");
+      return;
+    }
+  
+    const isUnsaved = !achievementToDelete.name && !achievementToDelete.description;
+  
+    // Optimistically update UI state
+    const updatedAchievements = [...editedUser.achievements];
+    updatedAchievements.splice(index, 1);
+  
+    // Update the user state locally
+    setEditedUser((prevUser) => {
+      if (!prevUser) return prevUser;
+      return {
+        ...prevUser,
+        achievements: updatedAchievements,
+      };
+    });
+  
+    // Only delete from DB if the achievement is saved (i.e., has content)
+    if (!isUnsaved) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/achievements/${achievementToDelete.id}`, {
+          method: "DELETE",
+        });
+  
+        if (!response.ok) {
+          throw new Error("Failed to delete achievement from the database");
+        }
+  
+        // You can refetch if you want to ensure full sync
+        // await fetchData();
+      } catch (error) {
+        console.error("Error deleting achievement from backend:", error);
+      }
+    }
+  };
+  
 
 
   const fetchData = async () => {
@@ -499,7 +569,7 @@ const Profile: React.FC = () => {
                     />
                     <input
                       type="text"
-                      name="year"
+                      name="graduation_year"
                       value={editedUser?.graduation_year || ""}
                       onChange={handleChange}
                       placeholder="Year"
