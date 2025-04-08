@@ -15,4 +15,5 @@ Rails.application.routes.draw do
   resources :users
   resources :achievements
   resources :contact_methods
+  resources :pinata # try pinata route?
 end
