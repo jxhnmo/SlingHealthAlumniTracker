@@ -77,9 +77,11 @@ const EditProfile: React.FC = () => {
 
         // save image to pinata
         if (selectedImage != null) {
+            console.log("Save to pinata");
             const data = new FormData();
             data.set("file", selectedImage);
-            const imageResponse = await fetch("api/files", {
+            console.log("fetch from pinata")
+            const imageResponse = await fetch("api", {
                 method: "POST",
                 body: data,
             });
@@ -87,6 +89,7 @@ const EditProfile: React.FC = () => {
             setUser((prevUser) => ({ ...prevUser, ["user_profile_url"]: signedURL }));
             console.log(signedURL + " URL set");
         }
+
         const updatedUser = {
             ...user,
             contact_info: "test",
