@@ -23,7 +23,7 @@ interface User {
   team_area?: string;
   isfaculty?: boolean;
   achievements?: Achievement[];
-  contact?: string;
+  contact_info?: string;
   availability?: boolean;
   achievements_attributes?: Omit<Achievement, 'id'>[]; // Add this property
 }
@@ -108,41 +108,25 @@ const Profile: React.FC = () => {
         console.error("User or editedUser is null");
         return;
       }
-  
-      // 🔍 Validate achievements have non-empty name and description
       const invalidAchievement = (editedUser.achievements || []).find(
         (achievement) =>
           !achievement.name.trim() || !achievement.description.trim()
       );
-  
       if (invalidAchievement) {
-        // 🧃 Basic version
         alert("Please fill out both name and description for all achievements.");
-        
-        // 🧈 Fancy toast version (if using react-toastify)
-        // toast.error("Please fill out both name and description for all achievements.");
-        
         return;
       }
-  
-      // 🧽 Prepare updated achievements for Rails nested update
       const updatedAchievements = (editedUser.achievements || []).map((achievement) => {
         const { id, ...rest } = achievement;
         return { id, ...rest };
       });
-  
-      editedUser.achievements_attributes = updatedAchievements;
-  
-      console.log("Edited user being sent:", JSON.stringify(editedUser));
-  
+      editedUser.achievements_attributes = updatedAchievements;  
       const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user: editedUser }),
       });
-  
       if (!response.ok) throw new Error("Failed to update profile");
-  
       await fetchData();
       setIsEditing(false);
     } catch (error) {
@@ -751,14 +735,14 @@ const Profile: React.FC = () => {
                 <div className="overflow-y-auto h-[90%]">
                   {isEditing ? (
                     <textarea
-                      name="contact"
-                      value={editedUser?.contact || ""}
+                      name="contact_info"
+                      value={editedUser?.contact_info || ""}
                       onChange={handleChange}
                       placeholder="Contact Information"
                       className="w-full h-[90%] bg-[--dark2] text-[--popcol] outline-none p-2"
                     />
                   ) : (
-                    <p>{editedUser?.contact || "No contact information provided"}</p>
+                    <p>{editedUser?.contact_info || "No contact information provided"}</p>
                   )}
                 </div>
               </div>

@@ -25,12 +25,8 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
-    Rails.logger.debug "Parameters: #{params.inspect}"
-  
-    # Handle creating a new Achievement if an ID is not provided
     if params[:user][:achievements_attributes].present?
       params[:user][:achievements_attributes].each do |achievement_params|
-        # If there is no ID, treat it as a new achievement
         if achievement_params[:id].blank?
           achievement_params[:user_id] = @user.id # Ensure the new achievement is linked to the user
         end
