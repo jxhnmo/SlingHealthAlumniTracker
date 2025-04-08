@@ -109,6 +109,21 @@ const Profile: React.FC = () => {
         return;
       }
 
+      // save image to pinata
+      if (selectedImage != null) {
+        console.log("UPLOAD TO PINATA");
+        const data = new FormData();
+        data.set("file", selectedImage);
+        const imageResponse = await fetch("api/files", {
+          method: "POST",
+          body: data,
+        });
+        const signedURL = await imageResponse.json();
+        user.user_profile_url = signedURL;
+        // setUser((prevUser) => ({ ...prevUser, ["user_profile_url"]: signedURL }));
+        console.log(signedURL + " URL set");
+      }
+
       console.log("Edited User:", editedUser); // Debugging log
 
       const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
