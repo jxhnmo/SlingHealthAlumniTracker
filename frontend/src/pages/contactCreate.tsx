@@ -20,7 +20,7 @@ const CreateContact: React.FC = () => {
         setError("");
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint3-84062556e525.herokuapp.com"}/contact_methods`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com"}/contact_methods`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ user_id: Number(userId), contact_type: contactType, info })
