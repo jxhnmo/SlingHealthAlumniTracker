@@ -119,7 +119,7 @@ const Profile: React.FC = () => {
         // const file: File | null = data.get("file") as unknown as File;
         // const uploadData = await pinata.upload.public.file(file);
         // const url = await pinata.gateways.public.convert(uploadData.cid);
-        const imageResponse = await fetch("api/files", {
+        const imageResponse = await fetch(`${API_BASE_URL}/pinata`, {
           method: "POST",
           body: data,
         });
