@@ -404,15 +404,7 @@ const Profile: React.FC = () => {
                       alt={user.name}
                       className="w-auto h-full rounded-[10px] object-cover aspect-square"
                     />
-                    <button
-                      disabled={isUploading}
-                      className="text-[--white] font-bold text-xl p-1 hover:text-[--popcol] rounded-md transition"
-                      onClick={() => {
-                        photoInputRef.current?.click();
-                      }}
-                    >
-                      {isUploading ? "Uploading..." : "Upload"}
-                    </button>
+
                     <p>
                       {tooLarge
                         ? "Image is too large! Must be under 5MB"
@@ -505,6 +497,15 @@ const Profile: React.FC = () => {
                     placeholder="Team Area"
                     className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
                   />
+                  <button
+                    disabled={isUploading}
+                    className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
+                    onClick={() => {
+                      photoInputRef.current?.click();
+                    }}
+                  >
+                    {isUploading ? "Uploading..." : "Upload Profile Picture"}
+                  </button>
                 </>
               ) : (
                 <>
