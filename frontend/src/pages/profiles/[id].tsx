@@ -366,7 +366,7 @@ const Profile: React.FC = () => {
                 >
                   {isEditing ? "Save" : "Edit"}
                 </button>
-                {!isEditing && ( 
+                {!isEditing && (
                   <button
                     onClick={() => setShowDeleteModal(true)}
                     className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
@@ -423,7 +423,7 @@ const Profile: React.FC = () => {
                         setTooLarge(false);
                         var oldName = fileOld.name;
                         var name =
-                          user.id +
+                          user.id + Date.now() + // get time for file name diff
                           "." +
                           oldName.substring(
                             oldName.lastIndexOf(".") + 1,
