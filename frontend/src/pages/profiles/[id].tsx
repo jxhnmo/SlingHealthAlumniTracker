@@ -439,6 +439,7 @@ const Profile: React.FC = () => {
                           ); /* || oldName*/ // CHANGE TO CORRECT TYPE
                         const renamedFile = new File([fileOld], name);
                         setSelectedImage(renamedFile); // its not null trust me bro
+                        console.log(selectedImage);
                         queuedImage.pop(); // change queued image
                         queuedImage.push(renamedFile);
                         console.log(queuedImage);
