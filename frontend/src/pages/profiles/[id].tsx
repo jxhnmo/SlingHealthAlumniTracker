@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { pinata } from "@/utils/config";
 import Link from "next/link";
 
 
@@ -114,6 +115,10 @@ const Profile: React.FC = () => {
         console.log("UPLOAD TO PINATA");
         const data = new FormData();
         data.set("file", selectedImage);
+        // const data = await request.formData();
+        const file: File | null = data.get("file") as unknown as File;
+        const uploadData = await pinata.upload.public.file(file);
+        const url = await pinata.gateways.public.convert(uploadData.cid);
         const imageResponse = await fetch("api/files", {
           method: "POST",
           body: data,
