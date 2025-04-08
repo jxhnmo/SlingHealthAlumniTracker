@@ -391,6 +391,7 @@ const Profile: React.FC = () => {
                     />
                     <button
                       disabled={isUploading}
+                      className="text-[--white] font-bold text-xl p-1 hover:text-[--popcol] rounded-md transition"
                       onClick={() => {
                         photoInputRef.current?.click();
                       }}
