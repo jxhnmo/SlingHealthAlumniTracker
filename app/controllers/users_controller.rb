@@ -40,6 +40,14 @@ class UsersController < ApplicationController
         end
       end
     end
+
+    if params[:user][:teams_attributes].present?
+      params[:user][:teams_attributes].each do |team_params|
+        if team_params[:id].blank?
+          team_params[:user_id] = @user.id 
+        end
+      end
+    end
   
     if @user.update(user_params)
       render json: @user
@@ -72,7 +80,8 @@ class UsersController < ApplicationController
       :availability, 
       :isfaculty,
       achievements_attributes: [:id, :achievement_type, :name, :description, :user_id, :_destroy],
-      contact_methods_attributes: [:id, :contact_type, :info, :user_id, :is_link, :_destroy]
+      contact_methods_attributes: [:id, :contact_type, :info, :user_id, :is_link, :_destroy],
+      teams_attributes: [:id, :team_name, :team_area, :user_id]
     )
     
   end

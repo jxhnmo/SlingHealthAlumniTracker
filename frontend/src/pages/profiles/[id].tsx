@@ -7,7 +7,6 @@ interface Achievement {
   achievement_type: "Pitches" | "Grants" | "Accelerator" | "Other Achievements";
   name: string;
   description: string;
-  // checked: boolean;
   user_id: number;
 }
 
@@ -19,13 +18,14 @@ interface User {
   graduation_year: number;
   user_profile_url: string;
   biography?: string;
-  team_area?: string;
   isfaculty?: boolean;
   achievements?: Achievement[];
   contact_info?: ContactMethod[];
   availability?: boolean;
-  achievements_attributes?: Omit<Achievement, "id">[]; // Add this property
+  achievements_attributes?: Omit<Achievement, "id">[]; 
   contacts_attributes?: Omit<ContactMethod, "id">[];
+  teams_attributes?: Omit<Team, "id">[];
+  team?: Team;
 }
 
 interface ContactMethod {
@@ -36,12 +36,20 @@ interface ContactMethod {
   is_link: boolean;
 }
 
+interface Team {
+  id: number;
+  team_name: string;
+  team_area?: string;
+  user_id: number;
+}
+
 const Profile: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
   const [user, setUser] = useState<User | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [contactMethods, setContactMethods] = useState<ContactMethod[]>([]);
+  const [team, setTeam] = useState<Team | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
@@ -111,22 +119,23 @@ const Profile: React.FC = () => {
         console.error("User or editedUser is null");
         return;
       }
+  
+      // Check for invalid fields in achievements and contact methods
       const invalidAchievement = (editedUser.achievements || []).find(
-        (achievement) =>
-          !achievement.name.trim() || !achievement.description.trim()
+        (achievement) => !achievement.name.trim() 
       );
       const invalidContact = (editedUser.contact_info || []).find(
         (contact) => !contact.contact_type.trim() || !contact.info.trim()
       );
       if (invalidAchievement) {
-        alert(
-          "Please fill out both name and description for all achievements."
-        );
+        alert("Please fill out name and for all achievements.");
         return;
       } else if (invalidContact) {
         alert("Please fill out both fields for all contact methods.");
         return;
       }
+  
+      // Prepare updated user data, including team information
       const updatedAchievements = (editedUser.achievements || []).map(
         (achievement) => {
           const { id, ...rest } = achievement;
@@ -137,24 +146,42 @@ const Profile: React.FC = () => {
         const { id, ...rest } = contact;
         return { id, ...rest };
       });
-
+  
+      const updatedTeam = {
+        ...editedUser.team, // Ensure team name and area are included
+        user_id: editedUser.id, // Ensure the user_id is correctly passed in team_attributes
+        id: editedUser.team?.id, // Add the team id here for the update
+      };
+  
       const updatedUser = {
         ...editedUser,
         achievements_attributes: updatedAchievements,
         contact_methods_attributes: updatedContacts,
+        team_attributes: {
+          ...updatedTeam,
+          id: editedUser.team?.id || undefined, // Ensure the team id is included
+          user_id: editedUser.id, // Ensure the user_id is correctly passed in team_attributes
+        },
+        user_id: editedUser.id, // Ensure user_id is included in the user object as well
       };
+  
       const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user: updatedUser }),
       });
+  
       if (!response.ok) throw new Error("Failed to update profile");
-      await fetchData();
+  
+      await fetchData(); // Refetch the data to update the UI
       setIsEditing(false);
+      console.log("Updated user: ", updatedUser);
     } catch (error) {
       console.error("Error updating profile:", error);
     }
   };
+  
+  
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -168,14 +195,26 @@ const Profile: React.FC = () => {
   // };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setEditedUser((prev) => ({
-      ...prev!,
-      [name]: value, // this works dynamically — as long as the name matches a valid field
-    }));
+  
+    if (name === "team_name" || name === "team_area") {
+      setEditedUser((prev) => ({
+        ...prev!,
+        team: {
+          ...prev!.team!,
+          [name]: value,
+        },
+      }));
+    } else {
+      setEditedUser((prev) => ({
+        ...prev!,
+        [name]: value,
+      }));
+    }
   };
+  
 
   const handleAchievementChange = (
     index: number,
@@ -292,21 +331,18 @@ const Profile: React.FC = () => {
 
   const handleAchievementDelete = async (index: number) => {
     if (!editedUser || !editedUser.achievements) return;
-
+  
     const achievementToDelete = editedUser.achievements[index];
-
+  
     if (!achievementToDelete) {
       console.error("Achievement not found");
       return;
     }
-
-    const isUnsaved =
-      !achievementToDelete.name && !achievementToDelete.description;
-
+  
     // Optimistically update UI state
     const updatedAchievements = [...editedUser.achievements];
     updatedAchievements.splice(index, 1);
-
+  
     // Update the user state locally
     setEditedUser((prevUser) => {
       if (!prevUser) return prevUser;
@@ -315,9 +351,9 @@ const Profile: React.FC = () => {
         achievements: updatedAchievements,
       };
     });
-
-    // Only delete from DB if the achievement is saved (i.e., has content)
-    if (!isUnsaved) {
+  
+    // Always attempt to delete from backend if there's an ID
+    if (achievementToDelete.id) {
       try {
         const response = await fetch(
           `${API_BASE_URL}/achievements/${achievementToDelete.id}`,
@@ -325,19 +361,16 @@ const Profile: React.FC = () => {
             method: "DELETE",
           }
         );
-
+  
         if (!response.ok) {
           throw new Error("Failed to delete achievement from the database");
         }
-
-        // You can refetch if you want to ensure full sync
-        // await fetchData();
       } catch (error) {
         console.error("Error deleting achievement from backend:", error);
       }
     }
   };
-
+  
   const handleContactDelete = async (index: number) => {
     if (!editedUser || !editedUser.contact_info) return;
 
@@ -378,15 +411,18 @@ const Profile: React.FC = () => {
       }
     }
   };
+  
 
   const fetchData = async () => {
     try {
       await fetchCurrentUserData();
-      const [userResponse, achievementsResponse, contactMethodsResponse] =
+      const [userResponse, achievementsResponse, contactMethodsResponse, teamResponse,teamsUsersResponse] =
         await Promise.all([
           fetch(`${API_BASE_URL}/users/${id}`),
           fetch(`${API_BASE_URL}/achievements`),
           fetch(`${API_BASE_URL}/contact_methods`),
+          fetch(`${API_BASE_URL}/teams`),
+          fetch(`${API_BASE_URL}/teams_users`),
         ]);
 
       if (!userResponse.ok) throw new Error("User not found");
@@ -394,6 +430,9 @@ const Profile: React.FC = () => {
         throw new Error("Failed to fetch achievements");
       if (!contactMethodsResponse.ok)
         throw new Error("Failed to fetch contact methods");
+      if (!teamResponse.ok) throw new Error("Failed to fetch team");
+      
+      
 
       const userData = await userResponse.json();
       const achievementsData: Achievement[] = await achievementsResponse.json();
@@ -405,6 +444,9 @@ const Profile: React.FC = () => {
       const filteredContacts = contactMethodsData.filter(
         (contact) => contact.user_id === Number(id)
       );
+      const teamData: Team[] = await teamResponse.json();
+      const teamsUsersData: { user_id: number; team_id: number }[] =
+          await teamsUsersResponse.json();
 
       setUser(userData);
       setEditedUser(userData);
@@ -414,11 +456,28 @@ const Profile: React.FC = () => {
       setContactMethods(
         contactMethodsData.filter((contact) => contact.user_id === Number(id))
       );
-      //update edited user last so changes actually reflect on page
+      setTeam(
+        teamData.filter((team) =>
+          teamsUsersData.some(
+            (tu) => tu.user_id === Number(id) && tu.team_id === team.id
+          )
+        )[0]
+      );
+      const filteredTeam = teamData.filter((team) =>
+        teamsUsersData.some(
+          (tu) => tu.user_id === Number(id) && tu.team_id === team.id
+        )
+      )[0];
+
       setEditedUser({
         ...userData,
         achievements: filteredAchievements,
         contact_info: filteredContacts,
+        team: teamData.filter((team) =>
+          teamsUsersData.some(
+            (tu) => tu.user_id === Number(id) && tu.team_id === team.id
+          )
+        )[0],
       });
 
       setLoading(false);
@@ -680,15 +739,25 @@ const Profile: React.FC = () => {
                       className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none"
                     />
                   </div>
+                  <div className="flex justify-center gap-4">
+                    <input
+                      type="text"
+                      name="team_name"
+                      value={editedUser?.team?.team_name || ""}
+                      onChange={(e) => handleChange(e)}
+                      placeholder="Team Name"
+                      className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
+                    />
 
                   <input
                     type="text"
                     name="team_area"
-                    value={editedUser?.team_area || ""}
-                    onChange={handleChange}
+                    value={editedUser?.team?.team_area || ""}
+                    onChange={(e) => handleChange(e)}
                     placeholder="Team Area"
                     className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
                   />
+                  </div>
                 </>
               ) : (
                 <>
@@ -700,7 +769,7 @@ const Profile: React.FC = () => {
                     {editedUser?.graduation_year || "Unknown Year"}
                   </h2>
                   <h3 className="text-xl font-bold text-white mt-2">
-                    {editedUser?.team_area || "No team area specified"}
+                    {editedUser?.team?.team_area || "No team area specified"}
                   </h3>
                 </>
               )}
