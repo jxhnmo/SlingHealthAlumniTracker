@@ -61,6 +61,8 @@ const Profile: React.FC = () => {
     process.env.NEXT_PUBLIC_API_BASE_URL ||
     "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
 
+  console.log(API_BASE_URL);
+
   const fetchCurrentUserData = async () => {
     try {
       const storedUser = localStorage.getItem("user");
