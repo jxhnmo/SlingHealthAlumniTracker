@@ -58,7 +58,7 @@ const Profile: React.FC = () => {
 
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL ||
-    "https://alumni-tracker-sprint3-84062556e525.herokuapp.com";
+    "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
 
   const fetchCurrentUserData = async () => {
     try {
@@ -366,7 +366,7 @@ const Profile: React.FC = () => {
                 >
                   {isEditing ? "Save" : "Edit"}
                 </button>
-                {!isEditing && ( 
+                {!isEditing && (
                   <button
                     onClick={() => setShowDeleteModal(true)}
                     className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
