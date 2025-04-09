@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 
-interface Users {
+interface User {
   id: number;
   name: string;
   email: string;
   major: string;
   graduation_year: number;
   user_profile_url: string;
+  biography?: string;
+  isfaculty?: boolean;
+  achievements?: Achievement[];
+  contact_info?: ContactMethod[];
+  availability?: boolean;
+  achievements_attributes?: Omit<Achievement, "id">[];
+  contacts_attributes?: Omit<ContactMethod, "id">[];
+  teams_attributes?: Omit<Team, "id">[];
+  team?: Team;
 }
 
 interface Achievement {
@@ -19,14 +28,31 @@ interface Achievement {
   user_id: number;
 }
 
+interface ContactMethod {
+  id: number;
+  contact_type: string;
+  info: string;
+  user_id: number;
+  is_link: boolean;
+}
+
+interface Team {
+  id: number;
+  team_name: string;
+  team_area?: string;
+  user_id: number;
+}
+
 const UserIndex: React.FC = () => {
-  const [users, setUsers] = useState<Users[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [achievementSelector, setAchievementSelector] = useState("");
-  const [achievementSearch, setAchievementSearch] = useState(false);
+  const [achievementSelector, setAchievementSelector] = useState("None");
+  const [yearSearch, setYearSearch] = useState("");
+  const [keywordSearch, setKeywordSearch] = useState("");
+  const [searchOptions, setSearchOptions] = useState(false);
 
   useEffect(() => {
     const API_BASE_URL =
@@ -48,6 +74,7 @@ const UserIndex: React.FC = () => {
 
         setUsers(usersData);
         setAchievements(achievementsData);
+
         setLoading(false);
       } catch (err) {
         console.error("Failed to load data:", err);
@@ -70,14 +97,31 @@ const UserIndex: React.FC = () => {
       const achievementMatches = userAchievements.some((ach) =>
         ach.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
+      //additional options
       const achievementTypeMatches =
-        !achievementSearch ||
+        !searchOptions ||
+        achievementSelector === "None" ||
         (!achievementSelector && userAchievements.length > 0) ||
         userAchievements.some(
           (ach) => ach.achievement_type === achievementSelector
         );
+      const yearMatch =
+        !searchOptions ||
+        yearSearch === "" ||
+        user.graduation_year === Number(yearSearch);
+      const keywordMatch =
+        !searchOptions ||
+        user.biography?.toLowerCase().includes(keywordSearch.toLowerCase()) ||
+        userAchievements.some((ach) =>
+          ach.description.toLowerCase().includes(keywordSearch.toLowerCase())
+        );
 
-      return (userMatches || achievementMatches) && achievementTypeMatches;
+      return (
+        (userMatches || achievementMatches) &&
+        achievementTypeMatches &&
+        yearMatch &&
+        keywordMatch
+      );
     })
     .sort((a, b) => a.name.localeCompare(b.name));
 
@@ -111,38 +155,76 @@ const UserIndex: React.FC = () => {
           </h1>
         </div>
 
-        <div>
-          <label className="mr-2 text-white">Options:</label>
-          <input
-            type="checkbox"
-            checked={achievementSearch}
-            onChange={(e) => setAchievementSearch(e.target.checked)}
-            className="mr-2"
-          />
-          {achievementSearch ? (
-            <select
-              className="mr-2"
-              value={achievementSelector}
-              onChange={(e) => {
-                setAchievementSelector(e.target.value);
-              }}
+        <div className="flex justify-center gap-2">
+          <div>
+            <button
+              className="px-4 py-2 bg-[--popcol] text-[--background] rounded-md shadow-lg"
+              onClick={() => setSearchOptions((prev) => !prev)}
             >
-              <option value="">All Achievements</option>
-              <option value="Pitches">Pitches</option>
-              <option value="Grants">Grants</option>
-              <option value="Accelerator">Accelerator</option>
-              <option value="Other Achievements">Other Achievements</option>
-            </select>
+              {searchOptions ? "Hide" : "Options"}
+            </button>
+          </div>
+
+          <div>
+            {searchOptions ? (
+              <select
+                className="w-16"
+                value={achievementSelector}
+                onChange={(e) => {
+                  setAchievementSelector(e.target.value);
+                }}
+              >
+                <option value="None">...</option>
+                <option value="">All Achievements</option>
+                <option value="Pitches">Pitches</option>
+                <option value="Grants">Grants</option>
+                <option value="Accelerator">Accelerator</option>
+                <option value="Other Achievements">Other Achievements</option>
+              </select>
+            ) : (
+              <></>
+            )}
+          </div>
+
+          {searchOptions ? (
+            <div className="w-min">
+              <input
+                type="text"
+                placeholder="Search for by name or achievement..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Specify with keywords..."
+                value={keywordSearch}
+                onChange={(e) => setKeywordSearch(e.target.value)}
+                className="mt-2"
+              />
+            </div>
+          ) : (
+            <>
+              <input
+                type="text"
+                placeholder="Search for other users..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </>
+          )}
+
+          {searchOptions ? (
+            <div>
+              <input
+                type="text"
+                placeholder="Graduation Year..."
+                value={yearSearch}
+                onChange={(e) => setYearSearch(e.target.value)}
+              />
+            </div>
           ) : (
             <></>
           )}
-
-          <input
-            type="text"
-            placeholder="Search by name or achievement..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
         </div>
 
         <div className="w-[80%] h-[80%] bg-[--dark2] rounded-2xl shadow-xl p-[2%]">
