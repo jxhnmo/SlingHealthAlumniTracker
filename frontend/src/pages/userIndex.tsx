@@ -84,7 +84,7 @@ const UserIndex: React.FC = () => {
           const userEmail = parseUser.email;
           console.log("Logged-in user email:", userEmail);
           if (userEmail) {
-            const user = usersData.find((u: Users) => u.email === userEmail);
+            const user = usersData.find((u: User) => u.email === userEmail);
             console.log("Matched User:", user);
             if (user) setUserId(user.id);
           }
