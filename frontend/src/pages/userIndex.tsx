@@ -21,6 +21,7 @@ interface Achievement {
 
 const UserIndex: React.FC = () => {
   const [users, setUsers] = useState<Users[]>([]);
+  const [userId, setUserId] = useState<number | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
@@ -49,6 +50,19 @@ const UserIndex: React.FC = () => {
         setUsers(usersData);
         setAchievements(achievementsData);
         setLoading(false);
+
+        const localUser = localStorage.getItem("user");
+        if (localUser) {
+          const parseUser = JSON.parse(localUser);
+          const userEmail = parseUser.email;
+          console.log("Logged-in user email:", userEmail);
+          if (userEmail) {
+            const user = usersData.find((u: Users) => u.email === userEmail);
+            console.log("Matched User:", user);
+            if (user) setUserId(user.id);
+          }
+        }
+
       } catch (err) {
         console.error("Failed to load data:", err);
         setError("Failed to load data");
@@ -90,7 +104,7 @@ const UserIndex: React.FC = () => {
         {[
           { name: "Home", path: "/" },
           { name: "Directory", path: "/userIndex" },
-          { name: "Profile", path: "/profile" },
+          { name: "Profile", path: userId ? `/profiles/${userId}` : "#" },
           { name: "Logout", path: "/logout" },
         ].map((item) => (
           <Link
