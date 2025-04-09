@@ -29,7 +29,6 @@ const UserIndex: React.FC = () => {
       "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
     const loadUsersAndAchievements = async () => {
       try {
-        console.log("loadUsersAndAchievements");
         const [usersResponse, achievementsResponse] = await Promise.all([
           fetch(`${API_BASE_URL}/users`),
           fetch(`${API_BASE_URL}/achievements`),
