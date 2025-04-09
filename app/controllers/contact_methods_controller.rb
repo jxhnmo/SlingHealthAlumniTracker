@@ -46,6 +46,6 @@ class ContactMethodsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def contact_method_params
-      params.require(:contact_method).permit(:contact_type, :info, :user_id)
+      params.require(:contact_method).permit(:contact_type, :info, :user_id, :is_link)
     end
 end

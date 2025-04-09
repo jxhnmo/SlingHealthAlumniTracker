@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-
 interface Achievement {
   id: number;
   achievement_type: "Pitches" | "Grants" | "Accelerator" | "Other Achievements";
@@ -23,9 +22,10 @@ interface User {
   team_area?: string;
   isfaculty?: boolean;
   achievements?: Achievement[];
-  contact_info?: string;
+  contact_info?: ContactMethod[];
   availability?: boolean;
-  achievements_attributes?: Omit<Achievement, 'id'>[]; // Add this property
+  achievements_attributes?: Omit<Achievement, "id">[]; // Add this property
+  contacts_attributes?: Omit<ContactMethod, "id">[];
 }
 
 interface ContactMethod {
@@ -33,6 +33,7 @@ interface ContactMethod {
   contact_type: string;
   info: string;
   user_id: number;
+  is_link: boolean;
 }
 
 const Profile: React.FC = () => {
@@ -81,7 +82,9 @@ const Profile: React.FC = () => {
         return;
       }
 
-      const apiUrl = `${API_BASE_URL}/users?email=${encodeURIComponent(storedEmail)}`;
+      const apiUrl = `${API_BASE_URL}/users?email=${encodeURIComponent(
+        storedEmail
+      )}`;
       const response = await fetch(apiUrl);
       const userData = await response.json();
       const user: User | undefined = (userData as User[]).find(
@@ -112,19 +115,38 @@ const Profile: React.FC = () => {
         (achievement) =>
           !achievement.name.trim() || !achievement.description.trim()
       );
+      const invalidContact = (editedUser.contact_info || []).find(
+        (contact) => !contact.contact_type.trim() || !contact.info.trim()
+      );
       if (invalidAchievement) {
-        alert("Please fill out both name and description for all achievements.");
+        alert(
+          "Please fill out both name and description for all achievements."
+        );
+        return;
+      } else if (invalidContact) {
+        alert("Please fill out both fields for all contact methods.");
         return;
       }
-      const updatedAchievements = (editedUser.achievements || []).map((achievement) => {
-        const { id, ...rest } = achievement;
+      const updatedAchievements = (editedUser.achievements || []).map(
+        (achievement) => {
+          const { id, ...rest } = achievement;
+          return { id, ...rest };
+        }
+      );
+      const updatedContacts = (editedUser.contact_info || []).map((contact) => {
+        const { id, ...rest } = contact;
         return { id, ...rest };
       });
-      editedUser.achievements_attributes = updatedAchievements;  
+
+      const updatedUser = {
+        ...editedUser,
+        achievements_attributes: updatedAchievements,
+        contact_methods_attributes: updatedContacts,
+      };
       const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user: editedUser }),
+        body: JSON.stringify({ user: updatedUser }),
       });
       if (!response.ok) throw new Error("Failed to update profile");
       await fetchData();
@@ -133,10 +155,7 @@ const Profile: React.FC = () => {
       console.error("Error updating profile:", error);
     }
   };
-  
-  
-  
-  
+
   const handleEdit = () => {
     setIsEditing(true);
   };
@@ -148,7 +167,9 @@ const Profile: React.FC = () => {
   //   }
   // };
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
     const { name, value } = e.target;
     setEditedUser((prev) => ({
       ...prev!,
@@ -162,20 +183,41 @@ const Profile: React.FC = () => {
     value: string | boolean
   ) => {
     if (!editedUser) return;
-    const updatedAchievements = [...((editedUser?.achievements) || [])];
+    const updatedAchievements = [...(editedUser?.achievements || [])];
     updatedAchievements[index] = {
       ...updatedAchievements[index],
       [field]: value,
     };
     if (editedUser) {
-      setEditedUser({ ...editedUser, achievements: updatedAchievements } as User);
+      setEditedUser({
+        ...editedUser,
+        achievements: updatedAchievements,
+      } as User);
     }
   };
-  
+
+  const handleContactChange = (
+    index: number,
+    field: keyof ContactMethod,
+    value: string | boolean
+  ) => {
+    if (!editedUser) return;
+    const updatedContacts = [...(editedUser?.contact_info || [])];
+    updatedContacts[index] = {
+      ...updatedContacts[index],
+      [field]: value,
+    };
+    if (editedUser) {
+      setEditedUser({
+        ...editedUser,
+        contact_info: updatedContacts,
+      } as User);
+    }
+  };
 
   const addAchievement = async () => {
     if (!editedUser) return;
-  
+
     try {
       // Define the new achievement with default values
       const newAchievement: Omit<Achievement, "id"> = {
@@ -184,58 +226,87 @@ const Profile: React.FC = () => {
         description: "",
         user_id: editedUser.id,
       };
-  
+
       // Call the API to create it in the backend
       const response = await fetch(`${API_BASE_URL}/achievements`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ achievement: newAchievement }),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to create new achievement");
       }
-  
+
       const createdAchievement: Achievement = await response.json();
-  
+
       // Add it to the local state
       setEditedUser((prevUser) => {
         if (!prevUser) return prevUser;
-  
+
         return {
           ...prevUser,
-          achievements: [
-            ...(prevUser.achievements || []),
-            createdAchievement,
-          ],
+          achievements: [...(prevUser.achievements || []), createdAchievement],
         };
       });
     } catch (error) {
       console.error("Error creating new achievement:", error);
     }
   };
-  
-  
-  
-  
-  
-  
+
+  const addContact = async () => {
+    if (!editedUser) return;
+
+    try {
+      const newContact: Omit<ContactMethod, "id"> = {
+        contact_type: "",
+        info: "",
+        is_link: false,
+        user_id: editedUser.id,
+      };
+
+      const response = await fetch(`${API_BASE_URL}/contact_methods`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contact_method: newContact }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create a new contact method");
+      }
+
+      const createdContact: ContactMethod = await response.json();
+
+      setEditedUser((prevUser) => {
+        if (!prevUser) return prevUser;
+
+        return {
+          ...prevUser,
+          contact_info: [...(prevUser.contact_info || []), createdContact],
+        };
+      });
+    } catch (error) {
+      console.error("Error creating new contact method:", error);
+    }
+  };
+
   const handleAchievementDelete = async (index: number) => {
     if (!editedUser || !editedUser.achievements) return;
-  
+
     const achievementToDelete = editedUser.achievements[index];
-  
+
     if (!achievementToDelete) {
       console.error("Achievement not found");
       return;
     }
-  
-    const isUnsaved = !achievementToDelete.name && !achievementToDelete.description;
-  
+
+    const isUnsaved =
+      !achievementToDelete.name && !achievementToDelete.description;
+
     // Optimistically update UI state
     const updatedAchievements = [...editedUser.achievements];
     updatedAchievements.splice(index, 1);
-  
+
     // Update the user state locally
     setEditedUser((prevUser) => {
       if (!prevUser) return prevUser;
@@ -244,18 +315,21 @@ const Profile: React.FC = () => {
         achievements: updatedAchievements,
       };
     });
-  
+
     // Only delete from DB if the achievement is saved (i.e., has content)
     if (!isUnsaved) {
       try {
-        const response = await fetch(`${API_BASE_URL}/achievements/${achievementToDelete.id}`, {
-          method: "DELETE",
-        });
-  
+        const response = await fetch(
+          `${API_BASE_URL}/achievements/${achievementToDelete.id}`,
+          {
+            method: "DELETE",
+          }
+        );
+
         if (!response.ok) {
           throw new Error("Failed to delete achievement from the database");
         }
-  
+
         // You can refetch if you want to ensure full sync
         // await fetchData();
       } catch (error) {
@@ -263,8 +337,47 @@ const Profile: React.FC = () => {
       }
     }
   };
-  
 
+  const handleContactDelete = async (index: number) => {
+    if (!editedUser || !editedUser.contact_info) return;
+
+    const contactToDelete = editedUser.contact_info[index];
+
+    if (!contactToDelete) {
+      console.error("Contact method not found");
+      return;
+    }
+
+    const isUnsaved = !contactToDelete.contact_type && !contactToDelete.info;
+
+    const updatedContacts = [...editedUser.contact_info];
+    updatedContacts.splice(index, 1);
+
+    setEditedUser((prevUser) => {
+      if (!prevUser) return prevUser;
+      return {
+        ...prevUser,
+        contact_info: updatedContacts,
+      };
+    });
+
+    if (!isUnsaved) {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/contact_methods/${contactToDelete.id}`,
+          {
+            method: "DELETE",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to delete contact method");
+        }
+      } catch (error) {
+        console.error("Error deleting contact method:", error);
+      }
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -284,20 +397,30 @@ const Profile: React.FC = () => {
 
       const userData = await userResponse.json();
       const achievementsData: Achievement[] = await achievementsResponse.json();
-      const contactMethodsData: ContactMethod[] = await contactMethodsResponse.json();
+      const contactMethodsData: ContactMethod[] =
+        await contactMethodsResponse.json();
       const filteredAchievements = achievementsData.filter(
         (ach) => ach.user_id === Number(id)
       );
-      
+      const filteredContacts = contactMethodsData.filter(
+        (contact) => contact.user_id === Number(id)
+      );
+
       setUser(userData);
       setEditedUser(userData);
       setAchievements(
         achievementsData.filter((ach) => ach.user_id === Number(id))
       );
-      setEditedUser({ ...userData, achievements: filteredAchievements });
       setContactMethods(
         contactMethodsData.filter((contact) => contact.user_id === Number(id))
       );
+      //update edited user last so changes actually reflect on page
+      setEditedUser({
+        ...userData,
+        achievements: filteredAchievements,
+        contact_info: filteredContacts,
+      });
+
       setLoading(false);
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -310,8 +433,6 @@ const Profile: React.FC = () => {
     if (!id) return;
     fetchData();
   }, [id]);
-
-
 
   const handleDelete = async () => {
     try {
@@ -337,7 +458,7 @@ const Profile: React.FC = () => {
   if (error) return <div>{error}</div>;
   if (!user) return <div>User not found</div>;
 
-  const canEdit = (currentUserId === user.id || isFaculty);
+  const canEdit = currentUserId === user.id || isFaculty;
 
   return (
     <div className="relative w-screen h-screen flex justify-center items-center">
@@ -423,8 +544,7 @@ const Profile: React.FC = () => {
                           ...editedUser,
                           availability: e.target.checked,
                         });
-                    }
-                    }
+                    }}
                     className="w-4 h-4 cursor-pointer"
                   />
                 </div>
@@ -446,7 +566,7 @@ const Profile: React.FC = () => {
                 >
                   {isEditing ? "Save" : "Edit"}
                 </button>
-                {!isEditing && ( 
+                {!isEditing && (
                   <button
                     onClick={() => setShowDeleteModal(true)}
                     className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
@@ -576,7 +696,8 @@ const Profile: React.FC = () => {
                     {editedUser?.name || "No name provided"}
                   </h1>
                   <h2 className="text-xl font-bold text-white">
-                    {editedUser?.major || "Unknown Major"} Class of {editedUser?.graduation_year || "Unknown Year"}
+                    {editedUser?.major || "Unknown Major"} Class of{" "}
+                    {editedUser?.graduation_year || "Unknown Year"}
                   </h2>
                   <h3 className="text-xl font-bold text-white mt-2">
                     {editedUser?.team_area || "No team area specified"}
@@ -695,12 +816,15 @@ const Profile: React.FC = () => {
 
                         (editedUser?.achievements ?? []).forEach(
                           (achievement) => {
-                            if (!achievementsByType[achievement.achievement_type]) {
-                              achievementsByType[achievement.achievement_type] = [];
+                            if (
+                              !achievementsByType[achievement.achievement_type]
+                            ) {
+                              achievementsByType[achievement.achievement_type] =
+                                [];
                             }
-                            achievementsByType[achievement.achievement_type].push(
-                              achievement
-                            );
+                            achievementsByType[
+                              achievement.achievement_type
+                            ].push(achievement);
                           }
                         );
 
@@ -734,15 +858,89 @@ const Profile: React.FC = () => {
 
                 <div className="overflow-y-auto h-[90%]">
                   {isEditing ? (
-                    <textarea
-                      name="contact_info"
-                      value={editedUser?.contact_info || ""}
-                      onChange={handleChange}
-                      placeholder="Contact Information"
-                      className="w-full h-[90%] bg-[--dark2] text-[--popcol] outline-none p-2"
-                    />
+                    <>
+                      {(editedUser?.contact_info || []).map(
+                        (contact, index) => (
+                          <div
+                            key={contact.id}
+                            className="w-full flex gap-2 justify-between pb-2"
+                          >
+                            <label>Link?</label>
+                            <input
+                              type="checkbox"
+                              checked={contact.is_link}
+                              onChange={(e) =>
+                                handleContactChange(
+                                  index,
+                                  "is_link",
+                                  e.target.checked
+                                )
+                              }
+                            />
+                            <input
+                              className="text-xs w-[30%] bg-[--dark2] text-[--popcol] outline-none"
+                              type="text"
+                              value={contact.contact_type}
+                              placeholder="Contact Type"
+                              onChange={(e) =>
+                                handleContactChange(
+                                  index,
+                                  "contact_type",
+                                  e.target.value
+                                )
+                              }
+                            />
+                            <input
+                              className="text-xs w-[30%] bg-[--dark2] text-[--popcol] outline-none"
+                              type="text"
+                              value={contact.info}
+                              placeholder="Contact Info"
+                              onChange={(e) =>
+                                handleContactChange(
+                                  index,
+                                  "info",
+                                  e.target.value
+                                )
+                              }
+                            />
+                            <div className="flex justify-end">
+                              <button
+                                className="text-[--white] font-bold text-xl p-1 hover:text-[--popcol] rounded-md transition"
+                                onClick={() => handleContactDelete(index)}
+                              >
+                                X
+                              </button>
+                            </div>
+                          </div>
+                        )
+                      )}
+                      <button
+                        className="px-4 py-2 bg-[--background] text-[--popcol] rounded-md shadow-lg transition 
+                           hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
+                        onClick={addContact}
+                      >
+                        Add
+                      </button>
+                    </>
                   ) : (
-                    <p>{editedUser?.contact_info || "No contact information provided"}</p>
+                    <>
+                      {(editedUser?.contact_info || []).map((contact) => (
+                        <div key={contact.id} className="mb-2">
+                          <p className="text-s">{contact.contact_type}</p>
+                          {contact.is_link ? (
+                            <a
+                              className="text-xs text-purple-400 underline"
+                              href={contact.info}
+                              target="_blank"
+                            >
+                              {contact.info}
+                            </a>
+                          ) : (
+                            <p className="text-xs">{contact.info}</p>
+                          )}
+                        </div>
+                      ))}
+                    </>
                   )}
                 </div>
               </div>
