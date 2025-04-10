@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { pinata } from "@/utils/config";
 import Link from "next/link";
-import SimpleFileUpload from "react-simple-file-upload";
+// import SimpleFileUpload from "react-simple-file-upload";
+const SimpleFileUpload: any = require("react-simple-file-upload");
 
 
 // import { PinataSDK } from "pinata";
