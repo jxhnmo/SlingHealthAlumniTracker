@@ -7,7 +7,7 @@
     "yarn": "1.x"
   },
   "scripts": {
-    "build": "cd frontend && yarn install && npx next build",
+    "build": "cd frontend && yarn install && npx next build && npx next export -o ../public",
     "start": "concurrently \"cd frontend && yarn start\" \"rails server -b 0.0.0.0 -p 4000\""
   },
   "dependencies": {
