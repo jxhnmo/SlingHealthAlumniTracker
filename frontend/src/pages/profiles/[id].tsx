@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { pinata } from "@/utils/config";
 import Link from "next/link";
-import SimpleFileUpload from "react-simple-file-upload";
+// import SimpleFileUpload from "react-simple-file-upload";
 // const SimpleFileUpload: any = require("react-simple-file-upload");
 
 
@@ -437,9 +437,9 @@ const Profile: React.FC = () => {
                         ? "Image is too large! Must be under 5MB"
                         : "Images must be under 5MB"}
                     </p>
-                    <SimpleFileUpload
+                    {/* <SimpleFileUpload
                       apiKey={process.env.SIMPLE_FILE_UPLOAD_API}
-                      onSuccess={handleFile} />
+                      onSuccess={handleFile} /> */}
                     {/* <input */}
                     {/* // ref={photoInputRef} */}
                     {/* type="file" */}
@@ -528,7 +528,7 @@ const Profile: React.FC = () => {
                     placeholder="Team Area"
                     className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
                   />
-                  {/* <input
+                  <input
                     ref={photoInputRef}
                     id="uploader-preview-here-4404"
                     className="simple-file-upload"
@@ -540,7 +540,7 @@ const Profile: React.FC = () => {
                       const url = e.target.getAttribute("data-accepted") as string;
                       console.log(url);
                       setImageURLs(url);
-                    }}></input> */}
+                    }}></input>
                   <button
                     disabled={isUploading}
                     className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
