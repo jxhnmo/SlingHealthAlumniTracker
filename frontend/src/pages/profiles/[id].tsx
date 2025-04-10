@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { pinata } from "@/utils/config";
 import Link from "next/link";
 // import SimpleFileUpload from "react-simple-file-upload";
-const SimpleFileUpload: any = require("react-simple-file-upload");
+// const SimpleFileUpload: any = require("react-simple-file-upload");
 
 
 // import { PinataSDK } from "pinata";
@@ -433,9 +433,10 @@ const Profile: React.FC = () => {
                         ? "Image is too large! Must be under 5MB"
                         : "Images must be under 5MB"}
                     </p>
-                    <SimpleFileUpload
+                    {/* <SimpleFileUpload
                       apiKey="..."
-                      onSuccess={handleFile} />
+                      onSuccess={handleFile} /> */}
+                    <input id="uploader-preview-here-4404" className="simple-file-upload" type="hidden" data-template="tailwind" data-maxFileSize="5" data-accepted="image/*"></input>
                     <input
                       ref={photoInputRef}
                       type="file"
