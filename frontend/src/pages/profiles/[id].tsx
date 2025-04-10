@@ -440,57 +440,44 @@ const Profile: React.FC = () => {
                     {/* <SimpleFileUpload
                       apiKey="..."
                       onSuccess={handleFile} /> */}
-                    <input
-                      ref={photoInputRef}
-                      id="uploader-preview-here-4404"
-                      className="simple-file-upload"
-                      type="hidden"
-                      data-template="tailwind"
-                      data-maxFileSize="5"
-                      data-accepted="image/*"
-                      onChange={(e) => {
-                        const url = e.target.getAttribute("data-accepted") as string;
-                        console.log(url);
-                        setImageURLs(url);
-                      }}></input>
-                    <input
-                      // ref={photoInputRef}
-                      type="file"
-                      className="absolute right-[9999px]"
-                      id="imageInput"
-                      accept="image/png, image/jpeg"
-                      disabled={isUploading}
-                      onChange={(e) => {
-                        if (!e.target.files) return;
-                        // console.log(e.target.files);
-                        var fileOld = e.target.files[0];
-                        if (fileOld == null) {
-                          return;
-                        }
-                        if (fileOld.size > 500000) {
-                          setTooLarge(true);
-                          return;
-                        }
-                        setTooLarge(false);
-                        var oldName = fileOld.name;
-                        var name =
-                          user.id + Date.now() + // get time for file name diff
-                          "." +
-                          oldName.substring(
-                            oldName.lastIndexOf(".") + 1,
-                            oldName.length
-                          ); /* || oldName*/ // CHANGE TO CORRECT TYPE
-                        const renamedFile = new File([fileOld], name);
-                        setSelectedImage(renamedFile); // its not null trust me bro
-                        console.log(selectedImage);
-                        queuedImage.pop(); // change queued image
-                        queuedImage.push(renamedFile);
-                        console.log(queuedImage);
-                        setImageURLs(URL.createObjectURL(renamedFile));
-                        console.log(imageURLs);
-                        console.log(renamedFile);
-                      }}
-                    ></input>
+                    {/* <input */}
+                    {/* // ref={photoInputRef} */}
+                    {/* type="file" */}
+                    {/* className="absolute right-[9999px]" */}
+                    {/* id="imageInput" */}
+                    {/* accept="image/png, image/jpeg" */}
+                    {/* disabled={isUploading} */}
+                    {/* onChange={(e) => { */}
+                    {/* if (!e.target.files) return; */}
+                    {/* // console.log(e.target.files); */}
+                    {/* var fileOld = e.target.files[0]; */}
+                    {/* if (fileOld == null) { */}
+                    {/* return; */}
+                    {/* } */}
+                    {/* if (fileOld.size > 500000) { */}
+                    {/* setTooLarge(true); */}
+                    {/* return; */}
+                    {/* } */}
+                    {/* setTooLarge(false); */}
+                    {/* var oldName = fileOld.name; */}
+                    {/* var name = */}
+                    {/* user.id + Date.now() + // get time for file name diff */}
+                    {/* "." + */}
+                    {/* oldName.substring( */}
+                    {/* oldName.lastIndexOf(".") + 1, */}
+                    {/* oldName.length */}
+                    {/* ); /* || oldName */}
+                    {/* const renamedFile = new File([fileOld], name); */}
+                    {/* setSelectedImage(renamedFile); // its not null trust me bro */}
+                    {/* console.log(selectedImage); */}
+                    {/* queuedImage.pop(); // change queued image */}
+                    {/* queuedImage.push(renamedFile); */}
+                    {/* console.log(queuedImage); */}
+                    {/* setImageURLs(URL.createObjectURL(renamedFile)); */}
+                    {/* console.log(imageURLs); */}
+                    {/* console.log(renamedFile); */}
+                    {/* }} */}
+                    {/* ></input> */}
                   </div>
                 ) : (
                   // not editing for pfp
@@ -541,6 +528,19 @@ const Profile: React.FC = () => {
                     placeholder="Team Area"
                     className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
                   />
+                  <input
+                    ref={photoInputRef}
+                    id="uploader-preview-here-4404"
+                    className="simple-file-upload"
+                    // type="hidden"
+                    data-template="tailwind"
+                    data-maxFileSize="5"
+                    data-accepted="image/*"
+                    onChange={(e) => {
+                      const url = e.target.getAttribute("data-accepted") as string;
+                      console.log(url);
+                      setImageURLs(url);
+                    }}></input>
                   <button
                     disabled={isUploading}
                     className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
