@@ -3,6 +3,16 @@ import { useRouter } from "next/router";
 import { pinata } from "@/utils/config";
 import Link from "next/link";
 
+// import { PinataSDK } from "pinata";
+const fs = require("fs");
+const { Blob } = require("buffer");
+require("dotenv").config();
+
+// const pinata = new PinataSDK({
+//   pinataJwt: `${process.env.PINATA_SECRET_JWT}`,
+//   pinataGateway: `${process.env.PINATA_GATEWAY}`,
+// });
+
 
 interface Achievement {
   id: number;
@@ -119,16 +129,16 @@ const Profile: React.FC = () => {
         data.set("file", selectedImage);
         // const data = await request.formData();
         // const file: File | null = data.get("file") as unknown as File;
-        // const uploadData = await pinata.upload.public.file(file);
-        // const url = await pinata.gateways.public.convert(uploadData.cid);
-        const imageResponse = await fetch(`${API_BASE_URL}/pages/api`, {
-          method: "POST",
-          body: data,
-        });
-        const signedURL = await imageResponse.json();
-        user.user_profile_url = signedURL;
+        const uploadData = await pinata.upload.public.file(selectedImage);
+        const url = await pinata.gateways.public.convert(uploadData.cid);
+        // const imageResponse = await fetch(`/pages/api`, {
+        //   method: "POST",
+        //   body: data,
+        // });
+        // const signedURL = await imageResponse.json();
+        user.user_profile_url = url;
         // setUser((prevUser) => ({ ...prevUser, ["user_profile_url"]: signedURL }));
-        console.log(signedURL + " URL set");
+        console.log(url + " URL set");
       }
 
       console.log("Edited User:", editedUser); // Debugging log
