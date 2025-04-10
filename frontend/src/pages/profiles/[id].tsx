@@ -4,9 +4,9 @@ import { pinata } from "@/utils/config";
 import Link from "next/link";
 
 // import { PinataSDK } from "pinata";
-const fs = require("fs");
-const { Blob } = require("buffer");
-require("dotenv").config();
+// const fs = require("fs");
+// const { Blob } = require("buffer");
+// require("dotenv").config();
 
 // const pinata = new PinataSDK({
 //   pinataJwt: `${process.env.PINATA_SECRET_JWT}`,
