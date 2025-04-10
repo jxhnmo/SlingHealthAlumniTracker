@@ -129,16 +129,16 @@ const Profile: React.FC = () => {
         data.set("file", selectedImage);
         // const data = await request.formData();
         // const file: File | null = data.get("file") as unknown as File;
-        const uploadData = await pinata.upload.public.file(selectedImage);
-        const url = await pinata.gateways.public.convert(uploadData.cid);
-        // const imageResponse = await fetch(`/pages/api`, {
-        //   method: "POST",
-        //   body: data,
-        // });
-        // const signedURL = await imageResponse.json();
-        user.user_profile_url = url;
+        // const uploadData = await pinata.upload.public.file(selectedImage);
+        // const url = await pinata.gateways.public.convert(uploadData.cid);
+        const imageResponse = await fetch(`/pages/api/`, {
+          method: "POST",
+          body: data,
+        });
+        const signedURL = await imageResponse.json();
+        user.user_profile_url = signedURL;
         // setUser((prevUser) => ({ ...prevUser, ["user_profile_url"]: signedURL }));
-        console.log(url + " URL set");
+        console.log(signedURL + " URL set");
       }
 
       console.log("Edited User:", editedUser); // Debugging log
