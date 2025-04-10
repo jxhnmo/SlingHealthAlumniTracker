@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { pinata } from "@/utils/config";
 import Link from "next/link";
+import SimpleFileUpload from "react-simple-file-upload";
+
 
 // import { PinataSDK } from "pinata";
 // const fs = require("fs");
@@ -114,6 +116,9 @@ const Profile: React.FC = () => {
       setIsFaculty(false);
     }
   };
+  const handleFile = async (url: any) => {
+    console.log(url);
+  }
   const handleSave = async () => {
     //u guys need to set this up
     try {
@@ -427,6 +432,9 @@ const Profile: React.FC = () => {
                         ? "Image is too large! Must be under 5MB"
                         : "Images must be under 5MB"}
                     </p>
+                    <SimpleFileUpload
+                      apiKey="..."
+                      onSuccess={handleFile} />
                     <input
                       ref={photoInputRef}
                       type="file"
