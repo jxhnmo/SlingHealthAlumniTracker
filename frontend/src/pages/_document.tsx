@@ -6,7 +6,7 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        {/* <script src="https://app.simplefileupload.com/buckets/ee5fd30cbfd7939d9e52b522e52a6775.js"></script> */}
+        <script src="https://app.simplefileupload.com/buckets/ee5fd30cbfd7939d9e52b522e52a6775.js"></script>
         {/* <script src={srcurl}></script> */}
       </Head>
       {/* <Head /> */}

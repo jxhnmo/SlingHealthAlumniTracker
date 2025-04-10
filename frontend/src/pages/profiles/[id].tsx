@@ -532,7 +532,7 @@ const Profile: React.FC = () => {
                     ref={photoInputRef}
                     id="uploader-preview-here-4404"
                     className="simple-file-upload"
-                    // type="hidden"
+                    type="hidden"
                     data-template="tailwind"
                     data-maxFileSize="5"
                     data-accepted="image/*"
