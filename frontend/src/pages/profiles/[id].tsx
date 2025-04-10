@@ -131,7 +131,7 @@ const Profile: React.FC = () => {
         // const file: File | null = data.get("file") as unknown as File;
         // const uploadData = await pinata.upload.public.file(selectedImage);
         // const url = await pinata.gateways.public.convert(uploadData.cid);
-        const imageResponse = await fetch(`/api/`, {
+        const imageResponse = await fetch(`route.ts`, {
           method: "POST",
           body: data,
         });
