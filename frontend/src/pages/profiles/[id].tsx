@@ -117,9 +117,9 @@ const Profile: React.FC = () => {
       setIsFaculty(false);
     }
   };
-  const handleFile = async (url: any) => {
-    console.log(url);
-  }
+  // const handleFile = async (e: Event) => {
+  //   console.log(url);
+  // }
   const handleSave = async () => {
     //u guys need to set this up
     try {
@@ -128,24 +128,28 @@ const Profile: React.FC = () => {
         return;
       }
 
-      // save image to pinata
-      if (selectedImage != null) {
-        console.log("UPLOAD TO PINATA");
-        const data = new FormData();
-        data.set("file", selectedImage);
-        // const data = await request.formData();
-        // const file: File | null = data.get("file") as unknown as File;
-        // const uploadData = await pinata.upload.public.file(selectedImage);
-        // const url = await pinata.gateways.public.convert(uploadData.cid);
-        const imageResponse = await fetch(`../api/`, {
-          method: "POST",
-          body: data,
-        });
-        const signedURL = await imageResponse.json();
-        user.user_profile_url = signedURL;
-        // setUser((prevUser) => ({ ...prevUser, ["user_profile_url"]: signedURL }));
-        console.log(signedURL + " URL set");
+      if (imageURLs) {
+        user.user_profile_url = imageURLs;
       }
+
+      // save image to pinata
+      // if (selectedImage != null) {
+      //   console.log("UPLOAD TO PINATA");
+      //   const data = new FormData();
+      //   data.set("file", selectedImage);
+      //   // const data = await request.formData();
+      //   // const file: File | null = data.get("file") as unknown as File;
+      //   // const uploadData = await pinata.upload.public.file(selectedImage);
+      //   // const url = await pinata.gateways.public.convert(uploadData.cid);
+      //   const imageResponse = await fetch(`../api/`, {
+      //     method: "POST",
+      //     body: data,
+      //   });
+      //   const signedURL = await imageResponse.json();
+      //   user.user_profile_url = signedURL;
+      //   // setUser((prevUser) => ({ ...prevUser, ["user_profile_url"]: signedURL }));
+      //   console.log(signedURL + " URL set");
+      // }
 
       console.log("Edited User:", editedUser); // Debugging log
 
@@ -443,7 +447,12 @@ const Profile: React.FC = () => {
                       type="hidden"
                       data-template="tailwind"
                       data-maxFileSize="5"
-                      data-accepted="image/*"></input>
+                      data-accepted="image/*"
+                      onChange={(e) => {
+                        const url = e.target.getAttribute("data-accepted") as string;
+                        console.log(url);
+                        setImageURLs(url);
+                      }}></input>
                     <input
                       // ref={photoInputRef}
                       type="file"
