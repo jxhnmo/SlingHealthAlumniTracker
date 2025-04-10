@@ -5,7 +5,7 @@ export default function Document() {
   const FILE_UPLOAD_API = process.env.SIMPLE_FILE_UPLOAD_API;
   const srcurl = "https://app.simplefileupload.com/buckets/" + FILE_UPLOAD_API + ".js";
   <Helmet>
-    <script async src={srcurl} type="text/javascript" />
+    {/* <script async src={srcurl} type="text/javascript" /> */}
   </Helmet>
   return (
     <Html lang="en">
