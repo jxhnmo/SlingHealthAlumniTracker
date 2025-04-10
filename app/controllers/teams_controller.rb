@@ -1,5 +1,5 @@
 class TeamsController < ApplicationController
-    before_action :set_team, only: [ :update, :destroy ]
+  before_action :set_team, only: [ :update, :destroy ]
 
   def create
     @team = Team.new(team_params)

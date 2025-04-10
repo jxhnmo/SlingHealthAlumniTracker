@@ -70,21 +70,20 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(
-      :name, 
-      :email, 
-      :major, 
-      :graduation_year, 
-      :user_profile_url, 
-      :biography, 
-      :contact_info,
-      :availability, 
+      :name,
+      :major,
+      :graduation_year,
+      :user_profile_url,
+      :biography,
+      :email,
+      :availability,
       :isfaculty,
       achievements_attributes: [:id, :achievement_type, :name, :description, :user_id, :_destroy],
-      contact_methods_attributes: [:id, :contact_type, :info, :user_id, :is_link, :_destroy],
-      teams_attributes: [:id, :team_name, :team_area, :user_id]
+      contact_methods_attributes: [ :id, :contact_type, :info, :is_link, :_destroy],
+      team_attributes: [:id, :team_name, :team_area, :_destroy]
     )
-    
   end
+  
   
 
 end
