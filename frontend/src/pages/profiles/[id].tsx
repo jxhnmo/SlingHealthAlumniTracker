@@ -436,7 +436,7 @@ const Profile: React.FC = () => {
                     {/* <SimpleFileUpload
                       apiKey="..."
                       onSuccess={handleFile} /> */}
-                    {/* <input id="uploader-preview-here-4404" className="simple-file-upload" type="hidden" data-template="tailwind" data-maxFileSize="5" data-accepted="image/*"></input> */}
+                    <input id="uploader-preview-here-4404" className="simple-file-upload" type="hidden" data-template="tailwind" data-maxFileSize="5" data-accepted="image/*"></input>
                     <input
                       ref={photoInputRef}
                       type="file"
