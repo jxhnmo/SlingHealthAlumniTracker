@@ -119,6 +119,8 @@ const Profile: React.FC = () => {
         console.error("User or editedUser is null");
         return;
       }
+  
+      // Check for invalid fields in achievements and contact methods
       const invalidAchievement = (editedUser.achievements || []).find(
         (achievement) => !achievement.name.trim()
       );
@@ -132,6 +134,8 @@ const Profile: React.FC = () => {
         alert("Please fill out both fields for all contact methods.");
         return;
       }
+  
+      // Prepare updated user data, including team information
       const updatedAchievements = (editedUser.achievements || []).map(
         (achievement) => {
           const { id, ...rest } = achievement;
@@ -167,6 +171,7 @@ const Profile: React.FC = () => {
         body: JSON.stringify({ user: updatedUser }),
       });
 
+
       if (!response.ok) throw new Error("Failed to update profile");
 
       await fetchData(); 
@@ -175,10 +180,9 @@ const Profile: React.FC = () => {
     } catch (error) {
       console.error("Error updating profile:", error);
     }
-    console.log(editedUser)
   };
-
-
+  
+  
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -195,7 +199,7 @@ const Profile: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-
+  
     if (name === "team_name" || name === "team_area") {
       setEditedUser((prev) => ({
         ...prev!,
@@ -211,7 +215,7 @@ const Profile: React.FC = () => {
       }));
     }
   };
-
+  
 
   const handleAchievementChange = (
     index: number,
@@ -325,9 +329,9 @@ const Profile: React.FC = () => {
 
   const handleAchievementDelete = async (index: number) => {
     if (!editedUser || !editedUser.achievements) return;
-
+  
     const achievementToDelete = editedUser.achievements[index];
-
+  
     if (!achievementToDelete) {
       console.error("Achievement not found");
       return;
