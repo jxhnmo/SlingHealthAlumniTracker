@@ -176,7 +176,6 @@ const Profile: React.FC = () => {
 
       await fetchData(); 
       setIsEditing(false);
-      console.log("Updated user: ", updatedUser);
     } catch (error) {
       console.error("Error updating profile:", error);
     }
