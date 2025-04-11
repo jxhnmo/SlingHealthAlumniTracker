@@ -167,31 +167,10 @@ const Profile: React.FC = () => {
       });
 
       const updatedTeam = {
-        ...editedUser.team,
-        user_id: editedUser.id,
-        id: editedUser.team?.id,
+        team_name: editedUser.team?.team_name || "",
+  team_area: editedUser.team?.team_area || "",
+  user_id: editedUser.id,
       };
-
-
-
-      // save image to pinata
-      // if (selectedImage != null) {
-      //   console.log("UPLOAD TO PINATA");
-      //   const data = new FormData();
-      //   data.set("file", selectedImage);
-      //   // const data = await request.formData();
-      //   // const file: File | null = data.get("file") as unknown as File;
-      //   // const uploadData = await pinata.upload.public.file(selectedImage);
-      //   // const url = await pinata.gateways.public.convert(uploadData.cid);
-      //   const imageResponse = await fetch(`../api/`, {
-      //     method: "POST",
-      //     body: data,
-      //   });
-      //   const signedURL = await imageResponse.json();
-      //   user.user_profile_url = signedURL;
-      //   // setUser((prevUser) => ({ ...prevUser, ["user_profile_url"]: signedURL }));
-      //   console.log(signedURL + " URL set");
-      // }
 
       console.log("Edited User:", editedUser); // Debugging log
 
@@ -199,13 +178,9 @@ const Profile: React.FC = () => {
         ...editedUser,
         achievements_attributes: updatedAchievements,
         contact_methods_attributes: updatedContacts,
-        team_attributes: {
-          ...updatedTeam,
-          id: editedUser.team?.id || undefined,
-          user_id: editedUser.id,
-        },
+        team_attributes: updatedTeam, // ✅ fixed here
         user_id: editedUser.id,
-        user_profile_url: imageURLs, // set the user profile URL to the image URL here
+        user_profile_url: imageURLs,
       };
 
       const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
@@ -535,10 +510,16 @@ const Profile: React.FC = () => {
       const response = await fetch(`${API_BASE_URL}/users/${user?.id}`, {
         method: "DELETE",
       });
-
+  
       if (response.ok) {
         alert(`${user?.name} has been deleted successfully.`);
-        router.push("/userIndex");
+  
+        // Redirect based on whether the deleted user is the current user
+        if (user?.id === currentUserId) {
+          router.push("/logout");
+        } else {
+          router.push("/userIndex");
+        }
       } else {
         throw new Error("Failed to delete user");
       }
@@ -549,6 +530,7 @@ const Profile: React.FC = () => {
       setShowDeleteModal(false);
     }
   };
+  
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;

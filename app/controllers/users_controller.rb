@@ -61,7 +61,9 @@ class UsersController < ApplicationController
 
   # DELETE /users/1
   def destroy
-    @user.destroy
+    user = User.find(params[:id])
+    TeamsUser.where(user_id: user.id).delete_all
+    user.destroy
   end
 
   private
@@ -82,7 +84,7 @@ class UsersController < ApplicationController
       :isfaculty,
       achievements_attributes: [:id, :achievement_type, :name, :description, :user_id, :_destroy],
       contact_methods_attributes: [ :id, :contact_type, :info, :is_link, :_destroy],
-      team_attributes: [:id, :team_name, :team_area, :_destroy]
+      team_attributes: [:id, :team_name, :team_area, :user_id,  :_destroy]
     )
   end
   
