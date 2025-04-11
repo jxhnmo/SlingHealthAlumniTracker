@@ -10,7 +10,7 @@ export default function Document() {
       <Head>
         <Helmet>
           {/* <script async src={srcurl} type="text/javascript" /> */}
-          <script async src="https://app.simplefileupload.com/buckets/ee5fd30cbfd7939d9e52b522e52a6775.js"></script>
+          {/* <script async src="https://app.simplefileupload.com/buckets/ee5fd30cbfd7939d9e52b522e52a6775.js"></script> */}
         </Helmet>
       </Head>
       {/* <Head /> */}
