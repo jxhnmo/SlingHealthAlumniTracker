@@ -138,7 +138,7 @@ const Profile: React.FC = () => {
         console.error("User or editedUser is null");
         return;
       }
-  
+
       // Check for invalid fields in achievements and contact methods
       const invalidAchievement = (editedUser.achievements || []).find(
         (achievement) => !achievement.name.trim()
@@ -153,7 +153,7 @@ const Profile: React.FC = () => {
         alert("Please fill out both fields for all contact methods.");
         return;
       }
-  
+
       // Prepare updated user data, including team information
       const updatedAchievements = (editedUser.achievements || []).map(
         (achievement) => {
@@ -167,9 +167,9 @@ const Profile: React.FC = () => {
       });
 
       const updatedTeam = {
-        ...editedUser.team, 
-        user_id: editedUser.id, 
-        id: editedUser.team?.id, 
+        ...editedUser.team,
+        user_id: editedUser.id,
+        id: editedUser.team?.id,
       };
 
       user.user_profile_url = imageURLs; // set the user profile URL to the image URL here
@@ -201,10 +201,10 @@ const Profile: React.FC = () => {
         contact_methods_attributes: updatedContacts,
         team_attributes: {
           ...updatedTeam,
-          id: editedUser.team?.id || undefined, 
-          user_id: editedUser.id, 
+          id: editedUser.team?.id || undefined,
+          user_id: editedUser.id,
         },
-        user_id: editedUser.id, 
+        user_id: editedUser.id,
       };
 
       const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
@@ -213,17 +213,14 @@ const Profile: React.FC = () => {
         body: JSON.stringify({ user: updatedUser }),
       });
 
-
       if (!response.ok) throw new Error("Failed to update profile");
 
-      await fetchData(); 
+      await fetchData();
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating profile:", error);
     }
   };
-  
-  
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -240,7 +237,7 @@ const Profile: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-  
+
     if (name === "team_name" || name === "team_area") {
       setEditedUser((prev) => ({
         ...prev!,
@@ -256,7 +253,6 @@ const Profile: React.FC = () => {
       }));
     }
   };
-  
 
   const handleAchievementChange = (
     index: number,
@@ -370,9 +366,9 @@ const Profile: React.FC = () => {
 
   const handleAchievementDelete = async (index: number) => {
     if (!editedUser || !editedUser.achievements) return;
-  
+
     const achievementToDelete = editedUser.achievements[index];
-  
+
     if (!achievementToDelete) {
       console.error("Achievement not found");
       return;
@@ -448,18 +444,22 @@ const Profile: React.FC = () => {
     }
   };
 
-
   const fetchData = async () => {
     try {
       await fetchCurrentUserData();
-      const [userResponse, achievementsResponse, contactMethodsResponse, teamResponse, teamsUsersResponse] =
-        await Promise.all([
-          fetch(`${API_BASE_URL}/users/${id}`),
-          fetch(`${API_BASE_URL}/achievements`),
-          fetch(`${API_BASE_URL}/contact_methods`),
-          fetch(`${API_BASE_URL}/teams`),
-          fetch(`${API_BASE_URL}/teams_users`),
-        ]);
+      const [
+        userResponse,
+        achievementsResponse,
+        contactMethodsResponse,
+        teamResponse,
+        teamsUsersResponse,
+      ] = await Promise.all([
+        fetch(`${API_BASE_URL}/users/${id}`),
+        fetch(`${API_BASE_URL}/achievements`),
+        fetch(`${API_BASE_URL}/contact_methods`),
+        fetch(`${API_BASE_URL}/teams`),
+        fetch(`${API_BASE_URL}/teams_users`),
+      ]);
 
       if (!userResponse.ok) throw new Error("User not found");
       if (!achievementsResponse.ok)
@@ -467,8 +467,6 @@ const Profile: React.FC = () => {
       if (!contactMethodsResponse.ok)
         throw new Error("Failed to fetch contact methods");
       if (!teamResponse.ok) throw new Error("Failed to fetch team");
-
-
 
       const userData = await userResponse.json();
       const achievementsData: Achievement[] = await achievementsResponse.json();
@@ -570,7 +568,10 @@ const Profile: React.FC = () => {
         {[
           { name: "Home", path: "/" },
           { name: "Index", path: "/userIndex" },
-          { name: "Profile", path: currentUserId ? `/profiles/${currentUserId}` : "#" },
+          {
+            name: "Profile",
+            path: currentUserId ? `/profiles/${currentUserId}` : "#",
+          },
           { name: "Logout", path: "/logout" },
           // { name: "Edit", path: "/profileEdit" },
         ].map((item) => (
@@ -837,8 +838,9 @@ const Profile: React.FC = () => {
                     {editedUser?.graduation_year || "Unknown Year"}
                   </h2>
                   <h3 className="text-xl font-bold text-white mt-2">
-                    {`${editedUser?.team?.team_name} - ${editedUser?.team?.team_area}` ||
-                      "No team area specified"}
+                    {editedUser?.team?.team_name && editedUser?.team?.team_area
+                      ? `${editedUser?.team?.team_name} - ${editedUser?.team?.team_area}`
+                      : "No team area specified"}
                   </h3>
                 </>
               )}
