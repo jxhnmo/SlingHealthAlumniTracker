@@ -549,7 +549,7 @@ const Profile: React.FC = () => {
                     className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
                     onClick={() => {
                       console.log(process.env.SIMPLE_FILE_UPLOAD_API)
-                      // photoInputRef.current?.click();
+                      photoInputRef.current?.click();
                     }}
                   >
                     {isUploading ? "Uploading..." : "Upload Profile Picture"}
