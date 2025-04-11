@@ -3,8 +3,7 @@ import { useRouter } from "next/router";
 import { pinata } from "@/utils/config";
 import Link from "next/link";
 import Helmet from "react-helmet";
-// import SimpleFileUpload from "react-simple-file-upload";
-// const SimpleFileUpload: any = require("react-simple-file-upload");
+import SimpleFileUpload from "react-simple-file-upload";
 
 
 // import { PinataSDK } from "pinata";
@@ -541,14 +540,14 @@ const Profile: React.FC = () => {
                       }
                     }}></input> */}
 
-                  <Helmet>
+                  {/* <Helmet>
                     <input id="uploader-preview-here-4404" className="simple-file-upload" type="hidden" data-template="tailwind" data-maxFileSize="5" data-accepted="image/*"></input>
-                  </Helmet>
-                  {/* <SimpleFileUpload
+                  </Helmet> */}
+                  <SimpleFileUpload
                     apiKey={"ee5fd30cbfd7939d9e52b522e52a6775"}
-                    data-accepted="image/png, image/jpeg"
-                    data-maxFileSize="5"
-                    onSuccess={handleFile} /> */}
+                    accepted="image/png, image/jpeg"
+                    maxFileSize="5"
+                    onSuccess={handleFile} />
                   <button
                     disabled={isUploading}
                     className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
