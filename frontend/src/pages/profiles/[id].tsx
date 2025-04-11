@@ -437,9 +437,7 @@ const Profile: React.FC = () => {
                         ? "Image is too large! Must be under 5MB"
                         : "Images must be under 5MB"}
                     </p>
-                    <SimpleFileUpload
-                      apiKey={process.env.SIMPLE_FILE_UPLOAD_API}
-                      onSuccess={handleFile} />
+
                     {/* <input */}
                     {/* // ref={photoInputRef} */}
                     {/* type="file" */}
@@ -541,11 +539,15 @@ const Profile: React.FC = () => {
                       console.log(url);
                       setImageURLs(url);
                     }}></input> */}
+                  <SimpleFileUpload
+                    apiKey={process.env.SIMPLE_FILE_UPLOAD_API}
+                    onSuccess={handleFile} />
                   <button
                     disabled={isUploading}
                     className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
                     onClick={() => {
-                      photoInputRef.current?.click();
+                      console.log(process.env.SIMPLE_FILE_UPLOAD_API)
+                      // photoInputRef.current?.click();
                     }}
                   >
                     {isUploading ? "Uploading..." : "Upload Profile Picture"}
