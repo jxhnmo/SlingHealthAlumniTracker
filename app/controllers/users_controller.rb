@@ -61,7 +61,14 @@ class UsersController < ApplicationController
 
   # DELETE /users/1
   def destroy
-    @user.destroy
+    user = User.find_by(id: params[:id])
+
+    if user&.destroy
+      head :no_content
+    else
+      render json: { error: "Failed to delete user" }, status: :unprocessable_entity
+      # @user.destroy
+    end
   end
 
   private
