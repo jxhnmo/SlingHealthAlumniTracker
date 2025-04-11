@@ -540,7 +540,7 @@ const Profile: React.FC = () => {
                       setImageURLs(url);
                     }}></input> */}
                   <SimpleFileUpload
-                    apiKey={process.env.SIMPLE_FILE_UPLOAD_API}
+                    apiKey={"ee5fd30cbfd7939d9e52b522e52a6775"}
                     onSuccess={handleFile} />
                   <button
                     disabled={isUploading}
