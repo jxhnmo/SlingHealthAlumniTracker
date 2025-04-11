@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { pinata } from "@/utils/config";
 import Link from "next/link";
-import SimpleFileUpload from "react-simple-file-upload";
+// import SimpleFileUpload from "react-simple-file-upload";
 // const SimpleFileUpload: any = require("react-simple-file-upload");
 
 
@@ -548,7 +548,7 @@ const Profile: React.FC = () => {
                     disabled={isUploading}
                     className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
                     onClick={() => {
-                      console.log(process.env.SIMPLE_FILE_UPLOAD_API)
+                      console.log("bruh")
                       photoInputRef.current?.click();
                     }}
                   >
