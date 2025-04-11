@@ -424,11 +424,17 @@ const Profile: React.FC = () => {
               <div className="h-[250px] w-[250px]">
                 {isEditing ? ( // editing for pfp
                   <div>
-                    <img
+                    <h2 className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2">Upload Profile Picture</h2>
+                    <SimpleFileUpload
+                      apiKey={"ee5fd30cbfd7939d9e52b522e52a6775"}
+                      accepted="image/png, image/jpeg"
+                      maxFileSize="5"
+                      onSuccess={handleFile} />
+                    {/* <img
                       src={imageURLs}
                       alt={user.name}
                       className="w-auto h-full rounded-[10px] object-cover aspect-square"
-                    />
+                    /> */}
 
                     <p>
                       {tooLarge
@@ -543,12 +549,7 @@ const Profile: React.FC = () => {
                   {/* <Helmet>
                     <input id="uploader-preview-here-4404" className="simple-file-upload" type="hidden" data-template="tailwind" data-maxFileSize="5" data-accepted="image/*"></input>
                   </Helmet> */}
-                  <SimpleFileUpload
-                    apiKey={"ee5fd30cbfd7939d9e52b522e52a6775"}
-                    accepted="image/png, image/jpeg"
-                    maxFileSize="5"
-                    onSuccess={handleFile} />
-                  <button
+                  {/* <button
                     disabled={isUploading}
                     className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
                     onClick={() => {
@@ -557,7 +558,7 @@ const Profile: React.FC = () => {
                     }}
                   >
                     {isUploading ? "Uploading..." : "Upload Profile Picture"}
-                  </button>
+                  </button> */}
                 </>
               ) : (
                 <>
