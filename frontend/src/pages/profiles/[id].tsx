@@ -1,6 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { pinata } from "@/utils/config";
 import Link from "next/link";
+import Helmet from "react-helmet";
+import SimpleFileUpload from "react-simple-file-upload";
+
+
+// import { PinataSDK } from "pinata";
+// const fs = require("fs");
+// const { Blob } = require("buffer");
+// require("dotenv").config();
+
+// const pinata = new PinataSDK({
+//   pinataJwt: `${process.env.PINATA_SECRET_JWT}`,
+//   pinataGateway: `${process.env.PINATA_GATEWAY}`,
+// });
 
 interface Achievement {
   id: number;
@@ -60,15 +74,15 @@ const Profile: React.FC = () => {
   const [isUploading, setIsUploading] = React.useState(false); // user uploading image
   const [tooLarge, setTooLarge] = React.useState(false); // if image is too large
   const photoInputRef = React.useRef<HTMLInputElement | null>(null); // HTML element for the image input
-  const [imageURLs, setImageURLs] = React.useState<string>(
-    user?.user_profile_url || ""
-  ); // user profile URL by default
-  const [selectedImage, setSelectedImage] = React.useState(null);
+  const [imageURLs, setImageURLs] = React.useState<string>(user?.user_profile_url); // user profile URL by default
+  const [selectedImage, setSelectedImage] = React.useState<File | null>(null);
   let queuedImage: File[] = []; // queue with only 1 element
 
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL ||
-    "https://alumni-tracker-sprint3-84062556e525.herokuapp.com";
+    "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
+
+  console.log(API_BASE_URL);
 
   const fetchCurrentUserData = async () => {
     try {
@@ -113,6 +127,11 @@ const Profile: React.FC = () => {
       setIsFaculty(false);
     }
   };
+  const handleFile = async (url) => {
+    const urlStr = url
+    console.log("URL: " + urlStr);
+    setImageURLs(url);
+  }
   const handleSave = async () => {
     try {
       if (!user || !editedUser) {
@@ -153,6 +172,29 @@ const Profile: React.FC = () => {
         id: editedUser.team?.id, 
       };
 
+      user.user_profile_url = imageURLs; // set the user profile URL to the image URL here
+
+      // save image to pinata
+      // if (selectedImage != null) {
+      //   console.log("UPLOAD TO PINATA");
+      //   const data = new FormData();
+      //   data.set("file", selectedImage);
+      //   // const data = await request.formData();
+      //   // const file: File | null = data.get("file") as unknown as File;
+      //   // const uploadData = await pinata.upload.public.file(selectedImage);
+      //   // const url = await pinata.gateways.public.convert(uploadData.cid);
+      //   const imageResponse = await fetch(`../api/`, {
+      //     method: "POST",
+      //     body: data,
+      //   });
+      //   const signedURL = await imageResponse.json();
+      //   user.user_profile_url = signedURL;
+      //   // setUser((prevUser) => ({ ...prevUser, ["user_profile_url"]: signedURL }));
+      //   console.log(signedURL + " URL set");
+      // }
+
+      console.log("Edited User:", editedUser); // Debugging log
+        
       const updatedUser = {
         ...editedUser,
         achievements_attributes: updatedAchievements,
@@ -637,61 +679,63 @@ const Profile: React.FC = () => {
               <div className="h-[250px] w-[250px]">
                 {isEditing ? ( // editing for pfp
                   <div>
-                    <img
+                    <h2 className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2">Upload Profile Picture</h2>
+                    {/* <p>Images must be less than 5MB</p> */}
+                    <SimpleFileUpload
+                      apiKey={"ee5fd30cbfd7939d9e52b522e52a6775"}
+                      accepted="image/png, image/jpeg"
+                      maxFileSize="5"
+                      onSuccess={handleFile} />
+                    {/* <img
                       src={imageURLs}
                       alt={user.name}
                       className="w-auto h-full rounded-[10px] object-cover aspect-square"
-                    />
-                    <button
-                      disabled={isUploading}
-                      onClick={() => {
-                        photoInputRef.current?.click();
-                      }}
-                    >
-                      {isUploading ? "Uploading..." : "Upload"}
-                    </button>
+                    /> */}
+
                     <p>
                       {tooLarge
                         ? "Image is too large! Must be under 5MB"
                         : "Images must be under 5MB"}
                     </p>
-                    <input
-                      ref={photoInputRef}
-                      type="file"
-                      className="absolute right-[9999px]"
-                      id="imageInput"
-                      accept="image/png, image/jpeg"
-                      disabled={isUploading}
-                      onChange={(e) => {
-                        if (!e.target.files) return;
-                        // console.log(e.target.files);
-                        var fileOld = e.target.files[0];
-                        if (fileOld == null) {
-                          return;
-                        }
-                        if (fileOld.size > 500000) {
-                          setTooLarge(true);
-                          return;
-                        }
-                        setTooLarge(false);
-                        var oldName = fileOld.name;
-                        var name =
-                          user.id +
-                          "." +
-                          oldName.substring(
-                            oldName.lastIndexOf(".") + 1,
-                            oldName.length
-                          ); /* || oldName*/ // CHANGE TO CORRECT TYPE
-                        const renamedFile = new File([fileOld], name);
-                        // setSelectedImage(renamedFile); // its not null trust me bro
-                        queuedImage.pop(); // change queued image
-                        queuedImage.push(renamedFile);
-                        console.log(queuedImage);
-                        setImageURLs(URL.createObjectURL(renamedFile));
-                        console.log(imageURLs);
-                        console.log(renamedFile);
-                      }}
-                    ></input>
+
+                    {/* <input */}
+                    {/* // ref={photoInputRef} */}
+                    {/* type="file" */}
+                    {/* className="absolute right-[9999px]" */}
+                    {/* id="imageInput" */}
+                    {/* accept="image/png, image/jpeg" */}
+                    {/* disabled={isUploading} */}
+                    {/* onChange={(e) => { */}
+                    {/* if (!e.target.files) return; */}
+                    {/* // console.log(e.target.files); */}
+                    {/* var fileOld = e.target.files[0]; */}
+                    {/* if (fileOld == null) { */}
+                    {/* return; */}
+                    {/* } */}
+                    {/* if (fileOld.size > 500000) { */}
+                    {/* setTooLarge(true); */}
+                    {/* return; */}
+                    {/* } */}
+                    {/* setTooLarge(false); */}
+                    {/* var oldName = fileOld.name; */}
+                    {/* var name = */}
+                    {/* user.id + Date.now() + // get time for file name diff */}
+                    {/* "." + */}
+                    {/* oldName.substring( */}
+                    {/* oldName.lastIndexOf(".") + 1, */}
+                    {/* oldName.length */}
+                    {/* ); /* || oldName */}
+                    {/* const renamedFile = new File([fileOld], name); */}
+                    {/* setSelectedImage(renamedFile); // its not null trust me bro */}
+                    {/* console.log(selectedImage); */}
+                    {/* queuedImage.pop(); // change queued image */}
+                    {/* queuedImage.push(renamedFile); */}
+                    {/* console.log(queuedImage); */}
+                    {/* setImageURLs(URL.createObjectURL(renamedFile)); */}
+                    {/* console.log(imageURLs); */}
+                    {/* console.log(renamedFile); */}
+                    {/* }} */}
+                    {/* ></input> */}
                   </div>
                 ) : (
                   // not editing for pfp
@@ -733,6 +777,35 @@ const Profile: React.FC = () => {
                       className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none"
                     />
                   </div>
+                  {/* <input
+                    ref={photoInputRef}
+                    id="uploader-preview-here-4404"
+                    className="simple-file-upload"
+                    type="hidden"
+                    data-template="tailwind"
+                    data-maxFileSize="5"
+                    data-accepted="image/*"
+                    onChange={(e) => {
+                      const url = e.target.getAttribute("data-accepted") as string;
+                      if (url != "image/*") {
+                        console.log(url);
+                        setImageURLs(url);
+                      }
+                    }}></input> */}
+
+                  {/* <Helmet>
+                    <input id="uploader-preview-here-4404" className="simple-file-upload" type="hidden" data-template="tailwind" data-maxFileSize="5" data-accepted="image/*"></input>
+                  </Helmet> */}
+                  {/* <button
+                    disabled={isUploading}
+                    className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
+                    onClick={() => {
+                      console.log("bruh")
+                      photoInputRef.current?.click();
+                    }}
+                  >
+                    {isUploading ? "Uploading..." : "Upload Profile Picture"}
+                  </button> */}
                   <div className="flex justify-center gap-4">
                     <input
                       type="text"
