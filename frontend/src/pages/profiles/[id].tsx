@@ -425,7 +425,7 @@ const Profile: React.FC = () => {
                 {isEditing ? ( // editing for pfp
                   <div>
                     <h2 className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2">Upload Profile Picture</h2>
-                    <p>Images must be less than 5MB</p>
+                    {/* <p>Images must be less than 5MB</p> */}
                     <SimpleFileUpload
                       apiKey={"ee5fd30cbfd7939d9e52b522e52a6775"}
                       accepted="image/png, image/jpeg"
