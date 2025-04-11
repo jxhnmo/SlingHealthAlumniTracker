@@ -542,7 +542,7 @@ const Profile: React.FC = () => {
                     }}></input> */}
 
                   <Helmet>
-                    <input id="uploader-preview-here-4404" class="simple-file-upload" type="hidden" data-template="tailwind" data-maxFileSize="5" data-accepted="image/*"></input>
+                    <input id="uploader-preview-here-4404" className="simple-file-upload" type="hidden" data-template="tailwind" data-maxFileSize="5" data-accepted="image/*"></input>
                   </Helmet>
                   {/* <SimpleFileUpload
                     apiKey={"ee5fd30cbfd7939d9e52b522e52a6775"}
