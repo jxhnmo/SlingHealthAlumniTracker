@@ -42,11 +42,13 @@ class UsersController < ApplicationController
     end
 
     if params[:user][:teams_attributes].present?
-      params[:user][:teams_attributes].each do |team_params|
-        if team_params[:id].blank?
-          team_params[:user_id] = @user.id 
-        end
+      team_params = params[:user][:team_attributes]
+      team = if team_params[:id].present?
+        Team.find(team_params[:id]).tap { |t| t.update!(team_params.except(:id)) }
+      else
+        Team.create!(team_params)
       end
+      TeamsUser.find_or_create_by!(user_id: @user.id)
     end
   
     if @user.update(user_params)
