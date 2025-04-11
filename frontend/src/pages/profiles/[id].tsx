@@ -508,7 +508,9 @@ const Profile: React.FC = () => {
       setEditedUser({
         ...userData,
         achievements: filteredAchievements,
-        contact_info: filteredContacts,
+        contact_info: filteredContacts.filter(
+          (c) => c.contact_type.trim() !== "" || c.info.trim() !== ""
+        ),
         team: teamData.filter((team) =>
           teamsUsersData.some(
             (tu) => tu.user_id === Number(id) && tu.team_id === team.id
