@@ -129,8 +129,8 @@ const Profile: React.FC = () => {
   };
   const handleFile = async (url) => {
     const urlStr = url
-    console.log("URL: " + urlStr);
-    setImageURLs(url);
+    setImageURLs(urlStr);
+    console.log("ImageURL: " + urlStr);
   }
   const handleSave = async () => {
     try {
@@ -172,7 +172,7 @@ const Profile: React.FC = () => {
         id: editedUser.team?.id,
       };
 
-      user.user_profile_url = imageURLs; // set the user profile URL to the image URL here
+
 
       // save image to pinata
       // if (selectedImage != null) {
@@ -194,7 +194,7 @@ const Profile: React.FC = () => {
       // }
 
       console.log("Edited User:", editedUser); // Debugging log
-        
+
       const updatedUser = {
         ...editedUser,
         achievements_attributes: updatedAchievements,
@@ -205,6 +205,7 @@ const Profile: React.FC = () => {
           user_id: editedUser.id,
         },
         user_id: editedUser.id,
+        user_profile_url: imageURLs, // set the user profile URL to the image URL here
       };
 
       const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
