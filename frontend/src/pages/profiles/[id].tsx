@@ -118,7 +118,8 @@ const Profile: React.FC = () => {
     }
   };
   const handleFile = async (url) => {
-    console.log(url);
+    const urlStr = url[0]
+    console.log(urlStr);
   }
   const handleSave = async () => {
     //u guys need to set this up
@@ -541,6 +542,7 @@ const Profile: React.FC = () => {
                     }}></input> */}
                   <SimpleFileUpload
                     apiKey={"ee5fd30cbfd7939d9e52b522e52a6775"}
+                    accept="image/png, image/jpeg"
                     onSuccess={handleFile} />
                   <button
                     disabled={isUploading}
