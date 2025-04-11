@@ -15,5 +15,11 @@ Rails.application.routes.draw do
   resources :users
   resources :achievements
   resources :contact_methods
-  resources :pinata # try pinata route?
+
+  resources :teams, only: [:update, :create, :destroy] do
+    post 'users', to: 'teams#add_user_to_team'
+  end
+
+  get '/teams', to: 'teams_users#index'
+  get '/teams_users', to: 'teams_users#all'
 end

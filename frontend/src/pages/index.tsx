@@ -4,6 +4,7 @@ import Link from "next/link";
 const IndexPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userName, setUserName] = useState("");
+  const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -12,6 +13,7 @@ const IndexPage: React.FC = () => {
         const user = JSON.parse(storedUser); // Parse JSON string
         setIsAuthenticated(true);
         setUserName(user.full_name);
+        setUserId(user.id);
       } catch (error) {
         console.error("Error parsing user data:", error);
       }
@@ -48,12 +50,14 @@ const IndexPage: React.FC = () => {
             >
               Directory
             </Link>
-            <Link
-              href="/profile"
-              className="px-4 py-2 text-[--popcol] bg-[--dark2] rounded-md shadow-lg transition hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
-            >
-              Profile
-            </Link>
+            {userId !== null && (
+              <Link
+                href={`/profiles/${userId}`}
+                className="px-4 py-2 text-[--popcol] bg-[--dark2] rounded-md shadow-lg transition hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
+              >
+                Profile
+              </Link>
+            )}
             <Link
               href="/logout"
               className="px-4 py-2 text-[--popcol] bg-[--dark2] rounded-md shadow-lg transition hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
