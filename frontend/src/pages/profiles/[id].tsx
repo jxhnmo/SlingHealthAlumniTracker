@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { pinata } from "@/utils/config";
 import Link from "next/link";
+import Helmet from "react-helmet";
 // import SimpleFileUpload from "react-simple-file-upload";
 // const SimpleFileUpload: any = require("react-simple-file-upload");
 
@@ -524,7 +525,7 @@ const Profile: React.FC = () => {
                     placeholder="Team Area"
                     className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
                   />
-                  <input
+                  {/* <input
                     ref={photoInputRef}
                     id="uploader-preview-here-4404"
                     className="simple-file-upload"
@@ -538,7 +539,11 @@ const Profile: React.FC = () => {
                         console.log(url);
                         setImageURLs(url);
                       }
-                    }}></input>
+                    }}></input> */}
+
+                  <Helmet>
+                    <input id="uploader-preview-here-4404" class="simple-file-upload" type="hidden" data-template="tailwind" data-maxFileSize="5" data-accepted="image/*"></input>
+                  </Helmet>
                   {/* <SimpleFileUpload
                     apiKey={"ee5fd30cbfd7939d9e52b522e52a6775"}
                     data-accepted="image/png, image/jpeg"
