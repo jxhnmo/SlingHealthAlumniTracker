@@ -118,7 +118,7 @@ const Profile: React.FC = () => {
   const handleFile = async (url) => {
     const urlStr = url
     console.log("URL: " + urlStr);
-    user.user_profile_url = urlStr;
+    setImageURLs(url);
   }
   const handleSave = async () => {
     //u guys need to set this up
