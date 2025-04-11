@@ -1,3 +1,4 @@
 class Team < ApplicationRecord
-    belongs_to :user
-end
+    has_many :teams_users, dependent: :destroy
+    has_many :users, through: :teams_users
+  end

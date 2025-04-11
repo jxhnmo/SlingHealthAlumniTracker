@@ -3,7 +3,9 @@ class User < ApplicationRecord
 
   has_many :achievements, dependent: :destroy
   has_many :contact_methods, dependent: :destroy
-  has_one :team, dependent: :destroy
+  has_many :teams_users, dependent: :destroy
+  has_many :teams, through: :teams_users
+
   accepts_nested_attributes_for :achievements, allow_destroy: true
   accepts_nested_attributes_for :contact_methods, allow_destroy: true
   accepts_nested_attributes_for :team, update_only: true
