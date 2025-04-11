@@ -64,9 +64,7 @@ const Profile: React.FC = () => {
   const [isUploading, setIsUploading] = React.useState(false); // user uploading image
   const [tooLarge, setTooLarge] = React.useState(false); // if image is too large
   const photoInputRef = React.useRef<HTMLInputElement | null>(null); // HTML element for the image input
-  const [imageURLs, setImageURLs] = React.useState<string>(
-    user?.user_profile_url || ""
-  ); // user profile URL by default
+  const [imageURLs, setImageURLs] = React.useState<string>(user?.user_profile_url); // user profile URL by default
   const [selectedImage, setSelectedImage] = React.useState<File | null>(null);
   let queuedImage: File[] = []; // queue with only 1 element
 
@@ -130,9 +128,7 @@ const Profile: React.FC = () => {
         return;
       }
 
-      if (imageURLs) {
-        user.user_profile_url = imageURLs;
-      }
+      user.user_profile_url = imageURLs;
 
       // save image to pinata
       // if (selectedImage != null) {
@@ -528,7 +524,7 @@ const Profile: React.FC = () => {
                     placeholder="Team Area"
                     className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
                   />
-                  {/* <input
+                  <input
                     ref={photoInputRef}
                     id="uploader-preview-here-4404"
                     className="simple-file-upload"
@@ -538,14 +534,16 @@ const Profile: React.FC = () => {
                     data-accepted="image/*"
                     onChange={(e) => {
                       const url = e.target.getAttribute("data-accepted") as string;
-                      console.log(url);
-                      setImageURLs(url);
-                    }}></input> */}
-                  <SimpleFileUpload
+                      if (url != "image/*") {
+                        console.log(url);
+                        setImageURLs(url);
+                      }
+                    }}></input>
+                  {/* <SimpleFileUpload
                     apiKey={"ee5fd30cbfd7939d9e52b522e52a6775"}
                     data-accepted="image/png, image/jpeg"
                     data-maxFileSize="5"
-                    onSuccess={handleFile} />
+                    onSuccess={handleFile} /> */}
                   <button
                     disabled={isUploading}
                     className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2"
