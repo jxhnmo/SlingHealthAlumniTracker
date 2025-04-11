@@ -118,7 +118,7 @@ const Profile: React.FC = () => {
     }
   };
   const handleFile = async (url) => {
-    const urlStr = url[1]
+    const urlStr = url
     console.log("URL: " + urlStr);
   }
   const handleSave = async () => {
