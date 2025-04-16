@@ -168,8 +168,8 @@ const Profile: React.FC = () => {
 
       const updatedTeam = {
         team_name: editedUser.team?.team_name || "",
-  team_area: editedUser.team?.team_area || "",
-  user_id: editedUser.id,
+        team_area: editedUser.team?.team_area || "",
+        user_id: editedUser.id,
       };
 
       console.log("Edited User:", editedUser); // Debugging log
@@ -510,10 +510,10 @@ const Profile: React.FC = () => {
       const response = await fetch(`${API_BASE_URL}/users/${user?.id}`, {
         method: "DELETE",
       });
-  
+
       if (response.ok) {
         alert(`${user?.name} has been deleted successfully.`);
-  
+
         // Redirect based on whether the deleted user is the current user
         if (user?.id === currentUserId) {
           router.push("/logout");
@@ -530,7 +530,7 @@ const Profile: React.FC = () => {
       setShowDeleteModal(false);
     }
   };
-  
+
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -668,7 +668,7 @@ const Profile: React.FC = () => {
                     <h2 className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2">Upload Profile Picture</h2>
                     {/* <p>Images must be less than 5MB</p> */}
                     <SimpleFileUpload
-                      apiKey={"ee5fd30cbfd7939d9e52b522e52a6775"}
+                      apiKey={process.env.SIMPLE_FILE_UPLOAD_API}
                       accepted="image/png, image/jpeg"
                       maxFileSize="5"
                       onSuccess={handleFile} />
