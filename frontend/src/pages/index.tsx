@@ -64,6 +64,12 @@ const IndexPage: React.FC = () => {
             >
               Logout
             </Link>
+            <Link
+              href="/documentation"
+              className="px-4 py-2 text-[--popcol] bg-[--dark2] rounded-md shadow-lg transition hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
+            >
+              Documentation
+            </Link>
           </>
         ) : (
           <Link
