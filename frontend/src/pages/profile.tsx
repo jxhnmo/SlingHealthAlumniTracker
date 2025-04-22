@@ -137,7 +137,7 @@ const Profile: React.FC = () => {
       <nav className="absolute top-5 right-10 flex gap-3 z-20">
         {[
           { name: "Home", path: "/" },
-          { name: "Index", path: "/userIndex" },
+          { name: "Directory", path: "/userIndex" },
           { name: "Profile", path: "/profile" },
           { name: "Logout", path: "/logout" },
           // { name: "Edit", path: "/profileEdit" },
