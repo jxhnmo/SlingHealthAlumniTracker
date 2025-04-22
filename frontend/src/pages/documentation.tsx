@@ -92,6 +92,7 @@ const Documentation: React.FC = () => {
         <a
           href="https://docs.google.com/forms/d/e/1FAIpQLSfdymMiOCE6x1BusNKx02DiJlSQEltz72zfonIRWZwP-cE-FA/viewform?usp=dialog"
           target="_blank"
+          className="text-purple-700"
         >
           Survey
         </a>
