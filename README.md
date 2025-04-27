@@ -39,7 +39,7 @@ Started-Installing-Git
 
 ## Environmental Variables/Files
 We have environment variables set up for the database
-NEXT_PUBLIC_API_BASE_URL=https://alumni-tracker-sprint3-84062556e525.herokuapp.com/
+NEXT_PUBLIC_API_BASE_URL=https://alumnitracker-e69ed4dc1beb.herokuapp.com/
 LANG=en_US.UTF-8
 RACK_ENV=production
 RAILS_ENV=production

@@ -80,7 +80,7 @@ const Profile: React.FC = () => {
 
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL ||
-    "https://alumni-tracker-sprint3-84062556e525.herokuapp.com";
+    "https://alumnitracker-e69ed4dc1beb.herokuapp.com";
 
   console.log(API_BASE_URL);
 
