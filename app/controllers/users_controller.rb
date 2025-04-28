@@ -25,33 +25,37 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
-    if params[:user][:achievements_attributes].present?
-      params[:user][:achievements_attributes].each do |achievement_params|
+    user_params_copy = user_params.deep_dup
+
+    if user_params_copy[:achievements_attributes].present?
+      user_params_copy[:achievements_attributes].each do |achievement_params|
         if achievement_params[:id].blank?
           achievement_params[:user_id] = @user.id # Ensure the new achievement is linked to the user
         end
       end
     end
 
-    if params[:user][:contacts_attributes].present?
-      params[:user][:contact_methods_attributes].each do |contact_params|
+    if user_params_copy[:contact_methods_attributes].present?
+      user_params_copy[:contact_methods_attributes].each do |contact_params|
         if contact_params[:id].blank?
           contact_params[:user_id] = @user.id
         end
       end
     end
 
-    if params[:user][:teams_attributes].present?
-      team_params = params[:user][:team_attributes]
-      team = if team_params[:id].present?
-        Team.find(team_params[:id]).tap { |t| t.update!(team_params.except(:id)) }
-      else
-        Team.create!(team_params)
-      end
-      TeamsUser.find_or_create_by!(user_id: @user.id)
-    end
+    #if user_params_copy[:team_attributes].present?
+    #  team_params = user_params_copy[:team_attributes]
+    #  team = if team_params[:id].present?
+    #    Team.find(team_params[:id]).tap { |t| t.update!(team_params.except(:id)) }
+    #  else
+    #    Team.create!(team_params)
+    #  end
+      
+    #  teams_user = TeamsUser.find_or_initialize_by(user_id: @user.id, team_id: team.id)
+    #  teams_user.save! unless teams_user.persisted?
+    #end
   
-    if @user.update(user_params)
+    if @user.update(user_params_copy.except(:team_attributes))
       render json: @user
     else
       render json: @user.errors, status: :unprocessable_entity

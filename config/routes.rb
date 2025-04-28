@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   resources :users
   resources :achievements
   resources :contact_methods
+  resources :teams_users, only: [:create, :destroy]
 
   resources :teams, only: [:update, :create, :destroy] do
     post 'users', to: 'teams#add_user_to_team'
