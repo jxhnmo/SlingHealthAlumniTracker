@@ -1,10 +1,22 @@
 import React, { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import Image from "react";
 
 const Documentation: React.FC = () => {
   return (
     <div>
+      {/* Navigation */}
+      <nav className="absolute top-5 right-10 flex gap-3 z-20">
+        <>
+          <Link
+            href="/"
+            className="px-4 py-2 text-[--popcol] bg-[--dark2] rounded-md shadow-lg transition hover:bg-[--popcol] hover:text-[--dark2] hover:scale-105"
+          >
+            Home
+          </Link>
+        </>
+      </nav>
       <h1>GUIDE</h1>
       <p>This guide will show the basic functionalities of this app</p>
       <h2>Basic functionalities</h2>
