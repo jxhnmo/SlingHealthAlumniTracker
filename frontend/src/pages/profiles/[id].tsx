@@ -192,7 +192,7 @@ const Profile: React.FC = () => {
         user_id: editedUser.id,
         user_profile_url: imageURLs,
       };
-      console.log("API BASE URL" + API_BASE_URL);
+      console.log("API BASE URL " + API_BASE_URL);
       const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
