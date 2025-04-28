@@ -8,7 +8,9 @@ class User < ApplicationRecord
   
   accepts_nested_attributes_for :achievements, allow_destroy: true
   accepts_nested_attributes_for :contact_methods, allow_destroy: true
-  accepts_nested_attributes_for :teams, update_only: true
+  # accepts_nested_attributes_for :teams, update_only: true
+  accepts_nested_attributes_for :teams, allow_destroy: true
+
   def self.from_google(auth)
     user = User.find_or_initialize_by(email: auth.info.email)
 
