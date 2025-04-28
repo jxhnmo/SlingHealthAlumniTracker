@@ -136,7 +136,7 @@ const Profile: React.FC = () => {
   const handleSave = async () => {
     console.log("handleSave");
     console.log(process.env.NEXT_PUBLIC_API_BASE_URL);
-    console.log(process.env.NEXT_SIMPLE_FILE_UPLOAD_KEY);
+    console.log(process.env.SIMPLE_FILE_UPLOAD_KEY);
     console.log(process.env.DATABASE_URL);
     console.log("API^^^^^^^^^^^^");
 
@@ -676,7 +676,7 @@ const Profile: React.FC = () => {
                     <h2 className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2">Upload Profile Picture</h2>
                     {/* <p>Images must be less than 5MB</p> */}
                     <SimpleFileUpload
-                      apiKey={process.env.NEXT_SIMPLE_FILE_UPLOAD_KEY}
+                      apiKey={process.env.SIMPLE_FILE_UPLOAD_KEY}
                       accepted="image/png, image/jpeg"
                       maxFileSize="5"
                       onSuccess={handleFile} />
