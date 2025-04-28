@@ -135,9 +135,10 @@ const Profile: React.FC = () => {
 
   const handleSave = async () => {
     console.log("handleSave");
-    console.log(process.env.NEXT_PUBLIC_API_BASE_URL);
-    console.log(process.env.SIMPLE_FILE_UPLOAD_KEY);
-    console.log(process.env.DATABASE_URL);
+    console.log(process.env);
+    // console.log(process.env.NEXT_PUBLIC_API_BASE_URL);
+    // console.log(process.env.SIMPLE_FILE_UPLOAD_KEY);
+    // console.log(process.env.DATABASE_URL);
     console.log("API^^^^^^^^^^^^");
 
 
