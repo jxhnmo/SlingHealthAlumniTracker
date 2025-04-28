@@ -16,10 +16,26 @@ class TeamsController < ApplicationController
   end
 
   def update
-    if @team.update(team_params)
-      render json: @team
+
+    if params[:id].blank?
+      @team = Team.new(team_params)
+
+      if @team.save
+        TeamsUser.create(user_id: params[:user_id], team_id: @team.id) if params[:user_id].present?
+        render json: @team, status: :created
+      else
+        render json: @team.errors, status: :unprocessable_entity
+      end
     else
-      render json: @team.errors, status: :unprocessable_entity
+
+      if @team.update(team_params)
+        if params[:user_id].present?
+          TeamsUser.find_or_create_by(user_id: params[:user_id], team_id: @team.id)
+        end
+        render json: @team
+      else
+        render json: @team.errors, status: :unprocessable_entity
+      end
     end
   end
 
@@ -30,11 +46,15 @@ class TeamsController < ApplicationController
   private
 
   def set_team
-    @team = Team.find(params[:id])
+    if params[:id].present?
+      @team = Team.find(params[:id])
+    else
+      @team = nil
+    end
   end
 
   def team_params
-    params.require(:team).permit(:team_name, :team_area)
+    params.require(:team).permit(:team_name, :team_area, :user_id)
   end
 
 end
