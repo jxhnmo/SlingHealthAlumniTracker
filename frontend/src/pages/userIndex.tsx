@@ -58,7 +58,7 @@ const UserIndex: React.FC = () => {
   useEffect(() => {
     const API_BASE_URL =
       process.env.NEXT_PUBLIC_API_BASE_URL ||
-      "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
+      "https://alumnitracker-e69ed4dc1beb.herokuapp.com/";
     console.log("loadUsersAndAchievements");
     const loadUsersAndAchievements = async () => {
       try {

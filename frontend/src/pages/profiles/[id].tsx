@@ -5,7 +5,6 @@ import Link from "next/link";
 import Helmet from "react-helmet";
 import SimpleFileUpload from "react-simple-file-upload";
 
-
 // import { PinataSDK } from "pinata";
 // const fs = require("fs");
 // const { Blob } = require("buffer");
@@ -74,13 +73,15 @@ const Profile: React.FC = () => {
   const [isUploading, setIsUploading] = React.useState(false); // user uploading image
   const [tooLarge, setTooLarge] = React.useState(false); // if image is too large
   const photoInputRef = React.useRef<HTMLInputElement | null>(null); // HTML element for the image input
-  const [imageURLs, setImageURLs] = React.useState<string>(user?.user_profile_url); // user profile URL by default
+  const [imageURLs, setImageURLs] = React.useState<string>(
+    user?.user_profile_url
+  ); // user profile URL by default
   const [selectedImage, setSelectedImage] = React.useState<File | null>(null);
   let queuedImage: File[] = []; // queue with only 1 element
 
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL ||
-    "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
+    "https://alumnitracker-e69ed4dc1beb.herokuapp.com";
 
   console.log(API_BASE_URL);
 
@@ -128,11 +129,20 @@ const Profile: React.FC = () => {
     }
   };
   const handleFile = async (url) => {
-    const urlStr = url
+    const urlStr = url;
     setImageURLs(urlStr);
     console.log("ImageURL: " + urlStr);
-  }
+  };
+
   const handleSave = async () => {
+    // const envs = process.env;
+    // console.log("handleSave");
+    // console.log(envs);
+    // // console.log(process.env.NEXT_PUBLIC_API_BASE_URL);
+    // // console.log(process.env.SIMPLE_FILE_UPLOAD_KEY);
+    // // console.log(process.env.DATABASE_URL);
+    // console.log("API^^^^^^^^^^^^");
+
     try {
       if (!user || !editedUser) {
         console.error("User or editedUser is null");
@@ -172,6 +182,8 @@ const Profile: React.FC = () => {
         user_id: editedUser.id,
       };
 
+      await handleTeamSave();
+
       console.log("Edited User:", editedUser); // Debugging log
 
       const updatedUser = {
@@ -182,7 +194,7 @@ const Profile: React.FC = () => {
         user_id: editedUser.id,
         user_profile_url: imageURLs,
       };
-
+      console.log("API BASE URL " + API_BASE_URL);
       const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -191,10 +203,41 @@ const Profile: React.FC = () => {
 
       if (!response.ok) throw new Error("Failed to update profile");
 
-      await fetchData();
+      //await fetchData();
+      setEditedUser(updatedUser);
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating profile:", error);
+    }
+  };
+
+  const handleTeamSave = async () => {
+    if (!editedUser?.team) return;
+
+    try {
+      const url = editedUser?.team?.id
+        ? `${API_BASE_URL}/teams/${editedUser.team.id}`
+        : `${API_BASE_URL}/teams`;
+
+      const method = editedUser?.team?.id ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          team: {
+            team_name: editedUser?.team?.team_name || "",
+            team_area: editedUser?.team?.team_area || "",
+            user_id: editedUser?.id,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update team");
+      }
+    } catch (error) {
+      console.error("Error updating team:", error);
     }
   };
 
@@ -466,13 +509,9 @@ const Profile: React.FC = () => {
       setContactMethods(
         contactMethodsData.filter((contact) => contact.user_id === Number(id))
       );
-      setTeam(
-        teamData.filter((team) =>
-          teamsUsersData.some(
-            (tu) => tu.user_id === Number(id) && tu.team_id === team.id
-          )
-        )[0]
-      );
+
+      setTeam(teamData.find((team) => team.user_id === Number(id)));
+
       const filteredTeam = teamData.filter((team) =>
         teamsUsersData.some(
           (tu) => tu.user_id === Number(id) && tu.team_id === team.id
@@ -485,11 +524,7 @@ const Profile: React.FC = () => {
         contact_info: filteredContacts.filter(
           (c) => c.contact_type.trim() !== "" || c.info.trim() !== ""
         ),
-        team: teamData.filter((team) =>
-          teamsUsersData.some(
-            (tu) => tu.user_id === Number(id) && tu.team_id === team.id
-          )
-        )[0],
+        team: teamData.findLast((team) => team.user_id === Number(id)),
       });
 
       setLoading(false);
@@ -511,6 +546,8 @@ const Profile: React.FC = () => {
         method: "DELETE",
       });
 
+      await handleTeamDelete();
+
       if (response.ok) {
         alert(`${user?.name} has been deleted successfully.`);
 
@@ -531,6 +568,22 @@ const Profile: React.FC = () => {
     }
   };
 
+  const handleTeamDelete = async () => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/teams/${editedUser?.team.id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete team");
+      }
+    } catch (error) {
+      console.error("Error deleting team:", error);
+    }
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -665,13 +718,16 @@ const Profile: React.FC = () => {
               <div className="h-[250px] w-[250px]">
                 {isEditing ? ( // editing for pfp
                   <div>
-                    <h2 className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2">Upload Profile Picture</h2>
+                    <h2 className="text-xl font-bold text-center bg-[--dark2] text-white border-b-2 border-white outline-none mt-2">
+                      Upload Profile Picture
+                    </h2>
                     {/* <p>Images must be less than 5MB</p> */}
                     <SimpleFileUpload
-                      apiKey={process.env.SIMPLE_FILE_UPLOAD_API}
+                      apiKey={process.env.NEXT_PUBLIC_SIMPLE_FILE_UPLOAD_KEY}
                       accepted="image/png, image/jpeg"
                       maxFileSize="5"
-                      onSuccess={handleFile} />
+                      onSuccess={handleFile}
+                    />
                     {/* <img
                       src={imageURLs}
                       alt={user.name}

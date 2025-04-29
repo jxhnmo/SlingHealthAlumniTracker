@@ -17,7 +17,7 @@ const EditAchievements: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumni-tracker-sprint2-d1ab480922a9.herokuapp.com";
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://alumnitracker-e69ed4dc1beb.herokuapp.com";
 
 
     useEffect(() => {
